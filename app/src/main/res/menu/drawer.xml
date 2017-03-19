@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+<group
+    android:id="@+id/first"
+    android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/navigation_fragment_home"
+            android:checked="true"
+            android:icon="@android:drawable/ic_menu_call"
+            android:title="Home" />
+
+        <item
+            android:id="@+id/navigation_fragment_settings"
+            android:checked="false"
+            android:icon="@android:drawable/ic_menu_preferences"
+            android:title="Settings" />
+
+        <item
+        android:id="@+id/navigation_share"
+        android:checked="false"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="Share"/>
+
+        <item
+        android:id="@+id/navigation_about"
+        android:checked="false"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:title="About"/>
+
+    </group>
+
+    <group
+        android:id="@+id/second"
+        android:checkableBehavior="single">
+        <item android:id="@+id/nav_switch_auto_rec"
+              android:checkable="false"
+              app:actionLayout="@layout/action_view_switch"
+              android:title="@string/action_view_switch_auto_rec" />
+        <item android:id="@+id/nav_switch_auto_upload_on_dropbox"
+              android:checkable="false"
+              app:actionLayout="@layout/action_view_switch_dropbox"
+              android:title="@string/action_view_switch_dropbox" />
+    </group>
+
+    <!--
+    <item android:title="string/nav_sub_menu">
+        <menu>
+            <item
+                android:icon="@android:drawable/ic_menu_today"
+                android:title="string/nav_sub_menu_item01" />
+            <item
+                android:icon="@android:drawable/ic_menu_today"
+                android:title="string/nav_sub_menu_item02" />
+        </menu>
+    </item>
+    -->
+
+</menu>
+

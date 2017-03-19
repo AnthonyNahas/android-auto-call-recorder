@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Auto Anrufaufzeichner</string>
+    <string name="action_sort">Sortieren</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_delete">Löschen</string>
+    <string name="action_add">Addieren</string>
+    <string name="action_edit">Bearbeiten</string>
+    <string name="action_search">Suchen</string>
+    <string name="action_view_switch_auto_rec">Immer aufzeichnen</string>
+    <string name="action_view_switch_dropbox">Immer hochladen auf DropBox</string>
+    <string name="imageview_profile" translatable="false"></string>
+    <string name="item_share">App teilen</string>
+    <string name="item_home">Aufzeichnungen</string>
+    <string name="radiobtton_asc">Aufsteigend</string>
+    <string name="radiobtton_desc">Absteigend</string>
+    <string name="radiobutton_contact">Kontakt</string>
+    <string name="radiobutton_duration">Dauer</string>
+    <string name="sort_dialog_negative_button">Abbruch</string>
+    <string name="sort_dialog_positive_button">Fertig</string>
+    <string name="radiobutton_date">Datum</string>
+    <string name="sort_dialog_title">Sortieren nach</string>
+    <string name="radiobutton_time">Zeit</string>
+    <string name="preference_category1">Einstellung für das Aufzeichnen</string>
+    <string name="preference_category2">Andere Einstellungen</string>
+    <string name="preference_checkbox_auto_call_recording_summary">Bitte auswählen um zu Aktivieren</string>
+    <string name="preference_checkbox_auto_call_recording">Immer Anrufe aufzeichnen</string>
+    <string name="preference_checkbox_upload_on_dropbox">Immder die Aufzeichnung auf DropxBox hochladen</string>
+    <string name="preference_checkbox_upload_on_dropbox_summary">Nur wenn mit dem Internet verbunden</string>
+    <string name="preference_chexbox_auto_call_recording"></string>
+    <string name="tst_list_empty">Es gibt keine Aufzeichnung zu löschen!</string>
+</resources>

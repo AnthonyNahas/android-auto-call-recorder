@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Auto Call Recorder</string>
+    <string name="app_version" translatable="false">Version 1.0</string>
+
+    <!-- Drawer layout -->
+    <string name="drawer_opened" translatable="false">Drawer Opened</string>
+    <string name="drawer_closed" translatable="false">Drawer Closed</string>
+
+    <!-- NavigationView -->
+    <string name="item_home">Records</string>
+    <string name="item_share">Share App</string>
+    <string name="action_view_switch_auto_rec">Auto recording</string>
+    <string name="action_view_switch_dropbox">Auto upload on DropBox</string>
+
+    <!-- Layout -->
+    <string name="imageview_profile" translatable="false">profile picture of (unkown)-contact</string>
+
+    <!-- Menu -->
+    <string name="action_search">Search</string>
+    <string name="action_add">Add</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_sort">Sort</string>
+
+    <!-- standards -->
+    <string name="call_number_std" translatable="false">+000000000000</string>
+    <string name="call_date_std" translatable="false">00-00-0000</string>
+    <string name="call_duration_std" translatable="false">00:00</string>
+
+    <!-- Settings Preference -->
+    <string name="preference_category1" translatable="true">Recording Settings</string>
+    <string name="preference_checkbox_auto_call_recording" translatable="true">Always record calls</string>
+    <string name="preference_checkbox_auto_call_recording_summary" translatable="true">Check it to enable</string>
+    <string name="preference_checkbox_upload_on_dropbox" translatable="true">Always upload on dropbox</string>
+    <string name="preference_checkbox_upload_on_dropbox_summary" translatable="true">ONLY when connected to the internet</string>
+    <string name="preference_dropxbox_folder_name" translatable="true">Folder name on DropBox</string>
+    <string name="preference_dropxbox_folder_name_summary" translatable="false">Auto Call Recorder</string>
+    <string name="preference_category2" translatable="true">Other Settings</string>
+
+    <string name="dropbox_header" translatable="false">Dropbox</string>
+
+    <!-- Sort dialog -->
+    <string name="sort_dialog_title">Sort by</string>
+    <string name="radiobutton_contact">Contact</string>
+    <string name="radiobutton_date">Date</string>
+    <string name="radiobutton_duration">Duration</string>
+    <string name="radiobtton_asc">Ascending</string>
+    <string name="radiobtton_desc">Descending</string>
+    <string name="sort_dialog_negative_button">Cancel</string>
+    <string name="sort_dialog_positive_button">Finish</string>
+
+    <!-- searchable.xml -->
+    <string name="app_label">App label</string>
+    <string name="search_hint">Serach hint</string>
+
+
+    <!-- Progress dialog -->
+    <string name="pd_msg" translatable="true">Please wait…</string>
+    <string name="pd_deleted" translatable="true">has been deleted</string>
+
+    <!-- Toast msgs -->
+    <string name="tst_list_empty" translatable="true">There is no records to delete!</string>
+
+</resources>

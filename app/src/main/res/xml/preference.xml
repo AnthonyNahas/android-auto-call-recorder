@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/preference_category1">
+
+        <CheckBoxPreference
+            android:key="parent_checkbox_preference_auto_call_recording"
+            android:title="@string/preference_checkbox_auto_call_recording"
+            android:summary="@string/preference_checkbox_auto_call_recording_summary" />
+
+        <!-- The visual style of a child is defined by this styled theme attribute. -->
+        <CheckBoxPreference
+            android:key="child_checkbox_preference_dropbox"
+            android:dependency="parent_checkbox_preference_auto_call_recording"
+            android:layout="?android:attr/preferenceLayoutChild"
+            android:title="@string/preference_checkbox_upload_on_dropbox"
+            android:summary="@string/preference_checkbox_upload_on_dropbox_summary" />
+
+        <EditTextPreference
+            android:key="dropbox_folder_name"
+            android:dependency="child_checkbox_preference_dropbox"
+            android:title="@string/preference_dropxbox_folder_name"
+            android:summary="@string/preference_dropxbox_folder_name_summary"
+            android:dialogTitle="@string/preference_dropxbox_folder_name" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/preference_category2">
+
+        <CheckBoxPreference
+            android:key="checkbox_preference"
+            android:title="string/title_checkbox_preference"
+            android:summary="string/summary_checkbox_preference" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="string/dialog_based_preferences">
+
+        <EditTextPreference
+            android:key="edittext_preference"
+            android:title="string/title_edittext_preference"
+            android:summary="string/summary_edittext_preference"
+            android:dialogTitle="string/dialog_title_edittext_preference" />
+
+        <ListPreference
+            android:key="list_preference"
+            android:title="string/title_list_preference"
+            android:summary="string/summary_list_preference" />
+            //android:entries="array/entries_list_preference"
+            //android:entryValues="array/entryvalues_list_preference"
+            android:dialogTitle="string/dialog_title_list_preference" />
+
+    </PreferenceCategory>
+
+
+    <!--<PreferenceCategory
+        android:title="string/launch_preferences">
+
+        &lt;!&ndash; This PreferenceScreen tag sends the user to a new fragment of
+             preferences.  If running in a large screen, they can be embedded
+             inside of the overall preferences UI. &ndash;&gt;
+        <PreferenceScreen
+            android:fragment="anthonynahas.com.autocallrecorder.fragments.AboutFragment"
+            android:title="string/title_fragment_preference"
+            android:summary="string/summary_fragment_preference">
+            &lt;!&ndash; Arbitrary key/value pairs can be included for fragment arguments &ndash;&gt;
+            <extra android:name="someKey" android:value="somePrefValue" />
+        </PreferenceScreen>
+
+        &lt;!&ndash; This PreferenceScreen tag sends the user to a completely different
+             activity, switching out of the current preferences UI. &ndash;&gt;
+        <PreferenceScreen
+            android:title="string/title_intent_preference"
+            android:summary="string/summary_intent_preference">
+
+            <intent android:action="android.intent.action.VIEW"
+                    android:data="http://www.android.com" />
+
+        </PreferenceScreen>
+
+    </PreferenceCategory>-->
+
+</PreferenceScreen>
