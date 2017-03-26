@@ -1,9 +1,10 @@
 package anthonynahas.com.autocallrecorder.activities;
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -20,6 +21,9 @@ import android.widget.Toast;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
+import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
+
+//import android.content.Loader;
 
 /**
  * Created by A on 20.03.17.
@@ -29,6 +33,8 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
 
     private static final String TAG = RecordsTestActivity.class.getSimpleName();
 
+    private Context mContext;
+    private Activity mActivity;
     private SharedPreferences mSharedPreferences;
 
 
@@ -42,6 +48,8 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = this;
+        mActivity = this;
         setContentView(R.layout.activity_test_records);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -53,8 +61,13 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
-        getLoaderManager().initLoader(0, null, this);
+        //getLoaderManager().initLoader(0, null, this);
 
+
+        int itemsCountLocal = getItemsCountLocal();
+        if (itemsCountLocal == 0) {
+            fillTestElements();
+        }
 
         shortToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
@@ -75,6 +88,8 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
                     page++;
                     //getSupportLoaderManager().restartLoader(0, null, MainActivity.this);
                     //getLoaderManager().restartLoader(0, null, this);
+
+
                 }
             }
         });
@@ -85,7 +100,7 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
     }
 
     private void fillTestElements() {
-        int size = 1000;
+        int size = 1;
         ContentValues[] cvArray = new ContentValues[size];
         for (int i = 0; i < cvArray.length; i++) {
             ContentValues cv = new ContentValues();
@@ -93,9 +108,21 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
             cvArray[i] = cv;
         }
 
-        //getContentResolver().bulkInsert(RecordsContentProvider.urlForItems(0), cvArray);
+        getContentResolver().bulkInsert(RecordsContentProvider.urlForItems(0), cvArray);
     }
 
+    private int getItemsCountLocal() {
+        int itemsCount = 0;
+
+        Cursor query = getContentResolver().query(RecordsContentProvider.urlForItems(0), null, null, null, null);
+        if (query != null) {
+            itemsCount = query.getCount();
+            query.close();
+        }
+        return itemsCount;
+    }
+
+    /*
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projectALL = new String[]{"*"};
@@ -112,17 +139,30 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
                 + mSharedPreferences.getString(SettingsActivity.KEY_SORT_ARRANGE, " DESC");
         return new CursorLoader(this, RecordDbContract.CONTENT_URL, projectALL, selection, null, sort);
     }
+    */
+    @Override
+    public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case 0:
+                return new CursorLoader(this,
+                        RecordsContentProvider.urlForItems(offset * page), null, null, null, null);
+            default:
+                throw new IllegalArgumentException("no id handled!");
+        }
+    }
+
+
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()) {
             case 0:
                 Log.d(TAG, "onLoadFinished: loading MORE");
                 shortToast.setText("loading MORE " + page);
                 shortToast.show();
 
-                Cursor cursor = ((RecordsCursorRecyclerViewAdapter) mRecyclerView.getAdapter()).getCursor();
-   //             Log.d(TAG, "" + cursor.getCount());
+                Cursor cursor =
+                        ((RecordsCursorRecyclerViewAdapter) mRecyclerView.getAdapter()).getCursor();
 
                 //fill all exisitng in adapter
                 MatrixCursor mx = new MatrixCursor(RecordDbContract.RecordItem.ALL_COLUMNS);
@@ -145,15 +185,13 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
             default:
                 throw new IllegalArgumentException("no loader id handled!");
         }
-        //data.moveToFirst();
-        //mRecordsCursorAdapter = new RecordsCursorAdapter(this, data, 0);
-        //mRecListView.setAdapter(mRecordsCursorAdapter);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(android.content.Loader<Cursor> loader) {
 
     }
+
 
     private Handler handlerToWait = new Handler();
 
@@ -162,7 +200,6 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
             return;
 
         data.moveToPosition(-1);
-        //data.moveToFirst();
         while (data.moveToNext()) {
             mx.addRow(new Object[]{
                     data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID)),
@@ -175,5 +212,4 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
             });
         }
     }
-
 }

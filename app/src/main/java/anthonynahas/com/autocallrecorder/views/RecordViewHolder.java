@@ -2,9 +2,7 @@ package anthonynahas.com.autocallrecorder.views;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -14,12 +12,9 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
-import anthonynahas.com.autocallrecorder.utilities.ContactHelper;
-import anthonynahas.com.autocallrecorder.utilities.ImageHelper;
 
 /**
  * Created by A on 20.03.17.
@@ -61,6 +56,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         //viewHolder.call_contact_profile.setId(cursor.getPosition());
 
         String contact_number_or_name = "";
+        /*
         try {
             contact_number_or_name = new AsyncTask<Void, Void, String>() {
                 @Override
@@ -75,6 +71,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+        */
 
         if (contact_number_or_name.isEmpty()) {
             call_contact_number_or_name.setText("Unkown");
@@ -95,6 +92,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         call_date.setText(getLocalFormattetDate(cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE))));
         //call_durcation.setText(String.valueOf(getTimeString(cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)))));
         //Bitmap bitmap = MainActivity.getBitmapFromMemoryCache(phoneNumber);
+        /*
         Bitmap bitmap = null;
         if (bitmap != null) {
             call_contact_profile.setImageBitmap(bitmap);
@@ -110,7 +108,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
                 //viewHolder.call_contact_profile.setImageResource(R.drawable.custmtranspprofpic);
                 call_contact_profile.setImageBitmap(ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(), R.drawable.custmtranspprofpic60px, 60, 60));
             }
-        }
+        }*/
 
     }
 
