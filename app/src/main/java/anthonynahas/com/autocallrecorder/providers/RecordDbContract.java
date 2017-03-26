@@ -15,7 +15,7 @@ public class RecordDbContract {
     public static final int DATABASE_VERSION = 1;
 
     /**
-     *  The authority of the Auto Call Recorder app provider
+     * The authority of the Auto Call Recorder app provider
      */
     public static final String SCHEME = "content://";
     public static final String AUTHORITY = "anthonynahas.com.autocallrecorder.providers.RecordsContentProvider";
@@ -23,7 +23,7 @@ public class RecordDbContract {
     public static final String URL = SCHEME + AUTHORITY + "/" + PATH;
 
     /**
-     *  THe content URI for the top-level BlogItem authority
+     * THe content URI for the top-level BlogItem authority
      */
     public static final Uri CONTENT_URL = Uri.parse(URL);
 
@@ -36,7 +36,7 @@ public class RecordDbContract {
      * this class implement the structure of a record item in the database
      *
      * @author Anthony Nahas
-     * @version 1.0
+     * @version 1.1
      * @since 29.4.16
      */
     public static abstract class RecordItem extends RecordDbContract {
@@ -47,11 +47,20 @@ public class RecordDbContract {
         //columns
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_NUMBER = "number";
-        public static final String COLUMN_DATE= "date";
+        public static final String COLUMN_DATE = "date";
         public static final String COLUMN_INCOMING = "incoming";
         public static final String COLUMN_SIZE = "size";
         public static final String COLUMN_DURATION = "duration";
         public static final String COLUMN_CONTACTID = "contactid";
-        //public static final String[] ALL_COLUMNS = {COLUMN_UUID,COLUMN_TEXT,COLUMN_PUBDATE,COLUMN_USERNAME,COLUMN_USERUUID};
+        public static  String[] ALL_COLUMNS = new String[]
+                {
+                        COLUMN_ID,
+                        COLUMN_NUMBER,
+                        COLUMN_DATE,
+                        COLUMN_INCOMING,
+                        COLUMN_SIZE,
+                        COLUMN_DURATION,
+                        COLUMN_CONTACTID
+                };
     }
 }

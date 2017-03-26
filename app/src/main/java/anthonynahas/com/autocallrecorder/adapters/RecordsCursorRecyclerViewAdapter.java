@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.views.RecordViewHolder;
 
 /**
@@ -15,8 +16,11 @@ import anthonynahas.com.autocallrecorder.views.RecordViewHolder;
 
 public class RecordsCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter {
 
+    private Context mContext;
+
     public RecordsCursorRecyclerViewAdapter(Context context, Cursor cursor) {
         super(context, cursor);
+        mContext = context;
     }
 
     @Override
@@ -26,8 +30,8 @@ public class RecordsCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter 
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(android.R.layout.simple_list_item_1, parent, false);
-        return new RecordViewHolder(v);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_record, parent, false);
+        return new RecordViewHolder(mContext, view);
     }
 
     @Override

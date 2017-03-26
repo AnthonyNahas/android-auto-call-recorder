@@ -17,7 +17,6 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.activities.MainActivity;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.ImageHelper;
@@ -94,8 +93,9 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         }
 
         call_date.setText(getLocalFormattetDate(cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE))));
-        call_durcation.setText(String.valueOf(getTimeString(cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)))));
-        Bitmap bitmap = MainActivity.getBitmapFromMemoryCache(phoneNumber);
+        //call_durcation.setText(String.valueOf(getTimeString(cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)))));
+        //Bitmap bitmap = MainActivity.getBitmapFromMemoryCache(phoneNumber);
+        Bitmap bitmap = null;
         if (bitmap != null) {
             call_contact_profile.setImageBitmap(bitmap);
         } else {
@@ -105,7 +105,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
                     cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACTID)));
             if (img != null) {
                 call_contact_profile.setImageBitmap(img);
-                MainActivity.setBitmapToMemoryCache(phoneNumber, img);
+                //MainActivity.setBitmapToMemoryCache(phoneNumber, img);
             } else {
                 //viewHolder.call_contact_profile.setImageResource(R.drawable.custmtranspprofpic);
                 call_contact_profile.setImageBitmap(ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(), R.drawable.custmtranspprofpic60px, 60, 60));

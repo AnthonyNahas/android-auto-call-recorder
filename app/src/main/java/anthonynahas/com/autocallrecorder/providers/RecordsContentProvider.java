@@ -15,6 +15,8 @@ import android.util.Log;
 
 /**
  * Created by A on 29.04.16.
+ * @author Anthony Nahas
+ *
  */
 public class RecordsContentProvider extends ContentProvider {
 
@@ -24,21 +26,24 @@ public class RecordsContentProvider extends ContentProvider {
     private SQLiteDatabase mDB;
 
     private static final UriMatcher sUriMatcher;
+    private static final int TABLE_ITEMS = 0;
     private static final int ALL_ROWS = 1;
     private static final int SINGLE_ROW = 2;
 
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(RecordDbContract.AUTHORITY, "/"+ RecordDbContract.PATH,ALL_ROWS);
-        sUriMatcher.addURI(RecordDbContract.AUTHORITY, "/"+ RecordDbContract.PATH + "/#" +
-                RecordDbContract.RecordItem.COLUMN_ID,SINGLE_ROW);
+        sUriMatcher.addURI(RecordDbContract.AUTHORITY, RecordDbContract.RecordItem.TABLE_NAME
+                + "/offset/" + "#", TABLE_ITEMS);
+        sUriMatcher.addURI(RecordDbContract.AUTHORITY, "/" + RecordDbContract.PATH, ALL_ROWS);
+        sUriMatcher.addURI(RecordDbContract.AUTHORITY, "/" + RecordDbContract.PATH + "/#" +
+                RecordDbContract.RecordItem.COLUMN_ID, SINGLE_ROW);
         Log.d(TAG, "static sUriMatcher)");
     }
 
     @Override
     public boolean onCreate() {
-        Log.d(TAG,"onCreate() - contentProvider");
+        Log.d(TAG, "onCreate() - contentProvider");
         mRecordsSQLiteOpenHelper = new RecordsSQLiteOpenHelper(getContext());
         mDB = mRecordsSQLiteOpenHelper.getWritableDatabase();
 
@@ -49,7 +54,7 @@ public class RecordsContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Log.d(TAG,"query1()");
+        Log.d(TAG, "query1()");
         //create a new querybuilder for table with birthdays
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(RecordDbContract.RecordItem.TABLE_NAME);
@@ -70,11 +75,11 @@ public class RecordsContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(Uri uri) {
-        Log.d(TAG,"getType()");
-        switch (sUriMatcher.match(uri)){
+        Log.d(TAG, "getType()");
+        switch (sUriMatcher.match(uri)) {
 
             case ALL_ROWS:
-                Log.d(TAG,"getType in switch()");
+                Log.d(TAG, "getType in switch()");
                 return RecordDbContract.CONTENT_TYPE + RecordDbContract.AUTHORITY + "/" + RecordDbContract.RecordItem.TABLE_NAME;
             case SINGLE_ROW:
                 return RecordDbContract.CONTENT_ITEM_TYPE + RecordDbContract.AUTHORITY + "/" + RecordDbContract.RecordItem.TABLE_NAME;
@@ -86,23 +91,22 @@ public class RecordsContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        Log.d(TAG,"onInsert1()");
+        Log.d(TAG, "onInsert1()");
 
-        long rowID = mDB.insert(RecordDbContract.RecordItem.TABLE_NAME,"",values);
-        Log.d(TAG,"r = " + rowID);
+        long rowID = mDB.insert(RecordDbContract.RecordItem.TABLE_NAME, "", values);
+        Log.d(TAG, "r = " + rowID);
 
-        if(rowID > 0){
+        if (rowID > 0) {
             //create corresponding URI for the created row
             Uri insertedIdUri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, rowID);
 
             //notify resolver for data change
-            getContext().getContentResolver().notifyChange(insertedIdUri,null);
+            getContext().getContentResolver().notifyChange(insertedIdUri, null);
             Log.d(TAG, "onInsert2()");
             //return new URO for item
             return insertedIdUri;
-        }
-        else {
-            Log.e(TAG,"ERROR onInsert()");
+        } else {
+            Log.e(TAG, "ERROR onInsert()");
             return null;
         }
     }
@@ -110,9 +114,9 @@ public class RecordsContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
 
-        String mSelectionCorrected=selection;
+        String mSelectionCorrected = selection;
 
-        switch (sUriMatcher.match(uri)){
+        switch (sUriMatcher.match(uri)) {
             case ALL_ROWS:
                 break;
             case SINGLE_ROW:
@@ -130,7 +134,7 @@ public class RecordsContentProvider extends ContentProvider {
         //delete the item
         int count = mDB.delete(RecordDbContract.RecordItem.TABLE_NAME, mSelectionCorrected, selectionArgs);
         //notify the resolver of data change
-        getContext().getContentResolver().notifyChange(uri,null);
+        getContext().getContentResolver().notifyChange(uri, null);
 
         return count;
     }
@@ -140,7 +144,7 @@ public class RecordsContentProvider extends ContentProvider {
         return 0;
     }
 
-    public Cursor retrieve (String searchItem){
+    public Cursor retrieve(String searchItem) {
 
         String[] columns = {RecordDbContract.RecordItem.COLUMN_ID,
                 RecordDbContract.RecordItem.COLUMN_NUMBER,
@@ -151,15 +155,15 @@ public class RecordsContentProvider extends ContentProvider {
                 RecordDbContract.RecordItem.COLUMN_SIZE};
         Cursor cursor = null;
 
-        if(searchItem != null && searchItem.length() >0){
+        if (searchItem != null && searchItem.length() > 0) {
             String sql = "SELECT * FROM" + RecordDbContract.RecordItem.TABLE_NAME + " WHERE " + RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE '%" + searchItem + "%'";
-            cursor = mDB.rawQuery(sql,null);
+            cursor = mDB.rawQuery(sql, null);
             return cursor;
         }
 
-        cursor = mDB.query(RecordDbContract.RecordItem.TABLE_NAME,columns,null,null,null,null,null,null);
+        cursor = mDB.query(RecordDbContract.RecordItem.TABLE_NAME, columns, null, null, null, null, null, null);
 
-        return  cursor;
+        return cursor;
 
     }
 
@@ -194,6 +198,7 @@ public class RecordsContentProvider extends ContentProvider {
 
         /**
          * crate table
+         *
          * @param db
          */
         @Override
@@ -205,6 +210,7 @@ public class RecordsContentProvider extends ContentProvider {
 
         /**
          * update table
+         *
          * @param db
          * @param oldVersion
          * @param newVersion

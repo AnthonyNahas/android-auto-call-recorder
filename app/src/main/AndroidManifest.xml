@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme"
         android:fullBackupContent="false"
         >
-        <activity android:name=".activities.MainActivity"
+        <activity android:name=".activities.RecordsTestActivity"
                   android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
