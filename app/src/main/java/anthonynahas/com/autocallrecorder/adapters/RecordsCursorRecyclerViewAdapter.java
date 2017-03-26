@@ -11,7 +11,11 @@ import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.views.RecordViewHolder;
 
 /**
- * Created by A on 20.03.17.
+ *
+ *
+ * @author Anthony Nahas
+ * @version 0.1
+ * @since 20.03.2017
  */
 
 public class RecordsCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter {
