@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.recyclerview.BuildConfig;
 import android.util.Log;
 
 /**
@@ -103,6 +104,8 @@ public class RecordsContentProvider extends ContentProvider {
                 return RecordDbContract.CONTENT_TYPE + RecordDbContract.AUTHORITY + "/" + RecordDbContract.RecordItem.TABLE_NAME;
             case SINGLE_ROW:
                 return RecordDbContract.CONTENT_ITEM_TYPE + RecordDbContract.AUTHORITY + "/" + RecordDbContract.RecordItem.TABLE_NAME;
+            case TABLE_ITEMS:
+                return BuildConfig.APPLICATION_ID + ".item";
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
