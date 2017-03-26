@@ -10,13 +10,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 /**
  * Created by A on 29.04.16.
- * @author Anthony Nahas
  *
+ * @author Anthony Nahas
  */
 public class RecordsContentProvider extends ContentProvider {
 
@@ -41,6 +42,11 @@ public class RecordsContentProvider extends ContentProvider {
         Log.d(TAG, "static sUriMatcher)");
     }
 
+    public static Uri urlForItems(int limit) {
+        return Uri.parse("content://" + RecordDbContract.AUTHORITY + "/" +
+                RecordDbContract.RecordItem.TABLE_NAME + "/offset/" + limit);
+    }
+
     @Override
     public boolean onCreate() {
         Log.d(TAG, "onCreate() - contentProvider");
@@ -51,24 +57,38 @@ public class RecordsContentProvider extends ContentProvider {
 
     }
 
-    @Nullable
+
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    synchronized public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Log.d(TAG, "query1()");
         //create a new querybuilder for table with birthdays
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(RecordDbContract.RecordItem.TABLE_NAME);
+        Cursor cursor = null;
+        String offset = "";
 
+        switch (sUriMatcher.match(uri)) {
+            case SINGLE_ROW:
+                queryBuilder.appendWhere(RecordDbContract.RecordItem.COLUMN_ID + " = "
+                        + uri.getPathSegments().get(1));
+                cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            case TABLE_ITEMS: {
+                queryBuilder.setTables(RecordDbContract.RecordItem.TABLE_NAME);
+                offset = uri.getLastPathSegment();
+                int intOffset = Integer.parseInt(offset);
 
-        if (sUriMatcher.match(uri) == SINGLE_ROW) {
-            queryBuilder.appendWhere(RecordDbContract.RecordItem.COLUMN_ID + " = "
-                    + uri.getPathSegments().get(1));
+                String limitArg = intOffset + ", " + 30;
+                Log.d(TAG, "query: " + limitArg);
+                cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder, limitArg);
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("uri not recognized!");
         }
 
-        Cursor cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
-        Log.d(TAG, "query2()");
         return cursor;
     }
 
