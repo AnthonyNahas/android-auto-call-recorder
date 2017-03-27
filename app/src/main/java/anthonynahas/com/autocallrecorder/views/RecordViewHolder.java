@@ -33,9 +33,9 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
     private TextView call_durcation;
 
 
-    public RecordViewHolder(Context context, View view) {
+    public RecordViewHolder(View view) {
         super(view);
-        mContext = context;
+        //mContext = context;
         call_contact_profile = (ImageView) view.findViewById(R.id.img_profile);
         call_contact_number_or_name = (TextView) view.findViewById(R.id.call_contact_name_number);
         call_date = (TextView) view.findViewById(R.id.call_date);
@@ -74,7 +74,8 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         */
 
         if (contact_number_or_name.isEmpty()) {
-            call_contact_number_or_name.setText("Unkown");
+            //call_contact_number_or_name.setText("Unkown2");
+            call_contact_number_or_name.setText(phoneNumber);
         } else {
             call_contact_number_or_name.setText(contact_number_or_name);
         }
