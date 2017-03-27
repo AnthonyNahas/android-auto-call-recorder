@@ -1,6 +1,5 @@
 package anthonynahas.com.autocallrecorder.activities;
 
-import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -34,7 +33,6 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
     private static final String TAG = RecordsTestActivity.class.getSimpleName();
 
     private Context mContext;
-    private Activity mActivity;
     private SharedPreferences mSharedPreferences;
 
 
@@ -49,7 +47,6 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-        mActivity = this;
         setContentView(R.layout.activity_test_records);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -142,15 +139,15 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
     */
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projectALL = new String[]{"*"};
         switch (id) {
             case 0:
                 return new CursorLoader(this,
-                        RecordsContentProvider.urlForItems(offset * page), null, null, null, null);
+                        RecordsContentProvider.urlForItems(offset * page), projectALL, null, null, null);
             default:
                 throw new IllegalArgumentException("no id handled!");
         }
     }
-
 
 
     @Override
@@ -203,12 +200,12 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
         while (data.moveToNext()) {
             mx.addRow(new Object[]{
                     data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID)),
-                    data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACTID)),
-                    data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE)),
-                    data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)),
-                    data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING)),
                     data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER)),
-                    data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_SIZE))
+                    data.getLong(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACTID)),
+                    data.getLong(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE)),
+                    data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_SIZE)),
+                    data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)),
+                    data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING))
             });
         }
     }
