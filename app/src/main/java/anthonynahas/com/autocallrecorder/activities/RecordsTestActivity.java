@@ -40,6 +40,7 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
     private int page = 0;
 
     private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
     private boolean loadingMore = false;
     private Toast shortToast;
 
@@ -48,14 +49,20 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_test_records);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-        RecordsCursorRecyclerViewAdapter mAdapter = new RecordsCursorRecyclerViewAdapter(this, null);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+        RecordsCursorRecyclerViewAdapter mAdapter = new RecordsCursorRecyclerViewAdapter(this, null);
         mRecyclerView.setAdapter(mAdapter);
 
         //getLoaderManager().initLoader(0, null, this);
@@ -83,17 +90,17 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
 
                     loadingMore = true;
                     page++;
-                    //getSupportLoaderManager().restartLoader(0, null, MainActivity.this);
-                    //getLoaderManager().restartLoader(0, null, this);
-
-
+                    refresh();
                 }
             }
         });
 
-        //getSupportLoaderManager().restartLoader(0, null, RecordsTestActivity.this);
         getLoaderManager().restartLoader(0, null, this);
 
+    }
+
+    public void refresh(){
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     private void fillTestElements() {
