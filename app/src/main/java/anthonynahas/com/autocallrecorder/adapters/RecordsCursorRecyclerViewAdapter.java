@@ -12,7 +12,7 @@ import anthonynahas.com.autocallrecorder.views.RecordViewHolder;
 
 /**
  * @author Anthony Nahas
- * @version 0.1
+ * @version 1.0
  * @since 20.03.2017
  */
 
@@ -33,7 +33,7 @@ public class RecordsCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.record_card, parent, false);
-        return new RecordViewHolder(view);
+        return new RecordViewHolder(mContext, view);
     }
 
     @Override

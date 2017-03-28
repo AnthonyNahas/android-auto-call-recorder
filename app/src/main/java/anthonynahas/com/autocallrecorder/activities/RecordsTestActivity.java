@@ -129,7 +129,6 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
     /*
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projectALL = new String[]{"*"};
 
         String selection = null;
         if (args != null) {
