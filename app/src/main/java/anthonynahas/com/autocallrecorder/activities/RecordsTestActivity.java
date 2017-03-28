@@ -53,7 +53,6 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 
-
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -99,7 +98,7 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
 
     }
 
-    public void refresh(){
+    public void refresh() {
         getLoaderManager().restartLoader(0, null, this);
     }
 
@@ -146,10 +145,14 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projectALL = new String[]{"*"};
+        String sort = mSharedPreferences.getString(SettingsActivity.KEY_SORT_SELECTION,
+                RecordDbContract.RecordItem.COLUMN_DATE)
+                + mSharedPreferences.getString(SettingsActivity.KEY_SORT_ARRANGE, " DESC");
+
         switch (id) {
             case 0:
                 return new CursorLoader(this,
-                        RecordsContentProvider.urlForItems(offset * page), projectALL, null, null, null);
+                        RecordsContentProvider.urlForItems(offset * page), projectALL, null, null, sort);
             default:
                 throw new IllegalArgumentException("no id handled!");
         }

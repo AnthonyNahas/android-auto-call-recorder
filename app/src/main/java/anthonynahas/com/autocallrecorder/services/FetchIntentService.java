@@ -121,7 +121,7 @@ public class FetchIntentService extends IntentService {
 
         Log.d(TAG,"---------------------------------------------------------------");
 
-        logRecContentProvider();
+        //logRecContentProvider();
 
         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsActivity.KEY_PREF_AUTO_UPLOAD_ON_DROPBOX, false)){
             Log.d(TAG,"onUpload()");

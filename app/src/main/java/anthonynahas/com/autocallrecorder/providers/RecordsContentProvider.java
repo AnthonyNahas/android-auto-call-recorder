@@ -82,6 +82,7 @@ public class RecordsContentProvider extends ContentProvider {
                 String limitArg = intOffset + ", " + 30;
                 Log.d(TAG, "query: " + limitArg);
                 cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder, limitArg);
+                //logCursor(cursor);
                 break;
             }
             default:
@@ -188,6 +189,18 @@ public class RecordsContentProvider extends ContentProvider {
 
         return cursor;
 
+    }
+
+    private void logCursor(Cursor cursor) {
+        if (cursor.moveToFirst()) {
+            do {
+                String contact_id = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACTID));
+                Log.d(TAG,"contact id = " + contact_id);
+                //String date = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));
+                //Log.d(TAG, "date = " + date);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
     }
 
     /**

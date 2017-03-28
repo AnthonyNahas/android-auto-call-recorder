@@ -33,7 +33,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
     private TextView call_contact_number_or_name;
     private TextView call_date;
     private ImageView call_icon_isIncoming;
-    private TextView call_durcation;
+    private TextView call_duration;
 
 
     public RecordViewHolder(Context context, View view) {
@@ -43,7 +43,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         call_contact_number_or_name = (TextView) view.findViewById(R.id.call_contact_name_number);
         call_date = (TextView) view.findViewById(R.id.call_date);
         call_icon_isIncoming = (ImageView) view.findViewById(R.id.call_icon_isIncoming);
-        call_durcation = (TextView) view.findViewById(R.id.call_duration);
+        call_duration = (TextView) view.findViewById(R.id.call_duration);
     }
 
     public void setData(Cursor cursor) {
@@ -92,8 +92,11 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
                 break;
         }
 
-        call_date.setText(getLocalFormattetDate(cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE))));
-        //call_durcation.setText(String.valueOf(getTimeString(cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)))));
+        call_date.setText(getLocalFormatterDate(cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE))));
+        //call_date.setText(cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE)));
+
+        call_duration.setText(String.valueOf(getTimeString(cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)))));
+
         //Bitmap bitmap = MainActivity.getBitmapFromMemoryCache(phoneNumber);
         /*
         Bitmap bitmap = null;
@@ -115,12 +118,15 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    private String getLocalFormattetDate(long l) {
+    private String getLocalFormatterDate(long l) {
+        Log.d(TAG, "Long date = " + l);
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-        return dateFormatter.format(new Date(l));
+        String date = dateFormatter.format(new Date(l));
+        Log.d(TAG,"Date = " + date);
+        return date;
     }
 
-    public static String getTimeString(int duration) {
+    private static String getTimeString(int duration) {
         int minutes = (int) Math.floor(duration / 1000 / 60);
         int seconds = (duration / 1000) - (minutes * 60);
         return minutes + ":" + String.format("%02d", seconds);

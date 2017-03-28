@@ -56,11 +56,11 @@ public class RecordDbContract {
                 {
                         COLUMN_ID,
                         COLUMN_NUMBER,
+                        COLUMN_CONTACTID,
                         COLUMN_DATE,
-                        COLUMN_INCOMING,
                         COLUMN_SIZE,
                         COLUMN_DURATION,
-                        COLUMN_CONTACTID
+                        COLUMN_INCOMING
                 };
     }
 }
