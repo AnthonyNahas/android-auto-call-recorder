@@ -24,8 +24,7 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/img_profile"
             android:layout_toEndOf="@+id/img_profile"
-            android:gravity="center_vertical"
-            >
+            android:gravity="center_vertical">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
