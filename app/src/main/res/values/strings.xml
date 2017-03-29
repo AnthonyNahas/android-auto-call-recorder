@@ -61,5 +61,7 @@
 
     <!-- Toast msgs -->
     <string name="tst_list_empty" translatable="true">There is no records to delete!</string>
+    <string name="title_activity_main_tabs">MainTabsActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 
 </resources>
