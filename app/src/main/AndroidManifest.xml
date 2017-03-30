@@ -14,7 +14,6 @@
 
     <application
         android:allowBackup="false"
-        android:fullBackupContent="false"
         android:icon="@mipmap/ic_profo_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -22,7 +21,6 @@
         <activity
             android:name="anthonynahas.com.autocallrecorder.activities.MainTabsActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_activity_main_tabs"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

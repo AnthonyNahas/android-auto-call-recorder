@@ -116,7 +116,7 @@ public class RecordsCardListFragment extends Fragment implements LoaderManager.L
 
         int itemsCountLocal = getItemsCountLocal();
         if (itemsCountLocal == 0) {
-            fillTestElements();
+            //fillTestElements();
         }
 
         shortToast = Toast.makeText(mContext, "", Toast.LENGTH_SHORT);
