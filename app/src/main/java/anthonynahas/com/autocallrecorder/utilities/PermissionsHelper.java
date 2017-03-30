@@ -23,6 +23,7 @@ import android.support.v7.app.AlertDialog;
 public class PermissionsHelper {
 
     private Context mContext;
+    private int mRequestCode = 1215;
     /**
      * Once READ_EXTERNAL_STORAGE is granted, application will also grant WRITE_EXTERNAL_STORAGE permission.
      */
@@ -36,6 +37,14 @@ public class PermissionsHelper {
 
     public PermissionsHelper(Context context) {
         mContext = context;
+    }
+
+    public String[] getRequiredPermissions() {
+        return mRequiredPermissions;
+    }
+
+    public int getRequestCode() {
+        return mRequestCode;
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -65,6 +74,42 @@ public class PermissionsHelper {
             }
         } else {
             return true;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void requestAllPermissions() {
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            int isPermissionsGranted = 0;
+            for (String mRequiredPermission : mRequiredPermissions) {
+                isPermissionsGranted += ContextCompat.checkSelfPermission(mContext, mRequiredPermission);
+            }
+            if (isPermissionsGranted != PackageManager.PERMISSION_GRANTED) {
+                boolean shouldShowRequestPermissionRationale = false;
+                for (String mRequiredPermission : mRequiredPermissions) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) mContext, mRequiredPermission)) {
+                        shouldShowRequestPermissionRationale = true;
+                        break;
+                    }
+                }
+                if (shouldShowRequestPermissionRationale) {
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mContext);
+                    alertBuilder.setCancelable(true);
+                    alertBuilder.setTitle("Permission necessary");
+                    alertBuilder.setMessage("Call phone permission is necessary to make records!!!");
+                    alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions((Activity) mContext, mRequiredPermissions, mRequestCode);
+                        }
+                    });
+                    AlertDialog alert = alertBuilder.create();
+                    alert.show();
+                } else {
+                    ActivityCompat.requestPermissions((Activity) mContext, mRequiredPermissions, mRequestCode);
+                }
+            }
         }
     }
 
