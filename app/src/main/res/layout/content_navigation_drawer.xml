@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="anthonynahas.com.autocallrecorder.NavigationDrawerActivity"
+    tools:context="anthonynahas.com.autocallrecorder.activities.MainTabsActivity"
     tools:showIn="@layout/app_bar_navigation_drawer">
 
 </android.support.constraint.ConstraintLayout>

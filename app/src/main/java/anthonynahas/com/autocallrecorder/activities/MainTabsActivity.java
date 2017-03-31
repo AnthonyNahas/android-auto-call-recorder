@@ -1,6 +1,8 @@
 package anthonynahas.com.autocallrecorder.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -9,16 +11,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import anthonynahas.com.autocallrecorder.R;
@@ -26,7 +32,13 @@ import anthonynahas.com.autocallrecorder.fragments.RecordsCardListFragment;
 import anthonynahas.com.autocallrecorder.utilities.PermissionsHelper;
 
 public class MainTabsActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener{
+        NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = MainTabsActivity.class.getSimpleName();
+
+    private DrawerLayout mDrawer;
+    private SwitchCompat mSwitch_auto_rec;
+    private SharedPreferences mSharedPreferences;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -47,6 +59,7 @@ public class MainTabsActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer_tabs);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,14 +84,29 @@ public class MainTabsActivity extends AppCompatActivity implements
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        Menu menu = navigationView.getMenu();
+        MenuItem menuItem_switch_auto_rec = menu.findItem(R.id.nav_switch_auto_rec);
+        View actionView = MenuItemCompat.getActionView(menuItem_switch_auto_rec);
+        mSwitch_auto_rec = (SwitchCompat) actionView;
+
+        if (mSwitch_auto_rec != null) {
+            mSwitch_auto_rec.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mSharedPreferences.edit().putBoolean(SettingsActivity.KEY_PREF_AUTO_RECORD, isChecked).apply();
+                    Log.d(TAG, "autorecord = "
+                            + mSwitch_auto_rec.isChecked());
+                }
+            });
+        }
     }
 
     @Override
@@ -87,6 +115,15 @@ public class MainTabsActivity extends AppCompatActivity implements
         // requesting required permission on run time
         PermissionsHelper permissionsHelper = new PermissionsHelper(this);
         permissionsHelper.requestAllPermissions();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mSwitch_auto_rec != null) {
+            mSwitch_auto_rec.setChecked(mSharedPreferences.getBoolean(SettingsActivity.KEY_PREF_AUTO_RECORD, true));
+            Log.d(TAG, "switch state | auto record = " + mSwitch_auto_rec.isChecked());
+        }
     }
 
     @Override

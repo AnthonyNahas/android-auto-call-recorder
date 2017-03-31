@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:checkableBehavior="single">
         <item
@@ -32,5 +33,34 @@
                 android:title="Send"/>
         </menu>
     </item>
+
+    <group
+        android:id="@+id/second"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_switch_auto_rec"
+            android:checkable="false"
+            android:title="@string/action_view_switch_auto_rec"
+            app:actionLayout="@layout/action_view_switch"/>
+        <item
+            android:id="@+id/nav_switch_auto_upload_on_dropbox"
+            android:checkable="false"
+            android:title="@string/action_view_switch_dropbox"
+            app:actionLayout="@layout/action_view_switch_dropbox"/>
+    </group>
+
+    <!--
+        <item android:title="string/nav_sub_menu">
+            <menu>
+                <item
+                    android:icon="@android:drawable/ic_menu_today"
+                    android:title="string/nav_sub_menu_item01" />
+                <item
+                    android:icon="@android:drawable/ic_menu_today"
+                    android:title="string/nav_sub_menu_item02" />
+            </menu>
+        </item>
+
+        -->
 
 </menu>

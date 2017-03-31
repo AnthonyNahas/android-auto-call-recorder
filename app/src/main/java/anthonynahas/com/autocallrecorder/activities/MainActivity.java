@@ -1,6 +1,5 @@
 package anthonynahas.com.autocallrecorder.activities;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
@@ -60,11 +59,6 @@ public class MainActivity extends AppCompatActivity {
     final static public String DROPBOX_APP_SECRET = "dj1ac0hwabq0f71";
     static final int REQUEST_LINK_TO_DBX = 0;
 
-
-    public static final int MY_PERMISSIONS_REQUEST_PHONE = 1234;
-    public static final int MY_PERMISSIONS_REQUEST_MICROPHONE = 2345;
-    public static final int MY_PERMISSIONS_REQUEST_CONTACTS = 3456;
-    public static final int MY_PERMISSIONS_REQUEST_STORAGE = 4567;
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -176,9 +170,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        checkPermission(Manifest.permission.RECORD_AUDIO, MY_PERMISSIONS_REQUEST_MICROPHONE);
-        checkPermission(Manifest.permission.CALL_PHONE, MY_PERMISSIONS_REQUEST_PHONE);
-        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, MY_PERMISSIONS_REQUEST_STORAGE);
         loadDefaultFragment();
 
 
@@ -411,14 +402,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_PHONE:
+            case 0: //demo
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     loadDefaultFragment();
                 } else {
                     Toast.makeText(context, "Call phone permission is required", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case MY_PERMISSIONS_REQUEST_MICROPHONE:
+            case 1: //demo
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mSwitch_auto_rec.setChecked(true);
                 } else {
