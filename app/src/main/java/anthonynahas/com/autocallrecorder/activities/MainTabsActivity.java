@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.fragments.RecordsCardListFragment;
+import anthonynahas.com.autocallrecorder.utilities.MemoryCacheHelper;
 import anthonynahas.com.autocallrecorder.utilities.PermissionsHelper;
 
 public class MainTabsActivity extends AppCompatActivity implements
@@ -60,6 +61,8 @@ public class MainTabsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer_tabs);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        MemoryCacheHelper.init();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
