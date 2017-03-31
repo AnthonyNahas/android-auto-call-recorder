@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="anthonynahas.com.autocallrecorder.activities.MainTabsActivity"
+            android:name=".activities.MainTabsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
