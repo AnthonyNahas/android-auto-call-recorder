@@ -27,6 +27,8 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
+
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.fragments.RecordsCardListFragment;
 import anthonynahas.com.autocallrecorder.utilities.MemoryCacheHelper;
@@ -38,6 +40,7 @@ public class MainTabsActivity extends AppCompatActivity implements
     private static final String TAG = MainTabsActivity.class.getSimpleName();
 
     private DrawerLayout mDrawer;
+    private FloatingSearchView mSearchView;
     private SwitchCompat mSwitch_auto_rec;
     private SharedPreferences mSharedPreferences;
 
@@ -92,6 +95,9 @@ public class MainTabsActivity extends AppCompatActivity implements
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawer.setDrawerListener(toggle);
         toggle.syncState();
+
+        mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
+        mSearchView.attachNavigationDrawerToMenuButton(mDrawer);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

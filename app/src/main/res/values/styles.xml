@@ -8,8 +8,8 @@
         <item name="android:windowTranslucentStatus">true</item>
         -->
         <item name="android:windowNoTitle">true</item>
-        <item name="colorPrimary">@android:color/holo_red_dark</item>
-        <item name="colorPrimaryDark">@android:color/holo_red_light</item>
+        <item name="colorPrimary">@android:color/holo_green_dark</item>
+        <item name="colorPrimaryDark">@android:color/darker_gray</item>
         <item name="colorAccent">@android:color/holo_red_dark</item>
     </style>
 
