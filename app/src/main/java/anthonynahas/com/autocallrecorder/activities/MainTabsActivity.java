@@ -46,6 +46,7 @@ public class MainTabsActivity extends AppCompatActivity implements
     private SwitchCompat mSwitch_auto_rec;
     private SharedPreferences mSharedPreferences;
     private int mCurrentFragmentPosition;
+    private AppCompatActivity mActivity;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -66,6 +67,7 @@ public class MainTabsActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer_tabs);
+        mActivity = this;
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         MemoryCacheHelper.init();
@@ -102,9 +104,27 @@ public class MainTabsActivity extends AppCompatActivity implements
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
         mSearchView.attachNavigationDrawerToMenuButton(mDrawer);
         mSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
+            /**
+             * Perform an action when a menu item is selected
+             *
+             * @param item the selected item
+             */
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
+                int id = item.getItemId();
 
+                //noinspection SimplifiableIfStatement
+                switch (id) {
+                    case R.id.action_sort:
+                        Log.d(TAG, "MenuItem = sort");
+                        DialogHelper.openSortDialog(mActivity, mSectionsPagerAdapter.getItem(mCurrentFragmentPosition));
+                        break;
+                    case R.id.action_settings:
+                        startActivity(new Intent(mActivity, SettingsActivity.class));
+                        break;
+                    default:
+                        break;
+                }
             }
         });
 
@@ -153,42 +173,7 @@ public class MainTabsActivity extends AppCompatActivity implements
             super.onBackPressed();
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_tabs, menu);
-        return true;
-    }
-
-    /**
-     * Perform an action when a menu item is selected
-     *
-     * @param item the selected item
-     * @return whether the action has been performed
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch (id) {
-            case R.id.action_sort:
-                Log.d(TAG, "MenuItem = sort");
-                DialogHelper.openSortDialog(this, mSectionsPagerAdapter.getItem(mCurrentFragmentPosition));
-                return true;
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
-
+    
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
