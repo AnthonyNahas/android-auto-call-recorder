@@ -5,7 +5,11 @@
                                                  xmlns:tools="http://schemas.android.com/tools"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
+                                                 android:background="@android:color/white"
+                                                 android:backgroundTint="@android:color/white"
                                                  android:fitsSystemWindows="true"
+                                                 android:paddingLeft="10dp"
+                                                 android:paddingRight="10dp"
                                                  tools:context="anthonynahas.com.autocallrecorder.activities.MainTabsActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -19,23 +23,22 @@
             android:id="@+id/floating_search_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:floatingSearch_searchBarMarginLeft="10dp"
-            app:floatingSearch_searchBarMarginTop="10dp"
-            app:floatingSearch_searchBarMarginRight="10dp"
-            app:floatingSearch_searchHint="Search..."
-            app:floatingSearch_suggestionsListAnimDuration="250"
-            app:floatingSearch_showSearchKey="false"
+            app:floatingSearch_close_search_on_keyboard_dismiss="true"
             app:floatingSearch_leftActionMode="showHamburger"
             app:floatingSearch_menu="@menu/menu_main_tabs"
-            app:floatingSearch_close_search_on_keyboard_dismiss="true"/>
+            app:floatingSearch_searchBarMarginTop="10dp"
+            app:floatingSearch_searchHint="Search..."
+            app:floatingSearch_showSearchKey="false"
+            app:floatingSearch_suggestionsListAnimDuration="250"/>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabTextColor="@color/dark_gray"
+            app:tabIndicatorColor="@color/colorAccent"
             app:tabSelectedTextColor="@color/colorAccent"
-            app:tabIndicatorColor="@color/colorAccent"/>
+            app:tabTextAppearance="@style/TextAppearance.Design.Tab"
+            app:tabTextColor="@color/dark_gray"/>
 
     </android.support.design.widget.AppBarLayout>
 

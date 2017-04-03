@@ -4,6 +4,7 @@
             xmlns:tools="http://schemas.android.com/tools"
             tools:context=".MainActivity">
 
+
     <item
         android:id="@+id/action_search"
         android:title="@string/action_search"
@@ -11,6 +12,7 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView">
     </item>
+
     <item
         android:id="@+id/action_sort"
         android:title="@string/action_sort"

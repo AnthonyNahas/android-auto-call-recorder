@@ -98,6 +98,12 @@ public class MainTabsActivity extends AppCompatActivity implements
 
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
         mSearchView.attachNavigationDrawerToMenuButton(mDrawer);
+        mSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
+            @Override
+            public void onActionMenuItemSelected(MenuItem item) {
+
+            }
+        });
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -166,6 +172,7 @@ public class MainTabsActivity extends AppCompatActivity implements
 
         return super.onOptionsItemSelected(item);
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
