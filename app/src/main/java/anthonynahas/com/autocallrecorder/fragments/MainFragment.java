@@ -49,6 +49,10 @@ import anthonynahas.com.autocallrecorder.utilities.AudioFileHelper;
 
 /**
  * Created by A on 25.04.16.
+ *
+ * @author Anthony Nahas
+ * @since 25.04.2016
+ * @version 1.0
  */
 public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -241,9 +245,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         switch (item.getItemId()) {
             case R.id.action_sort:
                 Log.d(TAG, "MenuItem = sort");
-                SortDialogFragment sortDialogFragment = new SortDialogFragment();
-                sortDialogFragment.setTargetFragment(MainFragment.this, REQUEST_CODE_FOR_SORT_DIALOG);
-                sortDialogFragment.show(getFragmentManager(), "sort dialog");
+                //SortDialogFragment sortDialogFragment = new SortDialogFragment();
+                //sortDialogFragment.setTargetFragment(MainFragment.this, REQUEST_CODE_FOR_SORT_DIALOG);
+                //sortDialogFragment.show(getFragmentManager(), "sort dialog");
             default:
                 return super.onOptionsItemSelected(item);
         }

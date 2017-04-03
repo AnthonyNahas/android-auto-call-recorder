@@ -1,5 +1,6 @@
 package anthonynahas.com.autocallrecorder.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,6 +32,7 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.fragments.RecordsCardListFragment;
+import anthonynahas.com.autocallrecorder.utilities.DialogHelper;
 import anthonynahas.com.autocallrecorder.utilities.MemoryCacheHelper;
 import anthonynahas.com.autocallrecorder.utilities.PermissionsHelper;
 
@@ -43,6 +45,7 @@ public class MainTabsActivity extends AppCompatActivity implements
     private FloatingSearchView mSearchView;
     private SwitchCompat mSwitch_auto_rec;
     private SharedPreferences mSharedPreferences;
+    private int mCurrentFragmentPosition;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -158,6 +161,12 @@ public class MainTabsActivity extends AppCompatActivity implements
         return true;
     }
 
+    /**
+     * Perform an action when a menu item is selected
+     *
+     * @param item the selected item
+     * @return whether the action has been performed
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -166,11 +175,18 @@ public class MainTabsActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_sort:
+                Log.d(TAG, "MenuItem = sort");
+                DialogHelper.openSortDialog(this, mSectionsPagerAdapter.getItem(mCurrentFragmentPosition));
+                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -248,6 +264,7 @@ public class MainTabsActivity extends AppCompatActivity implements
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            mCurrentFragmentPosition = position;
             switch (position) {
                 case 0:
                     return new RecordsCardListFragment();
