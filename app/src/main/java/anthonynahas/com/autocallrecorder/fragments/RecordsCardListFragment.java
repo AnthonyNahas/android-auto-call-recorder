@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
+
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
@@ -43,7 +45,9 @@ import anthonynahas.com.autocallrecorder.utilities.DialogHelper;
  * @version 0.1
  * @since 29.03.2017
  */
-public class RecordsCardListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class RecordsCardListFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor>,
+        FloatingSearchView.OnQueryChangeListener {
 
     private static final String TAG = RecordsCardListFragment.class.getSimpleName();
     // TODO: Rename parameter arguments, choose names that match
@@ -313,6 +317,16 @@ public class RecordsCardListFragment extends Fragment implements LoaderManager.L
         super.onDetach();
         mListener = null;
     }
+
+    @Override
+    public void onSearchTextChanged(String oldQuery, String newQuery) {
+        Log.d(TAG, "oldQuery = " + oldQuery + " | newQuery = " + newQuery);
+    }
+
+    public FloatingSearchView.OnQueryChangeListener getOnQueryChangeListener() {
+        return this;
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

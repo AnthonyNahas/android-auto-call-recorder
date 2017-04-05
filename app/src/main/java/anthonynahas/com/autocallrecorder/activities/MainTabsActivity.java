@@ -47,6 +47,8 @@ public class MainTabsActivity extends AppCompatActivity implements
     private SharedPreferences mSharedPreferences;
     private int mCurrentFragmentPosition;
     private AppCompatActivity mActivity;
+    private FloatingSearchView.OnQueryChangeListener mOnQueryChangeListener;
+
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -262,6 +264,7 @@ public class MainTabsActivity extends AppCompatActivity implements
             mCurrentFragmentPosition = position;
             switch (position) {
                 case 0:
+                    mSearchView.setOnQueryChangeListener(mRecordsCardListFragment.getOnQueryChangeListener());
                     return mRecordsCardListFragment;
                 case 1:
                     return PlaceholderFragment.newInstance(position);
