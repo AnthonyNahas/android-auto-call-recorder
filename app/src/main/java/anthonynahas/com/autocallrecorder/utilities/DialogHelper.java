@@ -14,7 +14,7 @@ public class DialogHelper {
 
     public static final String TAG = DialogHelper.class.getSimpleName();
 
-    private static final int REQUEST_CODE_FOR_SORT_DIALOG = 1;
+    public static final int REQUEST_CODE_FOR_SORT_DIALOG = 1;
 
     public static void openSortDialog(AppCompatActivity activity, Fragment fragment){
         Log.d(TAG, "MenuItem = sort");

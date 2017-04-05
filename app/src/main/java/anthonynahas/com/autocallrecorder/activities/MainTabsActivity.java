@@ -117,7 +117,7 @@ public class MainTabsActivity extends AppCompatActivity implements
                 switch (id) {
                     case R.id.action_sort:
                         Log.d(TAG, "MenuItem = sort");
-                        DialogHelper.openSortDialog(mActivity, mSectionsPagerAdapter.getItem(mCurrentFragmentPosition));
+                        DialogHelper.openSortDialog(mActivity, mSectionsPagerAdapter.getItem(0));
                         break;
                     case R.id.action_settings:
                         startActivity(new Intent(mActivity, SettingsActivity.class));
@@ -173,7 +173,14 @@ public class MainTabsActivity extends AppCompatActivity implements
             super.onBackPressed();
         }
     }
-    
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mSectionsPagerAdapter.getItem(mCurrentFragmentPosition)
+                .onActivityResult(requestCode, resultCode, data);
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -241,8 +248,11 @@ public class MainTabsActivity extends AppCompatActivity implements
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        private RecordsCardListFragment mRecordsCardListFragment;
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            mRecordsCardListFragment = new RecordsCardListFragment();
         }
 
         @Override
@@ -252,7 +262,7 @@ public class MainTabsActivity extends AppCompatActivity implements
             mCurrentFragmentPosition = position;
             switch (position) {
                 case 0:
-                    return new RecordsCardListFragment();
+                    return mRecordsCardListFragment;
                 case 1:
                     return PlaceholderFragment.newInstance(position);
                 default:

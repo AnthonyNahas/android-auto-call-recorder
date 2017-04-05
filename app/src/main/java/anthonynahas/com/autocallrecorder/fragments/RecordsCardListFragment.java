@@ -1,7 +1,9 @@
 package anthonynahas.com.autocallrecorder.fragments;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -26,6 +28,7 @@ import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
+import anthonynahas.com.autocallrecorder.utilities.DialogHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,6 +59,7 @@ public class RecordsCardListFragment extends Fragment implements LoaderManager.L
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private SharedPreferences mSharedPreferences;
+    private RecordsCursorRecyclerViewAdapter mAdapter;
     private boolean loadingMore = false;
     private Toast shortToast;
 
@@ -66,7 +70,7 @@ public class RecordsCardListFragment extends Fragment implements LoaderManager.L
     private OnFragmentInteractionListener mListener;
 
     public RecordsCardListFragment() {
-        // Required empty public constructor
+        Log.d(TAG, "on new RecordsCardListFragment");
     }
 
     /**
@@ -111,7 +115,7 @@ public class RecordsCardListFragment extends Fragment implements LoaderManager.L
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
-        RecordsCursorRecyclerViewAdapter mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
+        mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
 
         int itemsCountLocal = getItemsCountLocal();
@@ -146,8 +150,38 @@ public class RecordsCardListFragment extends Fragment implements LoaderManager.L
         return mView;
     }
 
+    /**
+     * Refresh the cursor loader
+     */
     public void refresh() {
+        Log.d(TAG, "onRefresh()");
         getLoaderManager().restartLoader(0, null, this);
+    }
+
+    public void hardResetLoader() {
+        mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
+        mRecyclerView.setAdapter(mAdapter);
+        getLoaderManager().restartLoader(0, null, this);
+    }
+
+    /**
+     * Refresh the cursor loader when the resultcode ok is from the dialog helper
+     * as well as the the request code is the right one.
+     *
+     * @param requestCode - the used request code
+     * @param resultCode  - whether the result is ok or has been canceled
+     * @param data        - returned data
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // resultCode = 0 if canceled and -1 if ok :=)
+        //Toast.makeText(getActivity(), "Result: " + resultCode, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "req code = " + requestCode + "  | resultCode = " + requestCode);
+        if (requestCode == DialogHelper.REQUEST_CODE_FOR_SORT_DIALOG
+                && resultCode == Activity.RESULT_OK) {
+            hardResetLoader();
+        }
+        //super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void fillTestElements() {
@@ -226,7 +260,8 @@ public class RecordsCardListFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        Log.d(TAG, "on loader reset");
+        //mRecordsCursorAdapter.changeCursor(null);
     }
 
 
