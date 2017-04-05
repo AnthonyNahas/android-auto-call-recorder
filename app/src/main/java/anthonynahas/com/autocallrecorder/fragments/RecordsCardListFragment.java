@@ -58,6 +58,7 @@ public class RecordsCardListFragment extends Fragment implements
 
     public final int offset = 30;
     private int page = 0;
+    private String mSearchKey = "";
 
     private View mView;
     private Context mContext;
@@ -218,7 +219,15 @@ public class RecordsCardListFragment extends Fragment implements
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         mContentLoadingProgressBar.show();
-        String[] projectALL = new String[]{"*"};
+        String[] projection = new String[]{"*"};
+        String selection = null;
+        String[] selectionArgs = null;
+        if (!mSearchKey.isEmpty() && mSearchKey.length() > 0) {
+            //selection = RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE '%" + mSearchKey + "%'";
+            selection = RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE ?";
+            selectionArgs = new String[]{"%" + mSearchKey + "%"};
+            page = 0;
+        }
         String sort = mSharedPreferences.getString(SettingsActivity.KEY_SORT_SELECTION,
                 RecordDbContract.RecordItem.COLUMN_DATE)
                 + mSharedPreferences.getString(SettingsActivity.KEY_SORT_ARRANGE, " DESC");
@@ -226,7 +235,7 @@ public class RecordsCardListFragment extends Fragment implements
         switch (id) {
             case 0:
                 return new CursorLoader(getActivity(),
-                        RecordsContentProvider.urlForItems(offset * page), projectALL, null, null, sort);
+                        RecordsContentProvider.urlForItems(offset * page), projection, selection, selectionArgs, sort);
             default:
                 throw new IllegalArgumentException("no id handled!");
         }
@@ -321,6 +330,8 @@ public class RecordsCardListFragment extends Fragment implements
     @Override
     public void onSearchTextChanged(String oldQuery, String newQuery) {
         Log.d(TAG, "oldQuery = " + oldQuery + " | newQuery = " + newQuery);
+        mSearchKey = newQuery;
+        hardResetLoader();
     }
 
     public FloatingSearchView.OnQueryChangeListener getOnQueryChangeListener() {
