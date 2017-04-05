@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -60,6 +61,7 @@ public class RecordsCardListFragment extends Fragment implements LoaderManager.L
     private LinearLayoutManager mLayoutManager;
     private SharedPreferences mSharedPreferences;
     private RecordsCursorRecyclerViewAdapter mAdapter;
+    private ContentLoadingProgressBar mContentLoadingProgressBar;
     private boolean loadingMore = false;
     private Toast shortToast;
 
@@ -106,6 +108,7 @@ public class RecordsCardListFragment extends Fragment implements LoaderManager.L
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_recrods_card_list, container, false);
         mContext = mView.getContext();
+        mContentLoadingProgressBar = (ContentLoadingProgressBar) mView.findViewById(R.id.content_loading_progressbar);
         mRecyclerView = (RecyclerView) mView.findViewById(R.id.recyclerView);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         // use a linear layout manager
@@ -210,6 +213,7 @@ public class RecordsCardListFragment extends Fragment implements LoaderManager.L
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        mContentLoadingProgressBar.show();
         String[] projectALL = new String[]{"*"};
         String sort = mSharedPreferences.getString(SettingsActivity.KEY_SORT_SELECTION,
                 RecordDbContract.RecordItem.COLUMN_DATE)
@@ -249,6 +253,7 @@ public class RecordsCardListFragment extends Fragment implements LoaderManager.L
                     @Override
                     public void run() {
                         loadingMore = false;
+                        mContentLoadingProgressBar.hide();
                     }
                 }, 2000);
 
