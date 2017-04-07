@@ -1,4 +1,4 @@
-package anthonynahas.com.autocallrecorder.utilities;
+package anthonynahas.com.autocallrecorder.utilities.helpers;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;

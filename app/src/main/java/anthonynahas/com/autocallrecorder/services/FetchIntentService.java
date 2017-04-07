@@ -22,8 +22,8 @@ import java.io.IOError;
 import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
 import anthonynahas.com.autocallrecorder.broadcasts.CallReceiver;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
-import anthonynahas.com.autocallrecorder.utilities.ContactHelper;
-import anthonynahas.com.autocallrecorder.utilities.DropBoxHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.DropBoxHelper;
 
 /**
  * Created by A on 29.04.16.

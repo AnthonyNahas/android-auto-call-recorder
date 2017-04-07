@@ -32,9 +32,9 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.fragments.RecordsCardListFragment;
-import anthonynahas.com.autocallrecorder.utilities.DialogHelper;
-import anthonynahas.com.autocallrecorder.utilities.MemoryCacheHelper;
-import anthonynahas.com.autocallrecorder.utilities.PermissionsHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.MemoryCacheHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.PermissionsHelper;
 
 public class MainTabsActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {

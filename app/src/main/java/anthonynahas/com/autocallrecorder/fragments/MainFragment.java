@@ -45,7 +45,7 @@ import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorAdapter;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
-import anthonynahas.com.autocallrecorder.utilities.AudioFileHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileHelper;
 
 /**
  * Created by A on 25.04.16.

@@ -18,9 +18,9 @@ import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
-import anthonynahas.com.autocallrecorder.utilities.ContactHelper;
-import anthonynahas.com.autocallrecorder.utilities.ImageHelper;
-import anthonynahas.com.autocallrecorder.utilities.MemoryCacheHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.ImageHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 
 /**
  * Created by A on 20.03.17.
@@ -126,7 +126,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         Log.d(TAG, "Long date = " + l);
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         String date = dateFormatter.format(new Date(l));
-        Log.d(TAG,"Date = " + date);
+        Log.d(TAG, "Date = " + date);
         return date;
     }
 
@@ -135,4 +135,5 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         int seconds = (duration / 1000) - (minutes * 60);
         return minutes + ":" + String.format("%02d", seconds);
     }
+
 }

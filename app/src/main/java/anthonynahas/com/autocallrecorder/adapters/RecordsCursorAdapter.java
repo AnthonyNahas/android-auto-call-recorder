@@ -23,8 +23,8 @@ import java.util.concurrent.ExecutionException;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.activities.MainActivity;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
-import anthonynahas.com.autocallrecorder.utilities.ContactHelper;
-import anthonynahas.com.autocallrecorder.utilities.ImageHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.ImageHelper;
 
 /**
  * Created by A on 30.04.16.

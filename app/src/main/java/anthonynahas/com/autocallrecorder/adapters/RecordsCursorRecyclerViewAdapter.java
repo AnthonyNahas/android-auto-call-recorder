@@ -52,4 +52,5 @@ public class RecordsCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter 
     public int getItemViewType(int position) {
         return 0;
     }
+
 }

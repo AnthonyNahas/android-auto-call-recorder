@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
@@ -32,7 +33,11 @@ import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
-import anthonynahas.com.autocallrecorder.utilities.DialogHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
+
+import static anthonynahas.com.autocallrecorder.R.id.recyclerView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -119,7 +124,12 @@ public class RecordsCardListFragment extends Fragment implements
         mContentLoadingProgressBar = (ContentLoadingProgressBar) mView.findViewById(R.id.content_loading_progressbar);
         // Lookup the swipe container view
         mSwipeContainer = (SwipeRefreshLayout) mView.findViewById(R.id.swipeContainer);
-        mRecyclerView = (RecyclerView) mView.findViewById(R.id.recyclerView);
+        mRecyclerView = (RecyclerView) mView.findViewById(recyclerView);
+
+        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
+        SlideInUpAnimator animator = new SlideInUpAnimator(new OvershootInterpolator(1f));
+        mRecyclerView.setItemAnimator(animator);
+
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(mContext);

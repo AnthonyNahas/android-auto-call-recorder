@@ -44,7 +44,7 @@ import com.dropbox.client2.session.Session.AccessType;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.fragments.MainFragment;
-import anthonynahas.com.autocallrecorder.utilities.UploadFile;
+import anthonynahas.com.autocallrecorder.utilities.helpers.UploadFile;
 
 public class MainActivity extends AppCompatActivity {
 

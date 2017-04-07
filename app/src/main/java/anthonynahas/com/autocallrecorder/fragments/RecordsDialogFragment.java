@@ -37,11 +37,11 @@ import java.util.concurrent.ExecutionException;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.activities.MainActivity;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
-import anthonynahas.com.autocallrecorder.utilities.AudioFileHelper;
-import anthonynahas.com.autocallrecorder.utilities.ContactHelper;
-import anthonynahas.com.autocallrecorder.utilities.FileDeleterTask;
-import anthonynahas.com.autocallrecorder.utilities.ImageHelper;
-import anthonynahas.com.autocallrecorder.utilities.UploadAudioFile;
+import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.FileDeleterTask;
+import anthonynahas.com.autocallrecorder.utilities.helpers.ImageHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.UploadAudioFile;
 
 /**
  * Created by A on 04.05.16.
