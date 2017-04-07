@@ -16,6 +16,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -47,7 +48,8 @@ import anthonynahas.com.autocallrecorder.utilities.DialogHelper;
  */
 public class RecordsCardListFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        FloatingSearchView.OnQueryChangeListener {
+        FloatingSearchView.OnQueryChangeListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = RecordsCardListFragment.class.getSimpleName();
     // TODO: Rename parameter arguments, choose names that match
@@ -67,6 +69,7 @@ public class RecordsCardListFragment extends Fragment implements
     private SharedPreferences mSharedPreferences;
     private RecordsCursorRecyclerViewAdapter mAdapter;
     private ContentLoadingProgressBar mContentLoadingProgressBar;
+    private SwipeRefreshLayout mSwipeContainer;
     private boolean loadingMore = false;
     private Toast shortToast;
 
@@ -114,6 +117,8 @@ public class RecordsCardListFragment extends Fragment implements
         mView = inflater.inflate(R.layout.fragment_recrods_card_list, container, false);
         mContext = mView.getContext();
         mContentLoadingProgressBar = (ContentLoadingProgressBar) mView.findViewById(R.id.content_loading_progressbar);
+        // Lookup the swipe container view
+        mSwipeContainer = (SwipeRefreshLayout) mView.findViewById(R.id.swipeContainer);
         mRecyclerView = (RecyclerView) mView.findViewById(R.id.recyclerView);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         // use a linear layout manager
@@ -125,6 +130,13 @@ public class RecordsCardListFragment extends Fragment implements
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
+        mSwipeContainer.setOnRefreshListener(this);
+
+        // Configure the refreshing colors
+        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         int itemsCountLocal = getItemsCountLocal();
         if (itemsCountLocal == 0) {
@@ -158,6 +170,12 @@ public class RecordsCardListFragment extends Fragment implements
         return mView;
     }
 
+    @Override
+    public void onRefresh() {
+        Log.d(TAG, "on refresh after swipe");
+        hardResetLoader();
+    }
+
     /**
      * Refresh the cursor loader
      */
@@ -165,6 +183,7 @@ public class RecordsCardListFragment extends Fragment implements
         Log.d(TAG, "onRefresh()");
         getLoaderManager().restartLoader(0, null, this);
     }
+
 
     public void hardResetLoader() {
         mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
@@ -252,7 +271,7 @@ public class RecordsCardListFragment extends Fragment implements
                 Cursor cursor =
                         ((RecordsCursorRecyclerViewAdapter) mRecyclerView.getAdapter()).getCursor();
 
-                //fill all exisitng in adapter
+                //fill all existng in adapter
                 MatrixCursor mx = new MatrixCursor(RecordDbContract.RecordItem.ALL_COLUMNS);
                 fillMx(cursor, mx);
 
@@ -267,6 +286,7 @@ public class RecordsCardListFragment extends Fragment implements
                     public void run() {
                         loadingMore = false;
                         mContentLoadingProgressBar.hide();
+                        mSwipeContainer.setRefreshing(false);
                     }
                 }, 2000);
 
