@@ -8,6 +8,7 @@
                 android:layout_marginTop="7dp"
                 android:background="?android:attr/selectableItemBackground">
 
+    <!--
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -20,94 +21,97 @@
         android:paddingStart="20dp"
         card_view:cardBackgroundColor="@color/cardview_light_background"
         card_view:cardCornerRadius="4dp">
+        -->
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <anthonynahas.com.autocallrecorder.customs.RoundedImageView
-                android:id="@+id/img_profile"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:contentDescription="@string/imageview_profile"
-                android:scaleType="fitXY"
-                android:src="@drawable/custmtranspprofpic200px"/>
+        <anthonynahas.com.autocallrecorder.customs.RoundedImageView
+            android:id="@+id/img_profile"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:contentDescription="@string/imageview_profile"
+            android:scaleType="fitXY"
+            android:src="@drawable/custmtranspprofpic200px"/>
 
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentStart="false"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/img_profile"
+            android:layout_toRightOf="@+id/img_profile"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/call_contact_name_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/call_number_std"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"/>
+
+                <ImageView
+                    android:id="@+id/call_icon_isIncoming"
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    android:layout_toEndOf="@+id/call_contact_name_number"
+                    android:background="@android:color/background_light"
+                    android:contentDescription="for incoming or outgoing call"/>
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/call_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentEnd="false"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentRight="false"
-                android:layout_alignParentStart="false"
-                android:layout_centerHorizontal="false"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@+id/img_profile"
-                android:layout_toRightOf="@+id/img_profile"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:maxLines="1"
+                android:text="@string/call_date_std"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"/>
 
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/call_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:maxLines="1"
+                android:text="@string/call_duration_std"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"/>
 
-                    <TextView
-                        android:id="@+id/call_contact_name_number"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:text="@string/call_number_std"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"/>
+        </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/call_icon_isIncoming"
-                        android:layout_width="5dp"
-                        android:layout_height="5dp"
-                        android:layout_toEndOf="@+id/call_contact_name_number"
-                        android:background="@android:color/background_light"
-                        android:contentDescription="for incoming or outgoing call"/>
-                </RelativeLayout>
+    </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_list_cell_heigh"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:gravity="end">
 
-                <TextView
-                    android:id="@+id/call_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/call_date_std"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp"/>
+    </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/call_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
-                    android:maxLines="1"
-                    android:text="@string/call_duration_std"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp"/>
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/layout_list_cell_heigh"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:gravity="end">
-
-        </RelativeLayout>
-
-    </android.support.v7.widget.CardView>
+    <!--
+        </android.support.v7.widget.CardView>
+        -->
 
 </RelativeLayout>
