@@ -33,6 +33,7 @@ import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
+import anthonynahas.com.autocallrecorder.utilities.decoraters.ItemClickSupport;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
@@ -141,6 +142,15 @@ public class RecordsCardListFragment extends Fragment implements
         mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
         mSwipeContainer.setOnRefreshListener(this);
+
+        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(
+                new ItemClickSupport.OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                        Log.d(TAG, "position = " + position);
+                    }
+                }
+        );
 
         // Configure the refreshing colors
         mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
