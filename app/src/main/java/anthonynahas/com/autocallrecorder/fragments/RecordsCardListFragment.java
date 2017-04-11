@@ -17,13 +17,17 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
@@ -64,6 +68,7 @@ public class RecordsCardListFragment extends Fragment implements
     private static final String ARG_PARAM2 = "param2";
 
 
+    public int counter = 0;
     public final int offset = 30;
     private int page = 0;
     private String mSearchKey = "";
@@ -78,6 +83,10 @@ public class RecordsCardListFragment extends Fragment implements
     private SwipeRefreshLayout mSwipeContainer;
     private boolean loadingMore = false;
     private Toast shortToast;
+
+    private Toolbar mToolbar;
+    public static boolean is_in_action_mode = false;
+    private TextView mCounterTV;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -127,6 +136,11 @@ public class RecordsCardListFragment extends Fragment implements
         mSwipeContainer = (SwipeRefreshLayout) mView.findViewById(R.id.swipeContainer);
         mRecyclerView = (RecyclerView) mView.findViewById(recyclerView);
 
+        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar_action_mode);
+        mCounterTV = (TextView) mView.findViewById(R.id.counter_text);
+        mCounterTV.setVisibility(View.GONE);
+
+
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
         SlideInUpAnimator animator = new SlideInUpAnimator(new OvershootInterpolator(1f));
         mRecyclerView.setItemAnimator(animator);
@@ -148,9 +162,27 @@ public class RecordsCardListFragment extends Fragment implements
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                         Log.d(TAG, "position = " + position);
+                        if(is_in_action_mode){
+                            if(((AppCompatCheckBox) v).isChecked()){
+
+                            }
+                        }
                     }
                 }
         );
+
+        ItemClickSupport.addTo(mRecyclerView).setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
+                mToolbar.getMenu().clear();
+                mToolbar.inflateMenu(R.menu.menu);
+                ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+                mCounterTV.setVisibility(View.VISIBLE);
+                is_in_action_mode = true;
+                refresh();
+                return false;
+            }
+        });
 
         // Configure the refreshing colors
         mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,

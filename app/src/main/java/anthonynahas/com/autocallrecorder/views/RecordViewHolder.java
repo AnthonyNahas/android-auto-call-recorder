@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
+import anthonynahas.com.autocallrecorder.fragments.RecordsCardListFragment;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ImageHelper;
@@ -37,6 +39,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
     private TextView call_date;
     private ImageView call_icon_isIncoming;
     private TextView call_duration;
+    private AppCompatCheckBox call_selected;
 
 
     public RecordViewHolder(Context context, View view) {
@@ -47,6 +50,8 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         call_date = (TextView) view.findViewById(R.id.call_date);
         call_icon_isIncoming = (ImageView) view.findViewById(R.id.call_icon_isIncoming);
         call_duration = (TextView) view.findViewById(R.id.call_duration);
+        call_selected = (AppCompatCheckBox) view.findViewById(R.id.call_selected);
+
     }
 
     public void setData(Cursor cursor) {
@@ -118,6 +123,14 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
                 //viewHolder.call_contact_profile.setImageResource(R.drawable.custmtranspprofpic);
                 call_contact_profile.setImageBitmap(ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(), R.drawable.custmtranspprofpic60px, 60, 60));
             }
+        }
+
+        if(RecordsCardListFragment.is_in_action_mode){
+            call_selected.setVisibility(View.VISIBLE);
+            call_selected.setChecked(false);
+        }
+        else{
+            call_selected.setVisibility(View.GONE);
         }
 
     }

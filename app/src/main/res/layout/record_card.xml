@@ -25,20 +25,40 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="false">
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/call_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentTop="false"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="false"
+            android:visibility="gone"/>
 
         <anthonynahas.com.autocallrecorder.customs.RoundedImageView
             android:id="@+id/img_profile"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_alignTop="@+id/linearLayout"
+            android:layout_marginLeft="14dp"
+            android:layout_marginStart="14dp"
+            android:layout_toEndOf="@+id/call_selected"
+            android:layout_toRightOf="@+id/call_selected"
             android:contentDescription="@string/imageview_profile"
             android:scaleType="fitXY"
             android:src="@drawable/custmtranspprofpic200px"/>
 
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="false"
