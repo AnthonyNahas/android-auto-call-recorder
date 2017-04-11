@@ -98,7 +98,7 @@ public class FetchIntentService extends IntentService {
                 displayName = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
                 // do what ever you want here
                 Log.d(TAG, data + " id = " + id + " | size = " + size + " name = " + displayName);
-                Log.d(TAG,"counter = " + counter++);
+                Log.d(TAG,"sCounter = " + counter++);
           //  }
         //}
         audioCursor.close();

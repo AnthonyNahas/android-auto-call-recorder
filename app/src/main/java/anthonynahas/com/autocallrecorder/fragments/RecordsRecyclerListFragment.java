@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,7 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
+import anthonynahas.com.autocallrecorder.classes.Resources;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
 import anthonynahas.com.autocallrecorder.utilities.decoraters.ItemClickSupport;
@@ -47,28 +49,28 @@ import static anthonynahas.com.autocallrecorder.R.id.recyclerView;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RecordsCardListFragment.OnFragmentInteractionListener} interface
+ * {@link RecordsRecyclerListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RecordsCardListFragment#newInstance} factory method to
+ * Use the {@link RecordsRecyclerListFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
  * @author Anthony Nahas
  * @version 0.1
  * @since 29.03.2017
  */
-public class RecordsCardListFragment extends Fragment implements
+public class RecordsRecyclerListFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
         FloatingSearchView.OnQueryChangeListener,
         SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String TAG = RecordsCardListFragment.class.getSimpleName();
+    private static final String TAG = RecordsRecyclerListFragment.class.getSimpleName();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
 
-    public int counter = 0;
+    public static int sCounter = 0;
     public final int offset = 30;
     private int page = 0;
     private String mSearchKey = "";
@@ -94,8 +96,8 @@ public class RecordsCardListFragment extends Fragment implements
 
     private OnFragmentInteractionListener mListener;
 
-    public RecordsCardListFragment() {
-        Log.d(TAG, "on new RecordsCardListFragment");
+    public RecordsRecyclerListFragment() {
+        Log.d(TAG, "on new RecordsRecyclerListFragment");
     }
 
     /**
@@ -104,11 +106,11 @@ public class RecordsCardListFragment extends Fragment implements
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment RecordsCardListFragment.
+     * @return A new instance of fragment RecordsRecyclerListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RecordsCardListFragment newInstance(String param1, String param2) {
-        RecordsCardListFragment fragment = new RecordsCardListFragment();
+    public static RecordsRecyclerListFragment newInstance(String param1, String param2) {
+        RecordsRecyclerListFragment fragment = new RecordsRecyclerListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -138,6 +140,7 @@ public class RecordsCardListFragment extends Fragment implements
 
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar_action_mode);
         mCounterTV = (TextView) mView.findViewById(R.id.counter_text);
+        mCounterTV.setText(0 + " " + getResources().getString(R.string.toolbar_action_mode_text));
         mCounterTV.setVisibility(View.GONE);
 
 
@@ -162,10 +165,18 @@ public class RecordsCardListFragment extends Fragment implements
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                         Log.d(TAG, "position = " + position);
-                        if(is_in_action_mode){
-                            if(((AppCompatCheckBox) v).isChecked()){
-
+                        if (is_in_action_mode) {
+                            //Cursor cursor = mAdapter.getCursor();
+                            //cursor.moveToPosition(position);
+                            AppCompatCheckBox call_selected = ((AppCompatCheckBox) v.findViewById(R.id.call_selected));
+                            boolean isChecked = call_selected.isChecked();
+                            if (isChecked) {
+                                sCounter++;
+                            } else {
+                                sCounter--;
                             }
+                            call_selected.setChecked(!isChecked);
+                            updateToolbarText(sCounter);
                         }
                     }
                 }
@@ -174,6 +185,7 @@ public class RecordsCardListFragment extends Fragment implements
         ItemClickSupport.addTo(mRecyclerView).setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
+                notifyOnActionMode(true);
                 mToolbar.getMenu().clear();
                 mToolbar.inflateMenu(R.menu.menu);
                 ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
@@ -404,6 +416,17 @@ public class RecordsCardListFragment extends Fragment implements
         Log.d(TAG, "oldQuery = " + oldQuery + " | newQuery = " + newQuery);
         mSearchKey = newQuery;
         hardResetLoader();
+    }
+
+    private void notifyOnActionMode(boolean state) {
+        Intent intent = new Intent(Resources.BROADCAST_ACTION_ON_ACTION_MODE);
+        intent.putExtra(Resources.ACTION_MODE_SATE, state);
+        LocalBroadcastManager.getInstance(mContext)
+                .sendBroadcast(intent);
+    }
+
+    private void updateToolbarText(int count) {
+        mCounterTV.setText(count + " " + getResources().getString(R.string.toolbar_action_mode_text));
     }
 
     public FloatingSearchView.OnQueryChangeListener getOnQueryChangeListener() {

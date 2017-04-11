@@ -1,6 +1,9 @@
 package anthonynahas.com.autocallrecorder.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -11,6 +14,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -31,7 +35,8 @@ import android.widget.TextView;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.fragments.RecordsCardListFragment;
+import anthonynahas.com.autocallrecorder.classes.Resources;
+import anthonynahas.com.autocallrecorder.fragments.RecordsRecyclerListFragment;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PermissionsHelper;
@@ -48,6 +53,8 @@ public class MainTabsActivity extends AppCompatActivity implements
     private int mCurrentFragmentPosition;
     private AppCompatActivity mActivity;
     private FloatingSearchView.OnQueryChangeListener mOnQueryChangeListener;
+
+    private BroadcastReceiver mActionModeBroadcastReceiver;
 
 
     /**
@@ -85,7 +92,7 @@ public class MainTabsActivity extends AppCompatActivity implements
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -130,6 +137,8 @@ public class MainTabsActivity extends AppCompatActivity implements
             }
         });
 
+
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Menu menu = navigationView.getMenu();
@@ -147,6 +156,26 @@ public class MainTabsActivity extends AppCompatActivity implements
                 }
             });
         }
+
+
+        mActionModeBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                boolean isInActionMode = intent.getBooleanExtra(Resources.ACTION_MODE_SATE, false);
+                if (isInActionMode) {
+                    mSearchView.setVisibility(View.GONE);
+                    tabLayout.setVisibility(View.GONE);
+                }
+                else {
+                    mSearchView.setVisibility(View.VISIBLE);
+                    tabLayout.setVisibility(View.GONE);
+                }
+            }
+        };
+
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(mActionModeBroadcastReceiver,
+                        new IntentFilter(Resources.BROADCAST_ACTION_ON_ACTION_MODE));
     }
 
     @Override
@@ -164,6 +193,12 @@ public class MainTabsActivity extends AppCompatActivity implements
             mSwitch_auto_rec.setChecked(mSharedPreferences.getBoolean(SettingsActivity.KEY_PREF_AUTO_RECORD, true));
             Log.d(TAG, "switch state | auto record = " + mSwitch_auto_rec.isChecked());
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mActionModeBroadcastReceiver);
     }
 
     @Override
@@ -250,11 +285,11 @@ public class MainTabsActivity extends AppCompatActivity implements
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        private RecordsCardListFragment mRecordsCardListFragment;
+        private RecordsRecyclerListFragment mRecordsRecyclerListFragment;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
-            mRecordsCardListFragment = new RecordsCardListFragment();
+            mRecordsRecyclerListFragment = new RecordsRecyclerListFragment();
         }
 
         @Override
@@ -264,8 +299,8 @@ public class MainTabsActivity extends AppCompatActivity implements
             mCurrentFragmentPosition = position;
             switch (position) {
                 case 0:
-                    mSearchView.setOnQueryChangeListener(mRecordsCardListFragment.getOnQueryChangeListener());
-                    return mRecordsCardListFragment;
+                    mSearchView.setOnQueryChangeListener(mRecordsRecyclerListFragment.getOnQueryChangeListener());
+                    return mRecordsRecyclerListFragment;
                 case 1:
                     return PlaceholderFragment.newInstance(position);
                 default:

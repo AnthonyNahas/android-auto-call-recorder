@@ -17,7 +17,6 @@
             android:id="@+id/counter_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 item selected"
             android:textSize="18dp"
             android:textColor="#ffffff"
             android:textStyle="bold"/>

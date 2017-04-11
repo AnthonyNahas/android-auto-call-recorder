@@ -70,5 +70,6 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="toolbar_action_mode_text">item selected</string>
 
 </resources>

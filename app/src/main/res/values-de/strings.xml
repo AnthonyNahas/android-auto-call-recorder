@@ -29,4 +29,5 @@
     <string name="preference_checkbox_upload_on_dropbox_summary">Nur wenn mit dem Internet verbunden</string>
     <string name="preference_chexbox_auto_call_recording"></string>
     <string name="tst_list_empty">Es gibt keine Aufzeichnung zu löschen!</string>
+    <string name="toolbar_action_mode_text">ausgewählte aufzeichnungen</string>
 </resources>

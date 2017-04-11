@@ -18,7 +18,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.fragments.RecordsCardListFragment;
+import anthonynahas.com.autocallrecorder.fragments.RecordsRecyclerListFragment;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ImageHelper;
@@ -51,6 +51,18 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         call_icon_isIncoming = (ImageView) view.findViewById(R.id.call_icon_isIncoming);
         call_duration = (TextView) view.findViewById(R.id.call_duration);
         call_selected = (AppCompatCheckBox) view.findViewById(R.id.call_selected);
+
+        call_selected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(call_selected.isChecked()){
+                    RecordsRecyclerListFragment.sCounter++;
+                }
+                else {
+                    RecordsRecyclerListFragment.sCounter--;
+                }
+            }
+        });
 
     }
 
@@ -125,7 +137,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
             }
         }
 
-        if(RecordsCardListFragment.is_in_action_mode){
+        if(RecordsRecyclerListFragment.is_in_action_mode){
             call_selected.setVisibility(View.VISIBLE);
             call_selected.setChecked(false);
         }
