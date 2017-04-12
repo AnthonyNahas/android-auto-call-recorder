@@ -28,7 +28,7 @@ import anthonynahas.com.autocallrecorder.utilities.helpers.MemoryCacheHelper;
  * Created by A on 20.03.17.
  */
 
-public class RecordViewHolder extends RecyclerView.ViewHolder {
+public class RecordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private static final String TAG = RecordViewHolder.class.getSimpleName();
 
@@ -52,17 +52,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         call_duration = (TextView) view.findViewById(R.id.call_duration);
         call_selected = (AppCompatCheckBox) view.findViewById(R.id.call_selected);
 
-        call_selected.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(call_selected.isChecked()){
-                    RecordsRecyclerListFragment.sCounter++;
-                }
-                else {
-                    RecordsRecyclerListFragment.sCounter--;
-                }
-            }
-        });
+        call_selected.setOnClickListener(this);
 
     }
 
@@ -161,4 +151,8 @@ public class RecordViewHolder extends RecyclerView.ViewHolder {
         return minutes + ":" + String.format("%02d", seconds);
     }
 
+    @Override
+    public void onClick(View view) {
+        RecordsRecyclerListFragment.getInstance().prepareSelection(view, getAdapterPosition());
+    }
 }

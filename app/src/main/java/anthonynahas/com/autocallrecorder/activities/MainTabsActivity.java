@@ -289,7 +289,7 @@ public class MainTabsActivity extends AppCompatActivity implements
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
-            mRecordsRecyclerListFragment = new RecordsRecyclerListFragment();
+            mRecordsRecyclerListFragment =  RecordsRecyclerListFragment.getInstance();
         }
 
         @Override
