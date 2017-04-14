@@ -127,9 +127,10 @@ public class RecordsRecyclerListFragment extends Fragment implements
         mRecyclerView = (RecyclerView) mView.findViewById(recyclerView);
 
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar_action_mode);
+        mToolbar.setVisibility(View.GONE);
         mCounterTV = (TextView) mView.findViewById(R.id.counter_text);
-        mCounterTV.setText(0 + " " + getResources().getString(R.string.toolbar_action_mode_text));
         mCounterTV.setVisibility(View.GONE);
+        updateToolbarText();
 
 
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
@@ -164,7 +165,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
                                 sCounter++;
                             }
                             call_selected.setChecked(!isChecked);
-                            updateToolbarText(sCounter);
+                            updateToolbarText();
                         }
                     }
                 }
@@ -177,6 +178,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
                 mToolbar.getMenu().clear();
                 mToolbar.inflateMenu(R.menu.menu);
                 ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+                mToolbar.setVisibility(View.VISIBLE);
                 mCounterTV.setVisibility(View.VISIBLE);
                 is_in_action_mode = true;
                 refresh();
@@ -229,7 +231,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
         else{
             --sCounter;
         }
-        updateToolbarText(sCounter);
+        updateToolbarText();
     }
 
     @Override
@@ -423,8 +425,13 @@ public class RecordsRecyclerListFragment extends Fragment implements
                 .sendBroadcast(intent);
     }
 
-    private void updateToolbarText(int count) {
-        mCounterTV.setText(count + " " + getResources().getString(R.string.toolbar_action_mode_text));
+    private void updateToolbarText() {
+        if(sCounter == 0){
+            mCounterTV.setText(getResources().getString(R.string.toolbar_action_mode_text));
+        }
+        else{
+            mCounterTV.setText(String.valueOf(sCounter));
+        }
     }
 
     public FloatingSearchView.OnQueryChangeListener getOnQueryChangeListener() {
