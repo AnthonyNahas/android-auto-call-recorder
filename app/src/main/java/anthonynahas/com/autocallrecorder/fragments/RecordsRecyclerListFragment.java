@@ -68,10 +68,11 @@ public class RecordsRecyclerListFragment extends Fragment implements
     private static RecordsRecyclerListFragment mFragment;
 
 
-    public static int sCounter = 0;
+    public int sCounter = 0;
     public final int offset = 30;
     private int page = 0;
     private String mSearchKey = "";
+    private Handler handlerToWait = new Handler();
 
     private View mView;
     private Context mContext;
@@ -250,6 +251,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
 
     public void hardResetLoader() {
+        page = 0;
         mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
         getLoaderManager().restartLoader(0, null, this);
@@ -335,7 +337,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
                 Cursor cursor =
                         ((RecordsCursorRecyclerViewAdapter) mRecyclerView.getAdapter()).getCursor();
 
-                //fill all existng in adapter
+                //fill all existing in adapter
                 MatrixCursor mx = new MatrixCursor(RecordDbContract.RecordItem.ALL_COLUMNS);
                 fillMx(cursor, mx);
 
@@ -365,9 +367,6 @@ public class RecordsRecyclerListFragment extends Fragment implements
         Log.d(TAG, "on loader reset");
         //mRecordsCursorAdapter.changeCursor(null);
     }
-
-
-    private Handler handlerToWait = new Handler();
 
     private void fillMx(Cursor data, MatrixCursor mx) {
         if (data == null)

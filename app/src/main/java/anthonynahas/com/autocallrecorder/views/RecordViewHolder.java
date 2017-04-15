@@ -132,6 +132,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
             call_selected.setChecked(false);
         }
         else{
+            call_selected.setChecked(false);
             call_selected.setVisibility(View.GONE);
         }
 

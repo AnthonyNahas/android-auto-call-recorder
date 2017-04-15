@@ -16,9 +16,7 @@
     app:contentInsetEnd="0dp"
     android:background="?android:attr/selectableItemBackground"
     android:minHeight="?attr/actionBarSize"
-    app:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
-
-    >
+    app:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,13 +29,14 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <android.support.v7.widget.AppCompatCheckBox
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
+                android:buttonTint="@color/colorPrimary"
                 android:textSize="18dp"
                 android:textStyle="bold"
-                />
+                android:visibility="visible"/>
 
             <TextView
                 android:layout_width="wrap_content"
