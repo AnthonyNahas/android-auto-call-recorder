@@ -9,6 +9,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,6 +41,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
     private ImageView call_icon_isIncoming;
     private TextView call_duration;
     private AppCompatCheckBox call_selected;
+    private ImageButton call_isLove;
 
 
     public RecordViewHolder(Context context, View view) {
@@ -50,9 +52,12 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         call_date = (TextView) view.findViewById(R.id.call_date);
         call_icon_isIncoming = (ImageView) view.findViewById(R.id.call_icon_isIncoming);
         call_duration = (TextView) view.findViewById(R.id.call_duration);
-        call_selected = (AppCompatCheckBox) view.findViewById(R.id.call_selected);
 
+        call_selected = (AppCompatCheckBox) view.findViewById(R.id.call_selected);
         call_selected.setOnClickListener(this);
+
+        call_isLove = (ImageButton) view.findViewById(R.id.call_isLove);
+        call_isLove.setOnClickListener(this);
 
     }
 
@@ -73,7 +78,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
             contact_number_or_name = new AsyncTask<Void, Void, String>() {
                 @Override
                 protected String doInBackground(Void... params) {
-                    String contactName = ContactHelper.getContacName(mContext.getContentResolver(), phoneNumber);
+                    String contactName = ContactHelper.getContactName(mContext.getContentResolver(), phoneNumber);
                     if (contactName != null) {
                         return contactName;
                     }
@@ -127,11 +132,10 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
             }
         }
 
-        if(RecordsRecyclerListFragment.is_in_action_mode){
+        if (RecordsRecyclerListFragment.is_in_action_mode) {
             call_selected.setVisibility(View.VISIBLE);
             call_selected.setChecked(false);
-        }
-        else{
+        } else {
             call_selected.setChecked(false);
             call_selected.setVisibility(View.GONE);
         }
@@ -154,6 +158,12 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
     @Override
     public void onClick(View view) {
-        RecordsRecyclerListFragment.getInstance().prepareSelection(view, getAdapterPosition());
+        switch (view.getId()){
+            case R.id.call_selected:
+                RecordsRecyclerListFragment.getInstance().prepareSelection(view, getAdapterPosition());
+                break;
+            case R.id.call_isLove:
+                call_isLove.setImageResource(R.drawable.ic_favorite);
+        }
     }
 }

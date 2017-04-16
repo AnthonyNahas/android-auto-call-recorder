@@ -195,7 +195,7 @@ public class RecordsContentProvider extends ContentProvider {
         if (cursor.moveToFirst()) {
             do {
                 String contact_id = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACTID));
-                Log.d(TAG,"contact id = " + contact_id);
+                Log.d(TAG, "contact id = " + contact_id);
                 //String date = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));
                 //Log.d(TAG, "date = " + date);
             } while (cursor.moveToNext());
@@ -220,13 +220,16 @@ public class RecordsContentProvider extends ContentProvider {
 
         //create table query
         public static final String CREATE_TABLE = "CREATE TABLE " + RecordDbContract.RecordItem.TABLE_NAME
-                + " (" + RecordDbContract.RecordItem.COLUMN_ID + " TEXT NOT NULL, " +
-                RecordDbContract.RecordItem.COLUMN_NUMBER + " TEXT NOT NULL, " +
-                RecordDbContract.RecordItem.COLUMN_CONTACTID + " LONG, " +
-                RecordDbContract.RecordItem.COLUMN_DATE + " LONG, " +
-                RecordDbContract.RecordItem.COLUMN_SIZE + " INTEGER, " +
-                RecordDbContract.RecordItem.COLUMN_DURATION + " INTEGER, " +
-                RecordDbContract.RecordItem.COLUMN_INCOMING + " INTEGER)";
+                + " ("
+                + RecordDbContract.RecordItem.COLUMN_ID + " TEXT NOT NULL, "
+                + RecordDbContract.RecordItem.COLUMN_NUMBER + " TEXT NOT NULL, "
+                + RecordDbContract.RecordItem.COLUMN_CONTACTID + " LONG, "
+                + RecordDbContract.RecordItem.COLUMN_DATE + " LONG, "
+                + RecordDbContract.RecordItem.COLUMN_SIZE + " INTEGER, "
+                + RecordDbContract.RecordItem.COLUMN_DURATION + " INTEGER, "
+                + RecordDbContract.RecordItem.COLUMN_INCOMING + " INTEGER, "
+                + RecordDbContract.RecordItem.COLUMN_IS_LOVE + " BOOLEAN"
+                + ")";
 
         //drop table query
         private static final String DROP_TABLE = "DROP TABLE IF IT EXISTS " +

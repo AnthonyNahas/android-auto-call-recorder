@@ -100,14 +100,13 @@ public class RecordsRecyclerListFragment extends Fragment implements
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     *
      * @return A new instance of fragment RecordsRecyclerListFragment.
      */
     // TODO: Rename and change types and number of parameters
     public synchronized static RecordsRecyclerListFragment getInstance() {
-         if(mFragment == null){
-             mFragment = new RecordsRecyclerListFragment();
-         }
+        if (mFragment == null) {
+            mFragment = new RecordsRecyclerListFragment();
+        }
         return mFragment;
     }
 
@@ -225,11 +224,10 @@ public class RecordsRecyclerListFragment extends Fragment implements
         return mView;
     }
 
-    public void prepareSelection(View view, int position){
-        if(((AppCompatCheckBox)view).isChecked()){
+    public void prepareSelection(View view, int position) {
+        if (((AppCompatCheckBox) view).isChecked()) {
             ++sCounter;
-        }
-        else{
+        } else {
             --sCounter;
         }
         updateToolbarText();
@@ -381,7 +379,8 @@ public class RecordsRecyclerListFragment extends Fragment implements
                     data.getLong(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE)),
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_SIZE)),
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)),
-                    data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING))
+                    data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING)),
+                    data.getBlob(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE))
             });
         }
     }
@@ -425,10 +424,9 @@ public class RecordsRecyclerListFragment extends Fragment implements
     }
 
     private void updateToolbarText() {
-        if(sCounter == 0){
+        if (sCounter == 0) {
             mCounterTV.setText(getResources().getString(R.string.toolbar_action_mode_text));
-        }
-        else{
+        } else {
             mCounterTV.setText(String.valueOf(sCounter));
         }
     }

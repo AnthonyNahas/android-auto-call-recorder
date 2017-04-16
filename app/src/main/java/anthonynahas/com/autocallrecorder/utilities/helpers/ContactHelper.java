@@ -90,7 +90,7 @@ public class ContactHelper {
         return -1;
     }
 
-    public static String getContacName(ContentResolver contactHelper,String number) {
+    public static String getContactName(ContentResolver contactHelper, String number) {
         Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
         String[] projection = { ContactsContract.PhoneLookup.DISPLAY_NAME };
         Cursor cursor = null;
@@ -176,7 +176,7 @@ public class ContactHelper {
      * @param contactId
      * @return
      */
-    public static InputStream openThumnailPhoto(ContentResolver contactHelper, long contactId) {
+    public static InputStream openThumbnailPhoto(ContentResolver contactHelper, long contactId) {
         Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
         Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
         Cursor cursor = contactHelper.query(photoUri,
@@ -206,7 +206,7 @@ public class ContactHelper {
                     in = ContactHelper.openLargeDisplayPhoto(contentResolver,contactID);
                     break;
                 case 1: //thumbnail
-                    in = ContactHelper.openThumnailPhoto(contentResolver,contactID);
+                    in = ContactHelper.openThumbnailPhoto(contentResolver,contactID);
             }
             assert in != null;
             buf = new BufferedInputStream(in);

@@ -68,6 +68,7 @@
             android:layout_alignParentStart="false"
             android:layout_centerHorizontal="false"
             android:layout_centerInParent="true"
+            android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/img_profile"
             android:layout_toRightOf="@+id/img_profile"
@@ -119,14 +120,21 @@
 
         </LinearLayout>
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_list_cell_heigh"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:gravity="end">
+        <ImageButton
+            android:id="@+id/call_isLove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="false"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="false"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="14dp"
+            android:scaleType="fitCenter"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:baselineAlignBottom="true"
+            android:src="@drawable/ic_favorite_border_black"/>
 
     </RelativeLayout>
 

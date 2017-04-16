@@ -81,7 +81,7 @@ public class RecordsCursorAdapter extends CursorAdapter{
                contact_number_or_name  = new AsyncTask<Void, Void, String>() {
                     @Override
                     protected String doInBackground(Void... params) {
-                        String contactName = ContactHelper.getContacName(context.getContentResolver(),phoneNumber);
+                        String contactName = ContactHelper.getContactName(context.getContentResolver(),phoneNumber);
                         if(contactName != null){
                             return contactName;
                         }

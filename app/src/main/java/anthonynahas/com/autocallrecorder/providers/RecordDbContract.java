@@ -47,12 +47,13 @@ public class RecordDbContract {
         //columns
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_NUMBER = "number";
+        public static final String COLUMN_CONTACTID = "contactid";
         public static final String COLUMN_DATE = "date";
-        public static final String COLUMN_INCOMING = "incoming";
         public static final String COLUMN_SIZE = "size";
         public static final String COLUMN_DURATION = "duration";
-        public static final String COLUMN_CONTACTID = "contactid";
-        public static  String[] ALL_COLUMNS = new String[]
+        public static final String COLUMN_INCOMING = "incoming";
+        public static final String COLUMN_IS_LOVE = "isLove";
+        public static String[] ALL_COLUMNS = new String[]
                 {
                         COLUMN_ID,
                         COLUMN_NUMBER,
@@ -60,7 +61,8 @@ public class RecordDbContract {
                         COLUMN_DATE,
                         COLUMN_SIZE,
                         COLUMN_DURATION,
-                        COLUMN_INCOMING
+                        COLUMN_INCOMING,
+                        COLUMN_IS_LOVE
                 };
     }
 }

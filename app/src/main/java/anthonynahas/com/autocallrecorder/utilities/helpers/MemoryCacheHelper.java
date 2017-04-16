@@ -12,7 +12,7 @@ import android.support.v4.util.LruCache;
  * @since 31.03.2017
  */
 
-public class MemoryCacheHelper {
+public class     MemoryCacheHelper {
 
     /************** Memory Cache ***************/
     private static LruCache<String, Bitmap> mMemoryCache;
