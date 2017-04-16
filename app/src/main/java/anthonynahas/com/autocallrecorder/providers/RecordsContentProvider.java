@@ -228,7 +228,7 @@ public class RecordsContentProvider extends ContentProvider {
                 + RecordDbContract.RecordItem.COLUMN_SIZE + " INTEGER, "
                 + RecordDbContract.RecordItem.COLUMN_DURATION + " INTEGER, "
                 + RecordDbContract.RecordItem.COLUMN_INCOMING + " INTEGER, "
-                + RecordDbContract.RecordItem.COLUMN_IS_LOVE + " BOOLEAN"
+                + RecordDbContract.RecordItem.COLUMN_IS_LOVE + " BOOLEAN DEFAULT FALSE"
                 + ")";
 
         //drop table query
