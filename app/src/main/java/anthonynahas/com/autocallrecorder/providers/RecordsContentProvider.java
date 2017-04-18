@@ -114,7 +114,7 @@ public class RecordsContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public synchronized Uri insert(@NonNull Uri uri, ContentValues values) {
         Log.d(TAG, "onInsert1()");
 
         long rowID = mDB.insert(RecordDbContract.RecordItem.TABLE_NAME, "", values);
@@ -127,7 +127,7 @@ public class RecordsContentProvider extends ContentProvider {
             //notify resolver for data change
             getContext().getContentResolver().notifyChange(insertedIdUri, null);
             Log.d(TAG, "onInsert2()");
-            //return new URO for item
+            //return new URI for item
             return insertedIdUri;
         } else {
             Log.e(TAG, "ERROR onInsert()");
@@ -136,7 +136,7 @@ public class RecordsContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public synchronized int delete(Uri uri, String selection, String[] selectionArgs) {
 
         String mSelectionCorrected = selection;
 
@@ -164,8 +164,24 @@ public class RecordsContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+    public synchronized int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        Log.d(TAG, "onUpdate()");
+
+        switch (sUriMatcher.match(uri)) {
+            case ALL_ROWS:
+                break;
+            case SINGLE_ROW:
+                break;
+        }
+
+        // update the item
+        int rowUpdated = mDB.update(RecordDbContract.RecordItem.TABLE_NAME, values, selection, selectionArgs);
+        Log.d(TAG, "r = " + rowUpdated);
+
+        // notify the resolver of data change
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return rowUpdated;
     }
 
     public Cursor retrieve(String searchItem) {
@@ -228,7 +244,7 @@ public class RecordsContentProvider extends ContentProvider {
                 + RecordDbContract.RecordItem.COLUMN_SIZE + " INTEGER, "
                 + RecordDbContract.RecordItem.COLUMN_DURATION + " INTEGER, "
                 + RecordDbContract.RecordItem.COLUMN_INCOMING + " INTEGER, "
-                + RecordDbContract.RecordItem.COLUMN_IS_LOVE + " BOOLEAN DEFAULT FALSE"
+                + RecordDbContract.RecordItem.COLUMN_IS_LOVE + " INTEGER DEFAULT 0"
                 + ")";
 
         //drop table query

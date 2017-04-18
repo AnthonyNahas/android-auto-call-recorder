@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.fragments.RecordsRecyclerListFragment;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
+import anthonynahas.com.autocallrecorder.providers.RecordDbHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ImageHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.MemoryCacheHelper;
@@ -34,6 +35,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
     private static final String TAG = RecordViewHolder.class.getSimpleName();
 
     private Context mContext;
+    private Cursor mCursor;
 
     private ImageView call_contact_profile;
     private TextView call_contact_number_or_name;
@@ -62,6 +64,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
     }
 
     public void setData(Cursor cursor) {
+        mCursor = cursor;
         Log.d(TAG, "cursor position= " + cursor.getPosition());
         final String phoneNumber = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
         //if(view != null) {
@@ -158,12 +161,18 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.call_selected:
                 RecordsRecyclerListFragment.getInstance().prepareSelection(view, getAdapterPosition());
                 break;
             case R.id.call_isLove:
                 call_isLove.setImageResource(R.drawable.ic_favorite);
+                assert mCursor != null;
+                int isLove = mCursor.getInt(mCursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
+                Log.d(TAG, "call_isLove = " + isLove);
+                int isLoveNew = isLove == 1 ? 0 : 1;
+                long id = getItemId();
+                RecordDbHelper.updateIsLoveColumn(mContext, id, isLoveNew);
         }
     }
 }

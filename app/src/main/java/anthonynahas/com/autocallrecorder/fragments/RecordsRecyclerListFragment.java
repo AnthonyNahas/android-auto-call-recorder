@@ -167,6 +167,9 @@ public class RecordsRecyclerListFragment extends Fragment implements
                             call_selected.setChecked(!isChecked);
                             updateToolbarText();
                         }
+                        else{
+                            mAdapter.getItemId(position);
+                        }
                     }
                 }
         );

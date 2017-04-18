@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ViewGroup;
 
 /**
@@ -67,7 +68,12 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
     @Override
     public long getItemId(int position) {
         if (mDataValid && mCursor != null && mCursor.moveToPosition(position)) {
-            return mCursor.getLong(mRowIdColumn);
+            long id = mCursor.getLong(mRowIdColumn);
+            Log.d(TAG,"id = " + id);
+            return id;
+        }
+        else {
+            Log.d(TAG,"id = 0");
         }
         return 0;
     }

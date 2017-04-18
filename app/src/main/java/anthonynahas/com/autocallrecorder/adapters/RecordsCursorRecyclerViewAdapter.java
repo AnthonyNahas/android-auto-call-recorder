@@ -18,6 +18,8 @@ import anthonynahas.com.autocallrecorder.views.RecordViewHolder;
 
 public class RecordsCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter {
 
+    private static final String TAG = RecordsCursorRecyclerViewAdapter.class.getSimpleName();
+
     private Context mContext;
 
     public RecordsCursorRecyclerViewAdapter(Context context, Cursor cursor) {
@@ -27,6 +29,12 @@ public class RecordsCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter 
 
     @Override
     public long getItemId(int position) {
+        /*
+        Cursor cursor = getCursor();
+        cursor.moveToPosition(position);
+        String id = cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_ID));
+        Log.d(TAG, "id = " + id);
+        */
         return super.getItemId(position);
     }
 
