@@ -383,7 +383,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_SIZE)),
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)),
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING)),
-                    data.getBlob(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE))
+                    data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE))
             });
         }
     }

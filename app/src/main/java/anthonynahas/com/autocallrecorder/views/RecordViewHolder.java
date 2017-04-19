@@ -45,6 +45,8 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
     private AppCompatCheckBox call_selected;
     private ImageButton call_isLove;
 
+    private long mItemID;
+
 
     public RecordViewHolder(Context context, View view) {
         super(view);
@@ -65,6 +67,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
     public void setData(Cursor cursor) {
         mCursor = cursor;
+        mItemID = Long.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_ID)));
         Log.d(TAG, "cursor position= " + cursor.getPosition());
         final String phoneNumber = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
         //if(view != null) {
@@ -135,6 +138,12 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
             }
         }
 
+        int isLove = mCursor.getInt(mCursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
+
+        if (isLove == 1) {
+            call_isLove.setImageResource(R.drawable.ic_favorite);
+        }
+
         if (RecordsRecyclerListFragment.is_in_action_mode) {
             call_selected.setVisibility(View.VISIBLE);
             call_selected.setChecked(false);
@@ -142,6 +151,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
             call_selected.setChecked(false);
             call_selected.setVisibility(View.GONE);
         }
+
 
     }
 
@@ -166,12 +176,16 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                 RecordsRecyclerListFragment.getInstance().prepareSelection(view, getAdapterPosition());
                 break;
             case R.id.call_isLove:
-                call_isLove.setImageResource(R.drawable.ic_favorite);
                 assert mCursor != null;
                 int isLove = mCursor.getInt(mCursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
                 Log.d(TAG, "call_isLove = " + isLove);
                 int isLoveNew = isLove == 1 ? 0 : 1;
-                long id = getItemId();
+                if (isLoveNew == 1) {
+                    call_isLove.setImageResource(R.drawable.ic_favorite);
+                } else {
+                    call_isLove.setImageResource(R.drawable.ic_favorite_border_black);
+                }
+                long id = mItemID;
                 RecordDbHelper.updateIsLoveColumn(mContext, id, isLoveNew);
         }
     }
