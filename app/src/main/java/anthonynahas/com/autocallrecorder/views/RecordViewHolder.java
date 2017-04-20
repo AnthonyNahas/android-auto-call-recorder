@@ -103,16 +103,6 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
             call_contact_number_or_name.setText(contact_number_or_name);
         }
 
-
-        switch (cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING))) {
-            case 0:
-                call_icon_isIncoming.setBackgroundColor(Color.GREEN);
-                break;
-            case 1:
-                call_icon_isIncoming.setBackgroundColor(Color.RED);
-                break;
-        }
-
         call_date.setText(getLocalFormatterDate(cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE))));
         //call_date.setText(cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE)));
 
@@ -138,11 +128,11 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
             }
         }
 
-        int isLove = mCursor.getInt(mCursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
+        int isIncomingCall = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING));
+        call_icon_isIncoming.setBackgroundColor(isIncomingCall == 1 ? Color.RED : Color.GREEN);
 
-        if (isLove == 1) {
-            call_isLove.setImageResource(R.drawable.ic_favorite);
-        }
+        int isLove = mCursor.getInt(mCursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
+        call_isLove.setImageResource(isLove == 1 ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
 
         if (RecordsRecyclerListFragment.is_in_action_mode) {
             call_selected.setVisibility(View.VISIBLE);
