@@ -6,7 +6,4 @@
 /captures
 .idea/
 app/build
-build.gradle
-gradle.properties
-gradle/
 projectFilesBackup/
