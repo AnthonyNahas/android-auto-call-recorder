@@ -122,8 +122,8 @@
 
         <ImageButton
             android:id="@+id/call_isLove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentStart="false"
             android:layout_centerHorizontal="false"
@@ -131,9 +131,9 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="14dp"
             android:layout_marginRight="14dp"
-            android:scaleType="fitCenter"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:baselineAlignBottom="true"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_favorite_border_black"/>
 
     </RelativeLayout>
