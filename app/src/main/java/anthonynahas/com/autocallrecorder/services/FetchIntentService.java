@@ -19,7 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOError;
 
-import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
+import anthonynahas.com.autocallrecorder.activities.SettingsActivityOld;
 import anthonynahas.com.autocallrecorder.broadcasts.CallReceiver;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
@@ -123,7 +123,7 @@ public class FetchIntentService extends IntentService {
 
         //logRecContentProvider();
 
-        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsActivity.KEY_PREF_AUTO_UPLOAD_ON_DROPBOX, false)){
+        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsActivityOld.KEY_PREF_AUTO_UPLOAD_ON_DROPBOX, false)){
             Log.d(TAG,"onUpload()");
             uploadAudioFile(data,displayName);
 

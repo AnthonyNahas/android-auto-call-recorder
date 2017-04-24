@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
+import anthonynahas.com.autocallrecorder.activities.SettingsActivityOld;
 import anthonynahas.com.autocallrecorder.services.FetchIntentService;
 import anthonynahas.com.autocallrecorder.services.RecordService;
 
@@ -43,7 +43,7 @@ public class CallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SettingsActivity.KEY_PREF_AUTO_RECORD, false)) {
+        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SettingsActivityOld.KEY_PREF_AUTO_RECORD, false)) {
 
             Log.d(TAG, "onReceive()");
 

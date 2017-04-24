@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             mSwitch_auto_rec.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mSharedPreferences.edit().putBoolean(SettingsActivity.KEY_PREF_AUTO_RECORD, isChecked).apply();
+                    mSharedPreferences.edit().putBoolean(SettingsActivityOld.KEY_PREF_AUTO_RECORD, isChecked).apply();
                     Log.d(TAG, "autorecord = "
                             + mSwitch_auto_rec.isChecked());
                 }
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
             mSwitch_auto_upload_on_DropBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mSharedPreferences.edit().putBoolean(SettingsActivity.KEY_PREF_AUTO_UPLOAD_ON_DROPBOX, isChecked).apply();
+                    mSharedPreferences.edit().putBoolean(SettingsActivityOld.KEY_PREF_AUTO_UPLOAD_ON_DROPBOX, isChecked).apply();
                     if (isChecked) {
                         authenticate_dropboxAccount();
                     }
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.navigation_fragment_settings:
                 //fragment = new SettingsFragment();
                 menuItem.setChecked(true);
-                startActivityForResult(new Intent(MainActivity.this, SettingsActivity.class), REQUEST_CODE_SETTINGS);
+                startActivityForResult(new Intent(MainActivity.this, SettingsActivityOld.class), REQUEST_CODE_SETTINGS);
                 //menuItem.setChecked(true);
                 // Close the navigation drawer
                 mDrawerLayout.closeDrawers();
@@ -265,11 +265,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (mSwitch_auto_rec != null) {
-            mSwitch_auto_rec.setChecked(mSharedPreferences.getBoolean(SettingsActivity.KEY_PREF_AUTO_RECORD, true));
+            mSwitch_auto_rec.setChecked(mSharedPreferences.getBoolean(SettingsActivityOld.KEY_PREF_AUTO_RECORD, true));
             Log.d(TAG, "switch state | auto record = " + mSwitch_auto_rec.isChecked());
         }
         if (mSwitch_auto_upload_on_DropBox != null) {
-            mSwitch_auto_upload_on_DropBox.setChecked(mSharedPreferences.getBoolean(SettingsActivity.KEY_PREF_AUTO_UPLOAD_ON_DROPBOX, false));
+            mSwitch_auto_upload_on_DropBox.setChecked(mSharedPreferences.getBoolean(SettingsActivityOld.KEY_PREF_AUTO_UPLOAD_ON_DROPBOX, false));
             Log.d(TAG, "switch state = | auto upload on dropbox " + mSwitch_auto_upload_on_DropBox.isChecked());
         }
 
@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
                 //mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_settings:
-                Intent intent2 = new Intent(this, SettingsActivity.class);
+                Intent intent2 = new Intent(this, SettingsActivityOld.class);
                 startActivity(intent2);
                 return true;
             default:

@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.RadioGroup;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
+import anthonynahas.com.autocallrecorder.activities.SettingsActivityOld;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 
 /**
@@ -38,8 +38,8 @@ public class SortDialogFragment extends DialogFragment {
 
         View view = inflater.inflate(R.layout.sort_dialog_layout, null);
 
-        mSelect = mSharedPreferences.getString(SettingsActivity.KEY_SORT_SELECTION,RecordDbContract.RecordItem.COLUMN_DATE);
-        mArrange = mSharedPreferences.getString(SettingsActivity.KEY_SORT_ARRANGE," DESC");
+        mSelect = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION,RecordDbContract.RecordItem.COLUMN_DATE);
+        mArrange = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_ARRANGE," DESC");
 
         RadioGroup select_radiogroup = (RadioGroup) view.findViewById(R.id.radiogroup_sort_select);
         checkSelectRadioGroup(select_radiogroup,mSelect);
@@ -89,8 +89,8 @@ public class SortDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         mSharedPreferences
                                 .edit()
-                                .putString(SettingsActivity.KEY_SORT_SELECTION,mSelect)
-                                .putString(SettingsActivity.KEY_SORT_ARRANGE,mArrange)
+                                .putString(SettingsActivityOld.KEY_SORT_SELECTION,mSelect)
+                                .putString(SettingsActivityOld.KEY_SORT_ARRANGE,mArrange)
                                 .apply();
                         notifyTargetFragment(Activity.RESULT_OK);
                     }

@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -138,7 +139,6 @@ public class MainTabsActivity extends AppCompatActivity implements
         });
 
 
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Menu menu = navigationView.getMenu();
@@ -150,7 +150,7 @@ public class MainTabsActivity extends AppCompatActivity implements
             mSwitch_auto_rec.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mSharedPreferences.edit().putBoolean(SettingsActivity.KEY_PREF_AUTO_RECORD, isChecked).apply();
+                    mSharedPreferences.edit().putBoolean(SettingsActivityOld.KEY_PREF_AUTO_RECORD, isChecked).apply();
                     Log.d(TAG, "autorecord = "
                             + mSwitch_auto_rec.isChecked());
                 }
@@ -165,8 +165,7 @@ public class MainTabsActivity extends AppCompatActivity implements
                 if (isInActionMode) {
                     mSearchView.setVisibility(View.GONE);
                     tabLayout.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     mSearchView.setVisibility(View.VISIBLE);
                     tabLayout.setVisibility(View.GONE);
                 }
@@ -190,7 +189,7 @@ public class MainTabsActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         if (mSwitch_auto_rec != null) {
-            mSwitch_auto_rec.setChecked(mSharedPreferences.getBoolean(SettingsActivity.KEY_PREF_AUTO_RECORD, true));
+            mSwitch_auto_rec.setChecked(mSharedPreferences.getBoolean(SettingsActivityOld.KEY_PREF_AUTO_RECORD, true));
             Log.d(TAG, "switch state | auto record = " + mSwitch_auto_rec.isChecked());
         }
     }
@@ -221,7 +220,7 @@ public class MainTabsActivity extends AppCompatActivity implements
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -289,7 +288,7 @@ public class MainTabsActivity extends AppCompatActivity implements
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
-            mRecordsRecyclerListFragment =  RecordsRecyclerListFragment.getInstance();
+            mRecordsRecyclerListFragment = RecordsRecyclerListFragment.getInstance();
         }
 
         @Override

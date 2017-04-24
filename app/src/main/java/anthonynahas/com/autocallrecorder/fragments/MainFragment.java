@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
+import anthonynahas.com.autocallrecorder.activities.SettingsActivityOld;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorAdapter;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileHelper;
@@ -317,8 +317,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             }
         }
 
-        String sort = mSharedPreferences.getString(SettingsActivity.KEY_SORT_SELECTION, RecordDbContract.RecordItem.COLUMN_DATE)
-                + mSharedPreferences.getString(SettingsActivity.KEY_SORT_ARRANGE, " DESC");
+        String sort = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION, RecordDbContract.RecordItem.COLUMN_DATE)
+                + mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_ARRANGE, " DESC");
         return new CursorLoader(getActivity(), RecordDbContract.CONTENT_URL, projectALL, selection, null, sort);
     }
 

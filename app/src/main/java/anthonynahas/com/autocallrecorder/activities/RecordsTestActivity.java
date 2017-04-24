@@ -137,17 +137,17 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
             }
         }
 
-        String sort = mSharedPreferences.getString(SettingsActivity.KEY_SORT_SELECTION, RecordDbContract.RecordItem.COLUMN_DATE)
-                + mSharedPreferences.getString(SettingsActivity.KEY_SORT_ARRANGE, " DESC");
+        String sort = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION, RecordDbContract.RecordItem.COLUMN_DATE)
+                + mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_ARRANGE, " DESC");
         return new CursorLoader(this, RecordDbContract.CONTENT_URL, projectALL, selection, null, sort);
     }
     */
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projectALL = new String[]{"*"};
-        String sort = mSharedPreferences.getString(SettingsActivity.KEY_SORT_SELECTION,
+        String sort = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION,
                 RecordDbContract.RecordItem.COLUMN_DATE)
-                + mSharedPreferences.getString(SettingsActivity.KEY_SORT_ARRANGE, " DESC");
+                + mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_ARRANGE, " DESC");
 
         switch (id) {
             case 0:

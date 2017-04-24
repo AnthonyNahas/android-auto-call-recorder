@@ -34,7 +34,7 @@ import android.widget.Toast;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.activities.SettingsActivity;
+import anthonynahas.com.autocallrecorder.activities.SettingsActivityOld;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
 import anthonynahas.com.autocallrecorder.classes.Resources;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
@@ -314,9 +314,9 @@ public class RecordsRecyclerListFragment extends Fragment implements
             selectionArgs = new String[]{"%" + mSearchKey + "%"};
             page = 0;
         }
-        String sort = mSharedPreferences.getString(SettingsActivity.KEY_SORT_SELECTION,
+        String sort = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION,
                 RecordDbContract.RecordItem.COLUMN_DATE)
-                + mSharedPreferences.getString(SettingsActivity.KEY_SORT_ARRANGE, " DESC");
+                + mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_ARRANGE, " DESC");
 
         switch (id) {
             case 0:
