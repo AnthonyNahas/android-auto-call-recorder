@@ -21,6 +21,10 @@ public class RecordDbContract {
     public static final String AUTHORITY = "anthonynahas.com.autocallrecorder.providers.RecordsContentProvider";
     public static final String PATH = RecordItem.TABLE_NAME;
     public static final String URL = SCHEME + AUTHORITY + "/" + PATH;
+    public static final String URI = SCHEME + AUTHORITY + "/" + PATH + "/offset/";
+
+    //Uri.parse("content://" + RecordDbContract.AUTHORITY + "/" +
+    //RecordDbContract.RecordItem.TABLE_NAME + "/offset/" + limit);
 
     /**
      * THe content URI for the top-level BlogItem authority

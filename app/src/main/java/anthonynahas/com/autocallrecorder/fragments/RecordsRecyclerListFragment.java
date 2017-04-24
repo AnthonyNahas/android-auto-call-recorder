@@ -329,6 +329,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d(TAG,"onLoadingFinished");
         switch (loader.getId()) {
             case 0:
                 Log.d(TAG, "onLoadFinished: loading MORE");

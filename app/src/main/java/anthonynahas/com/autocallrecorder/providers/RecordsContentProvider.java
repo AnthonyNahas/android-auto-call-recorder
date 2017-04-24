@@ -123,6 +123,7 @@ public class RecordsContentProvider extends ContentProvider {
         if (rowID > 0) {
             //create corresponding URI for the created row
             Uri insertedIdUri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, rowID);
+            //Uri retUri = ContentUris.withAppendedId(uri, result);
 
             //notify resolver for data change
             getContext().getContentResolver().notifyChange(insertedIdUri, null);
@@ -211,7 +212,8 @@ public class RecordsContentProvider extends ContentProvider {
         if (cursor.moveToFirst()) {
             do {
                 String contact_id = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACTID));
-                Log.d(TAG, "contact id = " + contact_id);
+                int isLove = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
+                Log.d(TAG, "contact id = " + contact_id + " --> isLove = " + isLove);
                 //String date = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));
                 //Log.d(TAG, "date = " + date);
             } while (cursor.moveToNext());

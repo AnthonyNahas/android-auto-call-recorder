@@ -1,9 +1,11 @@
 package anthonynahas.com.autocallrecorder.views;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
@@ -163,10 +165,13 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.call_selected:
-                RecordsRecyclerListFragment.getInstance().prepareSelection(view, getAdapterPosition());
+                RecordsRecyclerListFragment.getInstance().prepareSelection(view, this.getAdapterPosition());
                 break;
             case R.id.call_isLove:
                 assert mCursor != null;
+                logCursor(mCursor);
+                int pos = this.getAdapterPosition();
+                mCursor.moveToPosition(pos);
                 int isLove = mCursor.getInt(mCursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
                 Log.d(TAG, "call_isLove = " + isLove);
                 int isLoveNew = isLove == 1 ? 0 : 1;
@@ -176,7 +181,23 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                     call_isLove.setImageResource(R.drawable.ic_favorite_border_black);
                 }
                 long id = mItemID;
+                Log.d(TAG, "mItemId = " + mItemID);
+                Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, id);
                 RecordDbHelper.updateIsLoveColumn(mContext, id, isLoveNew);
+                logCursor(mCursor);
         }
+    }
+
+    private void logCursor(Cursor cursor) {
+        if (cursor.moveToFirst()) {
+            do {
+                String contact_id = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID));
+                int isLove = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
+                Log.d(TAG, "contact id = " + contact_id + " --> isLove = " + isLove);
+                //String date = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));
+                //Log.d(TAG, "date = " + date);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
     }
 }
