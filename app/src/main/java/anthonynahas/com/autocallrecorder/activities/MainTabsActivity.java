@@ -38,6 +38,7 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.classes.Resources;
 import anthonynahas.com.autocallrecorder.fragments.RecordsRecyclerListFragment;
+import anthonynahas.com.autocallrecorder.utilities.decoraters.DemoRecordSupport;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PermissionsHelper;
@@ -125,6 +126,9 @@ public class MainTabsActivity extends AppCompatActivity implements
 
                 //noinspection SimplifiableIfStatement
                 switch (id) {
+                    case R.id.action_add_demo_record:
+                        DemoRecordSupport.getInstance().createDemoRecords(getApplicationContext());
+                        break;
                     case R.id.action_sort:
                         Log.d(TAG, "MenuItem = sort");
                         DialogHelper.openSortDialog(mActivity, mSectionsPagerAdapter.getItem(0));

@@ -204,7 +204,7 @@ public class FetchIntentService extends IntentService {
         } catch (DropboxException e) {
             Log.e("DbExampleLog", "Something went wrong while uploading.");
         }
-        //showToastFromService("Error occured while processing the upload request");
+        //showToastFromService("Error occurred while processing the upload request");
         return false;
     }
 

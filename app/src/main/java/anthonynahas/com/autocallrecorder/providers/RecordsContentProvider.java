@@ -62,11 +62,11 @@ public class RecordsContentProvider extends ContentProvider {
     @Override
     synchronized public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Log.d(TAG, "query1()");
-        //create a new querybuilder for table with birthdays
+        //create a new querybuilder for table with records
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(RecordDbContract.RecordItem.TABLE_NAME);
-        Cursor cursor = null;
-        String offset = "";
+
+        Cursor cursor;
 
         switch (sUriMatcher.match(uri)) {
             case SINGLE_ROW:
@@ -76,7 +76,7 @@ public class RecordsContentProvider extends ContentProvider {
                 break;
             case TABLE_ITEMS: {
                 queryBuilder.setTables(RecordDbContract.RecordItem.TABLE_NAME);
-                offset = uri.getLastPathSegment();
+                String offset = uri.getLastPathSegment();
                 int intOffset = Integer.parseInt(offset);
 
                 String limitArg = intOffset + ", " + 30;
@@ -137,7 +137,7 @@ public class RecordsContentProvider extends ContentProvider {
     }
 
     @Override
-    public synchronized int delete(Uri uri, String selection, String[] selectionArgs) {
+    public synchronized int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 
         String mSelectionCorrected = selection;
 
@@ -165,7 +165,7 @@ public class RecordsContentProvider extends ContentProvider {
     }
 
     @Override
-    public synchronized int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public synchronized int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         Log.d(TAG, "onUpdate()");
 
         switch (sUriMatcher.match(uri)) {
@@ -194,7 +194,8 @@ public class RecordsContentProvider extends ContentProvider {
                 RecordDbContract.RecordItem.COLUMN_DURATION,
                 RecordDbContract.RecordItem.COLUMN_INCOMING,
                 RecordDbContract.RecordItem.COLUMN_SIZE};
-        Cursor cursor = null;
+
+        Cursor cursor;
 
         if (searchItem != null && searchItem.length() > 0) {
             String sql = "SELECT * FROM" + RecordDbContract.RecordItem.TABLE_NAME + " WHERE " + RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE '%" + searchItem + "%'";
@@ -256,7 +257,7 @@ public class RecordsContentProvider extends ContentProvider {
         /**
          * crate table
          *
-         * @param db
+         * @param db - the used db
          */
         @Override
         public void onCreate(SQLiteDatabase db) {
@@ -266,7 +267,9 @@ public class RecordsContentProvider extends ContentProvider {
         }
 
         /**
-         * update table
+         * update table.
+         * This block will be only run if the version of the db
+         * has been increased! --> newVersion > oldVersion
          *
          * @param db
          * @param oldVersion

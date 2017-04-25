@@ -1,12 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context="anthonynahas.com.autocallrecorder.activities.MainTabsActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="anthonynahas.com.autocallrecorder.activities.MainTabsActivity">
+
+
+    <item
+        android:id="@+id/action_add_demo_record"
+        android:title="add demo"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort"
+        android:title="@string/action_sort"
+        app:showAsAction="never" />
     <!--
     <item
         android:id="@+id/action_search"
@@ -16,10 +28,4 @@
         app:showAsAction="ifRoom|collapseActionView">
     </item>
     -->
-    <item
-        android:id="@+id/action_sort"
-        android:title="@string/action_sort"
-        app:showAsAction="never">
-    </item>
-
 </menu>
