@@ -24,6 +24,9 @@ public class RecordsContentProvider extends ContentProvider {
 
     private static final String TAG = RecordsContentProvider.class.getSimpleName();
 
+    public static final String QUERY_PARAMETER_LIMIT = "limit";
+    public static final String QUERY_PARAMETER_OFFSET = "offset";
+
     private RecordsSQLiteOpenHelper mRecordsSQLiteOpenHelper;
     private SQLiteDatabase mDB;
 
@@ -66,7 +69,11 @@ public class RecordsContentProvider extends ContentProvider {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(RecordDbContract.RecordItem.TABLE_NAME);
 
-        Cursor cursor;
+        String limit = uri.getQueryParameter(QUERY_PARAMETER_LIMIT);
+        String offset = uri.getQueryParameter(QUERY_PARAMETER_OFFSET);
+        String limitString = offset + "," + limit;
+
+        Cursor cursor = null;
 
         switch (sUriMatcher.match(uri)) {
             case SINGLE_ROW:
@@ -76,7 +83,7 @@ public class RecordsContentProvider extends ContentProvider {
                 break;
             case TABLE_ITEMS: {
                 queryBuilder.setTables(RecordDbContract.RecordItem.TABLE_NAME);
-                String offset = uri.getLastPathSegment();
+                //String offset = uri.getLastPathSegment();
                 int intOffset = Integer.parseInt(offset);
 
                 String limitArg = intOffset + ", " + 30;
@@ -86,9 +93,16 @@ public class RecordsContentProvider extends ContentProvider {
                 break;
             }
             default:
-                throw new IllegalArgumentException("uri not recognized!");
+                //throw new IllegalArgumentException("uri not recognized!");
+                break;
         }
 
+        //This line will let CursorLoader know about any data change on "uri" ,
+        // So that data will be reloaded to CursorLoader
+
+        //Make certain that the URI you register the cursor on,
+        //and the URI you notify the cursor on are the same.
+        cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder,limitString);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
         return cursor;

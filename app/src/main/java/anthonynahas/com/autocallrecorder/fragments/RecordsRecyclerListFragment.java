@@ -1,7 +1,6 @@
 package anthonynahas.com.autocallrecorder.fragments;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -82,7 +81,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
     private RecordsCursorRecyclerViewAdapter mAdapter;
     private ContentLoadingProgressBar mContentLoadingProgressBar;
     private SwipeRefreshLayout mSwipeContainer;
-    private boolean loadingMore = false;
+    private boolean onLoadingMore = false;
     private Toast shortToast;
 
     private Toolbar mToolbar;
@@ -166,8 +165,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
                             }
                             call_selected.setChecked(!isChecked);
                             updateToolbarText();
-                        }
-                        else{
+                        } else {
                             mAdapter.getItemId(position);
                         }
                     }
@@ -195,10 +193,10 @@ public class RecordsRecyclerListFragment extends Fragment implements
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        int itemsCountLocal = getItemsCountLocal();
-        if (itemsCountLocal == 0) {
-            //fillTestElements();
-        }
+        //int itemsCountLocal = getItemsCountLocal();
+        //if (itemsCountLocal == 0) {
+        //fillTestElements();
+        //}
 
         shortToast = Toast.makeText(mContext, "", Toast.LENGTH_SHORT);
 
@@ -211,11 +209,12 @@ public class RecordsRecyclerListFragment extends Fragment implements
                 int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
                 int maxPositions = layoutManager.getItemCount();
 
-                if (lastVisibleItemPosition == maxPositions - 1) {
-                    if (loadingMore)
+                if (lastVisibleItemPosition == maxPositions - 1 && maxPositions * page == offset * page) {
+                    if (onLoadingMore) {
                         return;
+                    }
 
-                    loadingMore = true;
+                    onLoadingMore = true;
                     page++;
                     refresh();
                 }
@@ -278,18 +277,6 @@ public class RecordsRecyclerListFragment extends Fragment implements
         //super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void fillTestElements() {
-        int size = 1;
-        ContentValues[] cvArray = new ContentValues[size];
-        for (int i = 0; i < cvArray.length; i++) {
-            ContentValues cv = new ContentValues();
-            //cv.put(TableItems.TEXT, ("text " + i));
-            cvArray[i] = cv;
-        }
-
-        mContext.getContentResolver().bulkInsert(RecordsContentProvider.urlForItems(0), cvArray);
-    }
-
     private int getItemsCountLocal() {
         int itemsCount = 0;
 
@@ -320,8 +307,17 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
         switch (id) {
             case 0:
+                //Uri uri = RecordsContentProvider.urlForItems(offset * page);
+                Uri uri = RecordDbContract.CONTENT_URL
+                        .buildUpon()
+                        .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_LIMIT,
+                                String.valueOf(offset))
+                        .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_OFFSET,
+                                String.valueOf(page))
+                        //.encodedQuery("limit=" + offset + "," + page)
+                        .build();
                 return new CursorLoader(getActivity(),
-                        RecordsContentProvider.urlForItems(offset * page), projection, selection, selectionArgs, sort);
+                        uri, projection, selection, selectionArgs, sort);
             default:
                 throw new IllegalArgumentException("no id handled!");
         }
@@ -329,35 +325,15 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG,"onLoadingFinished");
+        Log.d(TAG, "onLoadingFinished");
         switch (loader.getId()) {
             case 0:
                 Log.d(TAG, "onLoadFinished: loading MORE");
-                shortToast.setText("loading MORE " + page);
-                shortToast.show();
-
-                Cursor cursor =
-                        ((RecordsCursorRecyclerViewAdapter) mRecyclerView.getAdapter()).getCursor();
-
-                //fill all existing in adapter
-                MatrixCursor mx = new MatrixCursor(RecordDbContract.RecordItem.ALL_COLUMNS);
-                fillMx(cursor, mx);
-
-                //fill with additional result
-                fillMx(data, mx);
-
-                ((RecordsCursorRecyclerViewAdapter) mRecyclerView.getAdapter()).swapCursor(mx);
-
-
-                handlerToWait.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadingMore = false;
-                        mContentLoadingProgressBar.hide();
-                        mSwipeContainer.setRefreshing(false);
-                    }
-                }, 2000);
-
+                if (onLoadingMore) {
+                    mergeCursor(data);
+                } else {
+                    reloadCursor(data);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("no loader id handled!");
@@ -367,7 +343,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(TAG, "on loader reset");
-        //mRecordsCursorAdapter.changeCursor(null);
+        mAdapter.changeCursor(null);
     }
 
     private void fillMx(Cursor data, MatrixCursor mx) {
@@ -387,6 +363,40 @@ public class RecordsRecyclerListFragment extends Fragment implements
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE))
             });
         }
+    }
+
+    private void reloadCursor(Cursor data) {
+        data.moveToFirst();
+        mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, data);
+        mRecyclerView.setAdapter(mAdapter);
+        mContentLoadingProgressBar.hide();
+        mSwipeContainer.setRefreshing(false);
+    }
+
+    private void mergeCursor(Cursor data) {
+        shortToast.setText("loading MORE " + page);
+        shortToast.show();
+        Cursor cursor =
+                ((RecordsCursorRecyclerViewAdapter) mRecyclerView.getAdapter()).getCursor();
+
+        //fill all existing in adapter
+        MatrixCursor mx = new MatrixCursor(RecordDbContract.RecordItem.ALL_COLUMNS);
+        fillMx(cursor, mx);
+
+        //fill with additional result
+        fillMx(data, mx);
+
+        ((RecordsCursorRecyclerViewAdapter) mRecyclerView.getAdapter()).swapCursor(mx);
+
+
+        handlerToWait.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                onLoadingMore = false;
+                mContentLoadingProgressBar.hide();
+                mSwipeContainer.setRefreshing(false);
+            }
+        }, 2000);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
