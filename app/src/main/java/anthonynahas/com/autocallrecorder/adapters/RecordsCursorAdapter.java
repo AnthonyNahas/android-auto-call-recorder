@@ -119,7 +119,7 @@ public class RecordsCursorAdapter extends CursorAdapter{
                 //BitmapWorkerTask bitmapWorkerTask =  new BitmapWorkerTask(viewHolder.call_contact_profile,context,cursor);
                 //bitmapWorkerTask.execute();
                 Bitmap img = ContactHelper.getBitmapForContactID(mContext.getContentResolver(),1,
-                        cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACTID)));
+                        cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
                 if(img != null){
                     viewHolder.call_contact_profile.setImageBitmap(img);
                     MainActivity.setBitmapToMemoryCache(phoneNumber,img);
@@ -137,7 +137,7 @@ public class RecordsCursorAdapter extends CursorAdapter{
                 contactPhotoUri = new AsyncTask<Void, Void, Uri>() {
                     @Override
                     protected Uri doInBackground(Void... params) {
-                        long contactID = cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACTID));
+                        long contactID = cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
                         Log.d(TAG,"contactID = " + contactID);
                         if(contactID != 0) {
                             return ContactHelper.getContactPhotoUri(context.getContentResolver(), contactID);
@@ -202,7 +202,7 @@ public class RecordsCursorAdapter extends CursorAdapter{
 
         @Override
         protected Uri doInBackground(Void... params) {
-            long contactID = mCursor.getLong(mCursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACTID));
+            long contactID = mCursor.getLong(mCursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
             Log.d(TAG,"contactID = " + contactID);
             if(contactID != 0) {
                 return ContactHelper.getContactPhotoUri(mContext.getContentResolver(), contactID);

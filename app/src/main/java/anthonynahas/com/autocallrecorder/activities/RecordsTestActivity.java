@@ -210,7 +210,7 @@ public class RecordsTestActivity extends AppCompatActivity implements LoaderMana
             mx.addRow(new Object[]{
                     data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID)),
                     data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER)),
-                    data.getLong(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACTID)),
+                    data.getLong(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)),
                     data.getLong(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE)),
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_SIZE)),
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)),

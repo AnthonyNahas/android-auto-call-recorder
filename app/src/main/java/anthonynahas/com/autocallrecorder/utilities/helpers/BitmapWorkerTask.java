@@ -30,7 +30,7 @@ public class BitmapWorkerTask extends AsyncTask<Void,Void,Bitmap> {
     @Override
     protected Bitmap doInBackground(Void... params) {
         Bitmap img = ContactHelper.getBitmapForContactID(context.getContentResolver(),1,
-                cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACTID)));
+                cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
         if(img != null){
             MainActivity.setBitmapToMemoryCache(cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_NUMBER)),img);
         }

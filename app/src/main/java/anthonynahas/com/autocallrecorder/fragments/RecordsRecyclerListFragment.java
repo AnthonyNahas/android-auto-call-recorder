@@ -167,6 +167,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
                             updateToolbarText();
                         } else {
                             mAdapter.getItemId(position);
+                            openRecordDialog(v, position);
                         }
                     }
                 }
@@ -209,7 +210,9 @@ public class RecordsRecyclerListFragment extends Fragment implements
                 int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
                 int maxPositions = layoutManager.getItemCount();
 
-                if (lastVisibleItemPosition == maxPositions - 1 && maxPositions * page == offset * page) {
+                if (lastVisibleItemPosition == maxPositions - 1
+                        && maxPositions * page == offset * page
+                        && page != 0) {
                     if (onLoadingMore) {
                         return;
                     }
@@ -355,7 +358,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
             mx.addRow(new Object[]{
                     data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID)),
                     data.getString(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER)),
-                    data.getLong(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACTID)),
+                    data.getLong(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)),
                     data.getLong(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE)),
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_SIZE)),
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)),
@@ -397,6 +400,24 @@ public class RecordsRecyclerListFragment extends Fragment implements
                 mSwipeContainer.setRefreshing(false);
             }
         }, 2000);
+    }
+
+    private void openRecordDialog(View view, int position) {
+        Cursor cursor = mAdapter.getCursor();
+        cursor.moveToPosition(position);
+        Log.d(TAG, "list-position = " + position);
+
+        Bundle args = new Bundle();
+        String contact_number_or_name = ((TextView) view.findViewById(R.id.call_contact_name_number)).getText().toString();
+        args.putString(RecordsDialogFragment.NUMBER_CN_KEY, contact_number_or_name);
+        args.putString(RecordsDialogFragment.NUMBER_KEY, cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER)));
+        args.putString(RecordsDialogFragment.REC_AUDIO_ID_KEY, cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID)));
+        args.putInt(RecordsDialogFragment.REC_DURATION_KEY, cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)));
+        args.putLong(RecordsDialogFragment.REC_CONTACT_ID_KEY, cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
+        args.putInt(RecordsDialogFragment.REC_DURATION_KEY, cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING)));
+        RecordsDialogFragment recordsDialogFragment = new RecordsDialogFragment();
+        recordsDialogFragment.setArguments(args);
+        recordsDialogFragment.show(((Activity) mContext).getFragmentManager(), RecordsDialogFragment.TAG);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

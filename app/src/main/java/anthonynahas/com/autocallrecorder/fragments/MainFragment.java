@@ -367,7 +367,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             args.putString(RecordsDialogFragment.NUMBER_KEY, cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER)));
             args.putString(RecordsDialogFragment.REC_AUDIO_ID_KEY, cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID)));
             args.putInt(RecordsDialogFragment.REC_DURATION_KEY, cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)));
-            args.putLong(RecordsDialogFragment.REC_CONTACT_ID_KEY, cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACTID)));
+            args.putLong(RecordsDialogFragment.REC_CONTACT_ID_KEY, cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
             args.putInt(RecordsDialogFragment.REC_DURATION_KEY, cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING)));
             RecordsDialogFragment recordsDialogFragment = new RecordsDialogFragment();
             recordsDialogFragment.setArguments(args);

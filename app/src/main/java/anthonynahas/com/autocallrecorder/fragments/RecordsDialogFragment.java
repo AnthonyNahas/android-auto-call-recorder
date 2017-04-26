@@ -102,7 +102,7 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         View view = inflater.inflate(R.layout.record_dialog_layout, null);
         builder.setView(view);
 
-        getInit(view);
+        init(view);
         updateSeekBar();
 
         mTV_Number_CN.setText(mNumber_CN);
@@ -125,7 +125,7 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         super.onAttach(activity);
     }
 
-    private void getInit(View view){
+    private void init(View view){
         mImageProfile = (ImageView) view.findViewById(R.id.img_profile_recDialog);
         //setContactBitMap();
         //mImageProfile.setImageBitmap(ImageHelper.getRoundedCornerBitmap(getContactBitMap(),100));
@@ -298,7 +298,8 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
                 mMediaPlayer.prepare();
             } catch (IOException e) {
                 Log.e(TAG, "error - IOException",e);
-                throw new RuntimeException();
+                //todo - 26.04 - create dialog fragment --> no source file found 404 - id now found in the media store
+                //throw new RuntimeException();
             }
         }
     }

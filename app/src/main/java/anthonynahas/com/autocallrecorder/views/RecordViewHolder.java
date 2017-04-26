@@ -1,5 +1,6 @@
 package anthonynahas.com.autocallrecorder.views;
 
+import android.content.AsyncQueryHandler;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -120,7 +121,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
             //BitmapWorkerTask bitmapWorkerTask =  new BitmapWorkerTask(viewHolder.call_contact_profile,context,cursor);
             //bitmapWorkerTask.execute();
             Bitmap img = ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1,
-                    cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACTID)));
+                    cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
             if (img != null) {
                 call_contact_profile.setImageBitmap(img);
                 MemoryCacheHelper.setBitmapToMemoryCache(phoneNumber, img);
@@ -164,27 +165,39 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+
             case R.id.call_selected:
                 RecordsRecyclerListFragment.getInstance().prepareSelection(view, this.getAdapterPosition());
                 break;
+
             case R.id.call_isLove:
-                assert mCursor != null;
-                logCursor(mCursor);
-                int pos = this.getAdapterPosition();
-                mCursor.moveToPosition(pos);
-                int isLove = mCursor.getInt(mCursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
-                Log.d(TAG, "call_isLove = " + isLove);
-                int isLoveNew = isLove == 1 ? 0 : 1;
-                if (isLoveNew == 1) {
-                    call_isLove.setImageResource(R.drawable.ic_favorite);
-                } else {
-                    call_isLove.setImageResource(R.drawable.ic_favorite_border_black);
-                }
-                long id = mItemID;
+                AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(mContext.getContentResolver()) {
+                    @Override
+                    protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+                        if (cursor != null) {
+                            cursor.moveToFirst();
+                            logCursor(cursor);
+                            cursor.moveToFirst();
+                            String id = cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_ID));
+                            int isLove = cursor.getInt(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
+
+                            Log.d(TAG, "call_isLove = " + isLove);
+                            int isLoveNew = isLove == 1 ? 0 : 1;
+                            if (isLoveNew == 1) {
+                                call_isLove.setImageResource(R.drawable.ic_favorite);
+                            } else {
+                                call_isLove.setImageResource(R.drawable.ic_favorite_border_black);
+                            }
+
+                            RecordDbHelper.updateIsLoveColumn(mContext, id, isLoveNew);
+                        }
+                    }
+                };
+
                 Log.d(TAG, "mItemId = " + mItemID);
-                Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, id);
-                RecordDbHelper.updateIsLoveColumn(mContext, id, isLoveNew);
-                logCursor(mCursor);
+                Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, mItemID);
+                asyncQueryHandler.startQuery(0, null, uri, new String[]{"*"}, null, null, null);
+
         }
     }
 
@@ -198,6 +211,6 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                 //Log.d(TAG, "date = " + date);
             } while (cursor.moveToNext());
         }
-        cursor.close();
+        //cursor.close();
     }
 }

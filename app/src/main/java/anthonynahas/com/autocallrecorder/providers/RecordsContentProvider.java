@@ -41,8 +41,7 @@ public class RecordsContentProvider extends ContentProvider {
         sUriMatcher.addURI(RecordDbContract.AUTHORITY, RecordDbContract.RecordItem.TABLE_NAME
                 + "/offset/" + "#", TABLE_ITEMS);
         sUriMatcher.addURI(RecordDbContract.AUTHORITY, "/" + RecordDbContract.PATH, ALL_ROWS);
-        sUriMatcher.addURI(RecordDbContract.AUTHORITY, "/" + RecordDbContract.PATH + "/#" +
-                RecordDbContract.RecordItem.COLUMN_ID, SINGLE_ROW);
+        sUriMatcher.addURI(RecordDbContract.AUTHORITY, "/" + RecordDbContract.PATH + "/*", SINGLE_ROW);
         Log.d(TAG, "static sUriMatcher)");
     }
 
@@ -69,40 +68,47 @@ public class RecordsContentProvider extends ContentProvider {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(RecordDbContract.RecordItem.TABLE_NAME);
 
-        String limit = uri.getQueryParameter(QUERY_PARAMETER_LIMIT);
-        String offset = uri.getQueryParameter(QUERY_PARAMETER_OFFSET);
-        String limitString = offset + "," + limit;
-
-        Cursor cursor = null;
+        Cursor cursor;
 
         switch (sUriMatcher.match(uri)) {
-            case SINGLE_ROW:
-                queryBuilder.appendWhere(RecordDbContract.RecordItem.COLUMN_ID + " = "
-                        + uri.getPathSegments().get(1));
-                cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder);
-                break;
-            case TABLE_ITEMS: {
+
+
+            case TABLE_ITEMS:
                 queryBuilder.setTables(RecordDbContract.RecordItem.TABLE_NAME);
-                //String offset = uri.getLastPathSegment();
-                int intOffset = Integer.parseInt(offset);
+                int intOffset = Integer.parseInt(uri.getLastPathSegment());
 
                 String limitArg = intOffset + ", " + 30;
                 Log.d(TAG, "query: " + limitArg);
                 cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder, limitArg);
                 //logCursor(cursor);
                 break;
-            }
-            default:
-                //throw new IllegalArgumentException("uri not recognized!");
+
+            case ALL_ROWS:
+                Log.d(TAG, "all rows");
+                //This line will let CursorLoader know about any data change on "uri" ,
+                // So that data will be reloaded to CursorLoader
+
+                //Make certain that the URI you register the cursor on,
+                //and the URI you notify the cursor on are the same.
+
+                String limit = uri.getQueryParameter(QUERY_PARAMETER_LIMIT);
+                String offset = uri.getQueryParameter(QUERY_PARAMETER_OFFSET);
+                String limitString = offset + "," + limit;
+                cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder, limitString);
                 break;
+
+            case SINGLE_ROW:
+                queryBuilder.appendWhere(RecordDbContract.RecordItem.COLUMN_ID + " = "
+                        + uri.getPathSegments().get(1));
+                cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+
+
+            default:
+                throw new IllegalArgumentException("uri not recognized!");
+                //break;
         }
 
-        //This line will let CursorLoader know about any data change on "uri" ,
-        // So that data will be reloaded to CursorLoader
-
-        //Make certain that the URI you register the cursor on,
-        //and the URI you notify the cursor on are the same.
-        cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder,limitString);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
         return cursor;
@@ -203,7 +209,7 @@ public class RecordsContentProvider extends ContentProvider {
 
         String[] columns = {RecordDbContract.RecordItem.COLUMN_ID,
                 RecordDbContract.RecordItem.COLUMN_NUMBER,
-                RecordDbContract.RecordItem.COLUMN_CONTACTID,
+                RecordDbContract.RecordItem.COLUMN_CONTACT_ID,
                 RecordDbContract.RecordItem.COLUMN_DATE,
                 RecordDbContract.RecordItem.COLUMN_DURATION,
                 RecordDbContract.RecordItem.COLUMN_INCOMING,
@@ -226,7 +232,7 @@ public class RecordsContentProvider extends ContentProvider {
     private void logCursor(Cursor cursor) {
         if (cursor.moveToFirst()) {
             do {
-                String contact_id = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACTID));
+                String contact_id = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
                 int isLove = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
                 Log.d(TAG, "contact id = " + contact_id + " --> isLove = " + isLove);
                 //String date = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));
@@ -256,7 +262,7 @@ public class RecordsContentProvider extends ContentProvider {
                 + " ("
                 + RecordDbContract.RecordItem.COLUMN_ID + " TEXT NOT NULL, "
                 + RecordDbContract.RecordItem.COLUMN_NUMBER + " TEXT NOT NULL, "
-                + RecordDbContract.RecordItem.COLUMN_CONTACTID + " LONG, "
+                + RecordDbContract.RecordItem.COLUMN_CONTACT_ID + " LONG, "
                 + RecordDbContract.RecordItem.COLUMN_DATE + " LONG, "
                 + RecordDbContract.RecordItem.COLUMN_SIZE + " INTEGER, "
                 + RecordDbContract.RecordItem.COLUMN_DURATION + " INTEGER, "

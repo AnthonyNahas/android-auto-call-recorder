@@ -114,7 +114,7 @@ public class FetchIntentService extends IntentService {
         values.put(RecordDbContract.RecordItem.COLUMN_SIZE,size);
         values.put(RecordDbContract.RecordItem.COLUMN_DURATION,duration);
         if(contactID != -1){
-            values.put(RecordDbContract.RecordItem.COLUMN_CONTACTID,contactID);
+            values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID,contactID);
         }
         getApplicationContext().getContentResolver().insert(RecordDbContract.CONTENT_URL,values);
         Log.d(TAG,"contentResolver inserted record");

@@ -21,7 +21,9 @@ public class RecordDbContract {
     public static final String AUTHORITY = "anthonynahas.com.autocallrecorder.providers.RecordsContentProvider";
     public static final String PATH = RecordItem.TABLE_NAME;
     public static final String URL = SCHEME + AUTHORITY + "/" + PATH;
-    public static final String URI = SCHEME + AUTHORITY + "/" + PATH + "/offset/";
+
+
+    public static final String URI_OFFSET = SCHEME + AUTHORITY + "/" + PATH + "/offset/";
 
     //Uri.parse("content://" + RecordDbContract.AUTHORITY + "/" +
     //RecordDbContract.RecordItem.TABLE_NAME + "/offset/" + limit);
@@ -51,7 +53,7 @@ public class RecordDbContract {
         //columns
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_NUMBER = "number";
-        public static final String COLUMN_CONTACTID = "contactid";
+        public static final String COLUMN_CONTACT_ID = "contactid";
         public static final String COLUMN_DATE = "date";
         public static final String COLUMN_SIZE = "size";
         public static final String COLUMN_DURATION = "duration";
@@ -61,7 +63,7 @@ public class RecordDbContract {
                 {
                         COLUMN_ID,
                         COLUMN_NUMBER,
-                        COLUMN_CONTACTID,
+                        COLUMN_CONTACT_ID,
                         COLUMN_DATE,
                         COLUMN_SIZE,
                         COLUMN_DURATION,

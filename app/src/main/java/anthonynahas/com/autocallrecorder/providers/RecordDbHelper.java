@@ -23,15 +23,15 @@ public class RecordDbHelper {
      * @param isLove  - whether the record isLove (favorite)
      * @return the count of updated rows
      */
-    public static int updateIsLoveColumn(Context context, long id, int isLove) {
-        ContentResolver contentResolver = context.getContentResolver();
+    public static void updateIsLoveColumn(Context context, String id, int isLove) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, isLove);
-        Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, id);
+        Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, Long.valueOf(id));
         Log.d(TAG, "onUpdate --> uri = " + uri);
         String selection = RecordDbContract.RecordItem.COLUMN_ID + "=?";
-        String[] selectionArgs = {String.valueOf(id)};
-        return contentResolver.update(uri, contentValues, selection, selectionArgs);
+        String[] selectionArgs = {id};
+        RecordsQueryHandler.getInstance(context.getContentResolver())
+                .startUpdate(RecordsQueryHandler.UPDATE_IS_LOVE, null, uri, contentValues, selection, selectionArgs);
+        //return contentResolver.update(uri, contentValues, selection, selectionArgs);
     }
-
 }

@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.TimeZone;
 
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
+import anthonynahas.com.autocallrecorder.providers.RecordsQueryHandler;
 
 /**
  * This class is responsible to mock and generate demo records for test
@@ -42,7 +43,10 @@ public class DemoRecordSupport {
         values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, generateNumber(1, 0));
         values.put(RecordDbContract.RecordItem.COLUMN_SIZE, generateNumber(100, 1));
         values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(600, 0));
-        context.getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
+        RecordsQueryHandler.getInstance(context.getContentResolver())
+                .startInsert(RecordsQueryHandler.INSERT_DEMO, null, RecordDbContract.CONTENT_URL, values);
+
+        //context.getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
         Log.d(TAG, "contentResolver inserted record");
     }
 
