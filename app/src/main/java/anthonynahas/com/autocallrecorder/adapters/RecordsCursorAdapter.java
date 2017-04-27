@@ -29,10 +29,20 @@ import anthonynahas.com.autocallrecorder.utilities.helpers.ImageHelper;
 /**
  * Created by A on 30.04.16.
  *
- * @since 30.04.2016
+ * * @DEPRECATED
+ * * @DEPRECATED
+ * * @DEPRECATED
+ * * @DEPRECATED
+ * * @DEPRECATED
+ * * @DEPRECATED
+ * * @DEPRECATED
+ * * @DEPRECATED
+ *
+ *
  * @author Anthony Nahas
+ * @since 30.04.2016
  */
-public class RecordsCursorAdapter extends CursorAdapter{
+public class RecordsCursorAdapter extends CursorAdapter {
 
     private static final String TAG = RecordsCursorAdapter.class.getSimpleName();
 
@@ -48,8 +58,8 @@ public class RecordsCursorAdapter extends CursorAdapter{
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         //Log.d(TAG, "new View with pos = " + cursor.getPosition());
-        View view =  LayoutInflater.from(context).inflate(R.layout.item_record, parent, false);
-        if(view != null){
+        View view = LayoutInflater.from(context).inflate(R.layout.item_record, parent, false);
+        if (view != null) {
             MyViewHolder viewHolder = new MyViewHolder();
             //viewHolder.position = cursor.getPosition();
             //viewHolder.id = cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_ID));
@@ -66,72 +76,69 @@ public class RecordsCursorAdapter extends CursorAdapter{
 
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
-        Log.d(TAG,"bind View");
+        Log.d(TAG, "bind View");
         // Get the data item for this position
-        Log.d(TAG,"cursor position= " + cursor.getPosition());
+        Log.d(TAG, "cursor position= " + cursor.getPosition());
         final String phoneNumber = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
         //if(view != null) {
-            // Lookup view for data population
-            MyViewHolder viewHolder = (MyViewHolder) view.getTag();
-            // Populate the data into the template view using the data object
-            //viewHolder.call_contact_profile.setId(cursor.getPosition());
+        // Lookup view for data population
+        MyViewHolder viewHolder = (MyViewHolder) view.getTag();
+        // Populate the data into the template view using the data object
+        //viewHolder.call_contact_profile.setId(cursor.getPosition());
 
-            String contact_number_or_name = "";
-            try {
-               contact_number_or_name  = new AsyncTask<Void, Void, String>() {
-                    @Override
-                    protected String doInBackground(Void... params) {
-                        String contactName = ContactHelper.getContactName(context.getContentResolver(),phoneNumber);
-                        if(contactName != null){
-                            return contactName;
-                        }
-                        return phoneNumber;
+        String contact_number_or_name = "";
+        try {
+            contact_number_or_name = new AsyncTask<Void, Void, String>() {
+                @Override
+                protected String doInBackground(Void... params) {
+                    String contactName = ContactHelper.getContactName(context.getContentResolver(), phoneNumber);
+                    if (contactName != null) {
+                        return contactName;
                     }
-                }.execute().get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-
-            if(contact_number_or_name.isEmpty()){
-                viewHolder.call_contact_number_or_name.setText("Unkown");
-            }
-            else {
-                viewHolder.call_contact_number_or_name.setText(contact_number_or_name);
-            }
-
-
-            switch (cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING))) {
-                case 0:
-                    viewHolder.call_icon_isIncoming.setBackgroundColor(Color.GREEN);
-                    break;
-                case 1:
-                    viewHolder.call_icon_isIncoming.setBackgroundColor(Color.RED);
-                    break;
-            }
-
-            viewHolder.call_date.setText(getLocalFormattetDate(cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE))));
-            viewHolder.call_durcation.setText(String.valueOf(getTimeString(cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)))));
-            Bitmap bitmap = MainActivity.getBitmapFromMemoryCache(phoneNumber);
-            if(bitmap != null){
-                viewHolder.call_contact_profile.setImageBitmap(bitmap);
-            }
-            else{
-                //BitmapWorkerTask bitmapWorkerTask =  new BitmapWorkerTask(viewHolder.call_contact_profile,context,cursor);
-                //bitmapWorkerTask.execute();
-                Bitmap img = ContactHelper.getBitmapForContactID(mContext.getContentResolver(),1,
-                        cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
-                if(img != null){
-                    viewHolder.call_contact_profile.setImageBitmap(img);
-                    MainActivity.setBitmapToMemoryCache(phoneNumber,img);
+                    return phoneNumber;
                 }
-                else {
-                    //viewHolder.call_contact_profile.setImageResource(R.drawable.custmtranspprofpic);
-                    viewHolder.call_contact_profile.setImageBitmap(ImageHelper.decodeSampledBitmapFromResource(context.getResources(),R.drawable.custmtranspprofpic60px,60,60));
-                }
-            }
-            //new bindImageTask(context,cursor,viewHolder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,null);
+            }.execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
-            //// TODO: 14.06.16 found bug - profile pic for those who dnt hv a photoUri 
+        if (contact_number_or_name.isEmpty()) {
+            viewHolder.call_contact_number_or_name.setText("Unkown");
+        } else {
+            viewHolder.call_contact_number_or_name.setText(contact_number_or_name);
+        }
+
+
+        switch (cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING))) {
+            case 0:
+                viewHolder.call_icon_isIncoming.setBackgroundColor(Color.GREEN);
+                break;
+            case 1:
+                viewHolder.call_icon_isIncoming.setBackgroundColor(Color.RED);
+                break;
+        }
+
+        viewHolder.call_date.setText(getLocalFormattedDate(cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE))));
+        viewHolder.call_durcation.setText(String.valueOf(getTimeString(cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)))));
+        Bitmap bitmap = MainActivity.getBitmapFromMemoryCache(phoneNumber);
+        if (bitmap != null) {
+            viewHolder.call_contact_profile.setImageBitmap(bitmap);
+        } else {
+            //BitmapWorkerTask bitmapWorkerTask =  new BitmapWorkerTask(viewHolder.call_contact_profile,context,cursor);
+            //bitmapWorkerTask.execute();
+            Bitmap img = ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1,
+                    cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
+            if (img != null) {
+                viewHolder.call_contact_profile.setImageBitmap(img);
+                MainActivity.setBitmapToMemoryCache(phoneNumber, img);
+            } else {
+                //viewHolder.call_contact_profile.setImageResource(R.drawable.custmtranspprofpic);
+                viewHolder.call_contact_profile.setImageBitmap(ImageHelper.decodeSampledBitmapFromResource(context.getResources(), R.drawable.custmtranspprofpic60px, 60, 60));
+            }
+        }
+        //new bindImageTask(context,cursor,viewHolder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,null);
+
+        //// TODO: 14.06.16 found bug - profile pic for those who dnt hv a photoUri
             /*Uri contactPhotoUri = null;
             try {
                 contactPhotoUri = new AsyncTask<Void, Void, Uri>() {
@@ -165,7 +172,7 @@ public class RecordsCursorAdapter extends CursorAdapter{
         //}
     }
 
-    private String getLocalFormattetDate(long l){
+    private String getLocalFormattedDate(long l) {
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         return dateFormatter.format(new Date(l));
     }
@@ -176,7 +183,7 @@ public class RecordsCursorAdapter extends CursorAdapter{
         return minutes + ":" + String.format("%02d", seconds);
     }
 
-    private static class MyViewHolder{
+    private static class MyViewHolder {
         int position;
         String id;
         ImageView call_contact_profile;
@@ -193,7 +200,7 @@ public class RecordsCursorAdapter extends CursorAdapter{
         private String mID;
         private MyViewHolder mHolder;
 
-        public bindImageTask(Context context,Cursor cursor, MyViewHolder holder) {
+        public bindImageTask(Context context, Cursor cursor, MyViewHolder holder) {
             mContext = context;
             mCursor = cursor;
             //mPosition = position;
@@ -203,21 +210,19 @@ public class RecordsCursorAdapter extends CursorAdapter{
         @Override
         protected Uri doInBackground(Void... params) {
             long contactID = mCursor.getLong(mCursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
-            Log.d(TAG,"contactID = " + contactID);
-            if(contactID != 0) {
+            Log.d(TAG, "contactID = " + contactID);
+            if (contactID != 0) {
                 return ContactHelper.getContactPhotoUri(mContext.getContentResolver(), contactID);
-            }
-            else {
+            } else {
                 return null;
             }
         }
 
         @Override
         protected void onPostExecute(Uri uri) {
-            if(mHolder.call_contact_profile.getId() == mCursor.getPosition()){
+            if (mHolder.call_contact_profile.getId() == mCursor.getPosition()) {
                 mHolder.call_contact_profile.setImageURI(uri);
-            }
-            else{
+            } else {
                 mHolder.call_contact_profile.setImageResource(R.drawable.custmtranspprofpic);
             }
         }
