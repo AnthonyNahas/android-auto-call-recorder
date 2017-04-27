@@ -38,9 +38,30 @@ import anthonynahas.com.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapt
 import anthonynahas.com.autocallrecorder.classes.Resources;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
+import anthonynahas.com.autocallrecorder.providers.RecordsQueryHandler;
 import anthonynahas.com.autocallrecorder.utilities.decoraters.ItemClickSupport;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
+import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
+import jp.wasabeef.recyclerview.animators.FadeInAnimator;
+import jp.wasabeef.recyclerview.animators.FadeInDownAnimator;
+import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.FadeInRightAnimator;
+import jp.wasabeef.recyclerview.animators.FadeInUpAnimator;
+import jp.wasabeef.recyclerview.animators.FlipInBottomXAnimator;
+import jp.wasabeef.recyclerview.animators.FlipInLeftYAnimator;
+import jp.wasabeef.recyclerview.animators.FlipInRightYAnimator;
+import jp.wasabeef.recyclerview.animators.FlipInTopXAnimator;
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
+import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.OvershootInRightAnimator;
+import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
+import jp.wasabeef.recyclerview.animators.ScaleInBottomAnimator;
+import jp.wasabeef.recyclerview.animators.ScaleInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.ScaleInRightAnimator;
+import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 import static anthonynahas.com.autocallrecorder.R.id.recyclerView;
@@ -68,8 +89,8 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
 
     public int sCounter = 0;
-    public final int offset = 30;
-    private int page = 0;
+    public final int limit = 30;
+    private int offset = 0;
     private String mSearchKey = "";
     private Handler handlerToWait = new Handler();
 
@@ -90,6 +111,40 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
 
     private OnFragmentInteractionListener mListener;
+
+    enum Type {
+        FadeIn(new FadeInAnimator()),//0
+        FadeInDown(new FadeInDownAnimator()),//1
+        FadeInUp(new FadeInUpAnimator()),//2
+        FadeInLeft(new FadeInLeftAnimator()),//3
+        FadeInRight(new FadeInRightAnimator()),//4
+        Landing(new LandingAnimator()),//5
+        ScaleIn(new ScaleInAnimator()),//6
+        ScaleInTop(new ScaleInTopAnimator()),//7
+        ScaleInBottom(new ScaleInBottomAnimator()),//8
+        ScaleInLeft(new ScaleInLeftAnimator()),//19
+        FlipInTopX(new FlipInTopXAnimator()),//10
+        FlipInBottomX(new FlipInBottomXAnimator()),//11
+        FlipInLeftY(new FlipInLeftYAnimator()),//12
+        FlipInRightY(new FlipInRightYAnimator()),//13
+        SlideInLeft(new SlideInLeftAnimator()),//14
+        SlideInRight(new SlideInRightAnimator()),//15
+        SlideInDown(new SlideInDownAnimator()),//16
+        SlideInUp(new SlideInUpAnimator()),//17
+        OvershootInRight(new OvershootInRightAnimator(1.0f)),//18
+        OvershootInLeft(new OvershootInLeftAnimator(1.0f));//19
+
+        private BaseItemAnimator mAnimator;
+
+        Type(BaseItemAnimator animator) {
+            mAnimator = animator;
+        }
+
+        public BaseItemAnimator getAnimator() {
+            return mAnimator;
+        }
+    }
+
 
     public RecordsRecyclerListFragment() {
         Log.d(TAG, "on new RecordsRecyclerListFragment");
@@ -132,9 +187,13 @@ public class RecordsRecyclerListFragment extends Fragment implements
         updateToolbarText();
 
 
-        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
-        SlideInUpAnimator animator = new SlideInUpAnimator(new OvershootInterpolator(1f));
-        mRecyclerView.setItemAnimator(animator);
+        mRecyclerView.setItemAnimator(Type.values()[4].getAnimator());
+        mRecyclerView.getItemAnimator().setAddDuration(500);
+        mRecyclerView.getItemAnimator().setRemoveDuration(500);
+        //mRecyclerView.setItemAnimator(new SlideInLeftAnimator()); // https://github.com/wasabeef/recyclerview-animators
+        //SlideInUpAnimator animator = new SlideInUpAnimator(new OvershootInterpolator(1f));
+        //mRecyclerView.setItemAnimator(animator);
+        //mAdapter.notifyItemRemoved();
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         // use a linear layout manager
@@ -146,6 +205,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
+        RecordsQueryHandler.getInstance(mContext.getContentResolver()).setAdapter(mAdapter);
         mSwipeContainer.setOnRefreshListener(this);
 
         ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(
@@ -211,14 +271,14 @@ public class RecordsRecyclerListFragment extends Fragment implements
                 int maxPositions = layoutManager.getItemCount();
 
                 if (lastVisibleItemPosition == maxPositions - 1
-                        && maxPositions * page == offset * page
-                        && page != 0) {
+                        && maxPositions * offset == limit * offset
+                        && offset != 0) {
                     if (onLoadingMore) {
                         return;
                     }
 
                     onLoadingMore = true;
-                    page++;
+                    offset++;
                     refresh();
                 }
             }
@@ -254,7 +314,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
 
     public void hardResetLoader() {
-        page = 0;
+        offset = 0;
         mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
         getLoaderManager().restartLoader(0, null, this);
@@ -302,7 +362,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
             //selection = RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE '%" + mSearchKey + "%'";
             selection = RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE ?";
             selectionArgs = new String[]{"%" + mSearchKey + "%"};
-            page = 0;
+            offset = 0;
         }
         String sort = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION,
                 RecordDbContract.RecordItem.COLUMN_DATE)
@@ -310,14 +370,14 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
         switch (id) {
             case 0:
-                //Uri uri = RecordsContentProvider.urlForItems(offset * page);
+                //Uri uri = RecordsContentProvider.urlForItems(limit * offset);
                 Uri uri = RecordDbContract.CONTENT_URL
                         .buildUpon()
                         .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_LIMIT,
-                                String.valueOf(offset))
+                                String.valueOf(limit))
                         .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_OFFSET,
-                                String.valueOf(page))
-                        //.encodedQuery("limit=" + offset + "," + page)
+                                String.valueOf(offset))
+                        //.encodedQuery("limit=" + limit + "," + offset)
                         .build();
                 return new CursorLoader(getActivity(),
                         uri, projection, selection, selectionArgs, sort);
@@ -374,10 +434,11 @@ public class RecordsRecyclerListFragment extends Fragment implements
         mRecyclerView.setAdapter(mAdapter);
         mContentLoadingProgressBar.hide();
         mSwipeContainer.setRefreshing(false);
+        mAdapter.notifyItemInserted(0);
     }
 
     private void mergeCursor(Cursor data) {
-        shortToast.setText("loading MORE " + page);
+        shortToast.setText("loading MORE " + offset);
         shortToast.show();
         Cursor cursor =
                 ((RecordsCursorRecyclerViewAdapter) mRecyclerView.getAdapter()).getCursor();

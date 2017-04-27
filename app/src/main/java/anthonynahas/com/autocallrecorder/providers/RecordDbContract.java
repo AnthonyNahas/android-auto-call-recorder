@@ -23,10 +23,10 @@ public class RecordDbContract {
     public static final String URL = SCHEME + AUTHORITY + "/" + PATH;
 
 
-    public static final String URI_OFFSET = SCHEME + AUTHORITY + "/" + PATH + "/offset/";
+    public static final String URI_OFFSET = SCHEME + AUTHORITY + "/" + PATH + "/limit/";
 
     //Uri.parse("content://" + RecordDbContract.AUTHORITY + "/" +
-    //RecordDbContract.RecordItem.TABLE_NAME + "/offset/" + limit);
+    //RecordDbContract.RecordItem.TABLE_NAME + "/limit/" + limit);
 
     /**
      * THe content URI for the top-level BlogItem authority

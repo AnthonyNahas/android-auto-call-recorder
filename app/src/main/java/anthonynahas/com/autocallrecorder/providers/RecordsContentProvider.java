@@ -39,7 +39,7 @@ public class RecordsContentProvider extends ContentProvider {
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(RecordDbContract.AUTHORITY, RecordDbContract.RecordItem.TABLE_NAME
-                + "/offset/" + "#", TABLE_ITEMS);
+                + "/limit/" + "#", TABLE_ITEMS);
         sUriMatcher.addURI(RecordDbContract.AUTHORITY, "/" + RecordDbContract.PATH, ALL_ROWS);
         sUriMatcher.addURI(RecordDbContract.AUTHORITY, "/" + RecordDbContract.PATH + "/*", SINGLE_ROW);
         Log.d(TAG, "static sUriMatcher)");
@@ -47,7 +47,7 @@ public class RecordsContentProvider extends ContentProvider {
 
     public static Uri urlForItems(int limit) {
         return Uri.parse("content://" + RecordDbContract.AUTHORITY + "/" +
-                RecordDbContract.RecordItem.TABLE_NAME + "/offset/" + limit);
+                RecordDbContract.RecordItem.TABLE_NAME + "/limit/" + limit);
     }
 
     @Override
