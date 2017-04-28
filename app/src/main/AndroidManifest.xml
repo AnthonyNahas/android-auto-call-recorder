@@ -36,12 +36,10 @@
                 android:name="android.app.default_searchable"
                 android:value="anthonynahas.com.autocallrecorder.activities.SearchableActivity" />
         </activity>
-
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings2"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activities.SettingsActivityOld"
             android:screenOrientation="portrait" />
@@ -117,6 +115,7 @@
             android:authorities="anthonynahas.com.autocallrecorder.providers.RecentSuggestionProvider"
             android:exported="false" />
 
+        <activity android:name=".activities.RecordsInActionModeActivity"></activity>
     </application>
 
 </manifest>

@@ -41,9 +41,9 @@ public class SortDialogFragment extends DialogFragment {
         mSelect = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION,RecordDbContract.RecordItem.COLUMN_DATE);
         mArrange = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_ARRANGE," DESC");
 
-        RadioGroup select_radiogroup = (RadioGroup) view.findViewById(R.id.radiogroup_sort_select);
-        checkSelectRadioGroup(select_radiogroup,mSelect);
-        select_radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        RadioGroup select_radio_group = (RadioGroup) view.findViewById(R.id.radiogroup_sort_select);
+        checkSelectRadioGroup(select_radio_group,mSelect);
+        select_radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId){

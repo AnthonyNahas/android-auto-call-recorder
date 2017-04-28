@@ -136,7 +136,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                mode.getMenuInflater().inflate(R.menu.context_menu, menu);
+                mode.getMenuInflater().inflate(R.menu.action_mode_menu, menu);
                 return true;
 
             }

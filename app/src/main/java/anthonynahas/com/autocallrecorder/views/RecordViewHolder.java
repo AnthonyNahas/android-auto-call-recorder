@@ -45,8 +45,9 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
     private TextView call_date;
     private ImageView call_icon_isIncoming;
     private TextView call_duration;
-    private AppCompatCheckBox call_selected;
     private ImageButton call_isLove;
+    public static AppCompatCheckBox call_selected;
+
 
     private long mItemID;
 
@@ -197,6 +198,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                 Log.d(TAG, "mItemId = " + mItemID);
                 Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, mItemID);
                 asyncQueryHandler.startQuery(0, null, uri, new String[]{"*"}, null, null, null);
+                break;
 
         }
     }

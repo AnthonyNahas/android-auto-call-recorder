@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -17,7 +18,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +26,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +56,6 @@ import jp.wasabeef.recyclerview.animators.OvershootInRightAnimator;
 import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
 import jp.wasabeef.recyclerview.animators.ScaleInBottomAnimator;
 import jp.wasabeef.recyclerview.animators.ScaleInLeftAnimator;
-import jp.wasabeef.recyclerview.animators.ScaleInRightAnimator;
 import jp.wasabeef.recyclerview.animators.ScaleInTopAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
@@ -75,7 +73,7 @@ import static anthonynahas.com.autocallrecorder.R.id.recyclerView;
  * create an instance of this fragment.
  *
  * @author Anthony Nahas
- * @version 1.0
+ * @version 1.2.9
  * @since 29.03.2017
  */
 public class RecordsRecyclerListFragment extends Fragment implements
@@ -92,6 +90,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
     public final int limit = 30;
     private int offset = 0;
     private String mSearchKey = "";
+
     private Handler handlerToWait = new Handler();
 
     private View mView;
@@ -100,6 +99,8 @@ public class RecordsRecyclerListFragment extends Fragment implements
     private LinearLayoutManager mLayoutManager;
     private SharedPreferences mSharedPreferences;
     private RecordsCursorRecyclerViewAdapter mAdapter;
+    private FloatingActionButton mFloatingActionButton;
+
     private ContentLoadingProgressBar mContentLoadingProgressBar;
     private SwipeRefreshLayout mSwipeContainer;
     private boolean onLoadingMore = false;
@@ -172,9 +173,11 @@ public class RecordsRecyclerListFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_recrods_card_list, container, false);
         mContext = mView.getContext();
+
         mContentLoadingProgressBar = (ContentLoadingProgressBar) mView.findViewById(R.id.content_loading_progressbar);
         // Lookup the swipe container view
         mSwipeContainer = (SwipeRefreshLayout) mView.findViewById(R.id.swipeContainer);
@@ -238,8 +241,8 @@ public class RecordsRecyclerListFragment extends Fragment implements
             public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
                 notifyOnActionMode(true);
                 mToolbar.getMenu().clear();
-                mToolbar.inflateMenu(R.menu.menu);
-                ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+                mToolbar.inflateMenu(R.menu.action_mode_menu);
+                //((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
                 mToolbar.setVisibility(View.VISIBLE);
                 mCounterTV.setVisibility(View.VISIBLE);
                 is_in_action_mode = true;
@@ -288,6 +291,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
         return mView;
     }
+
 
     public void prepareSelection(View view, int position) {
         if (((AppCompatCheckBox) view).isChecked()) {
@@ -517,6 +521,8 @@ public class RecordsRecyclerListFragment extends Fragment implements
         intent.putExtra(Resources.ACTION_MODE_SATE, state);
         LocalBroadcastManager.getInstance(mContext)
                 .sendBroadcast(intent);
+        is_in_action_mode = true;
+        mAdapter.notifyItemChanged(0);
     }
 
     private void updateToolbarText() {
