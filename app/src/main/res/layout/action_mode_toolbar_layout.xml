@@ -1,22 +1,21 @@
-<android.support.v7.widget.Toolbar
-    android:id="@+id/toolbar_action_mode"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar_action_mode"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fitsSystemWindows="true"
-    android:contentInsetLeft="0dp"
-    android:contentInsetStart="0dp"
-    app:contentInsetLeft="0dp"
-    app:contentInsetStart="0dp"
-    android:contentInsetRight="0dp"
-    android:contentInsetEnd="0dp"
-    app:contentInsetRight="0dp"
-    app:contentInsetEnd="0dp"
     android:background="?android:attr/selectableItemBackground"
+    android:contentInsetEnd="0dp"
+    android:contentInsetLeft="0dp"
+    android:contentInsetRight="0dp"
+    android:contentInsetStart="0dp"
+    android:fitsSystemWindows="true"
     android:minHeight="?attr/actionBarSize"
-    app:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar">
+    app:contentInsetEnd="0dp"
+    app:contentInsetLeft="0dp"
+    app:contentInsetRight="0dp"
+    app:contentInsetStart="0dp"
+    app:theme="@style/ThemeToolbar_inActionMode">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,23 +25,23 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
                 android:buttonTint="@color/colorPrimary"
+                android:textColor="@color/colorPrimary"
                 android:textSize="18dp"
                 android:textStyle="bold"
-                android:visibility="visible"/>
+                android:visibility="visible" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
-                android:text="Alle"/>
+                android:text="Alle"
+                android:textColor="@color/colorPrimary" />
 
         </LinearLayout>
 
@@ -51,11 +50,12 @@
             android:id="@+id/counter_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
             android:textColor="@color/colorPrimary"
             android:textSize="18dp"
-            android:textStyle="bold"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"/>
+            android:textStyle="bold" />
+
     </LinearLayout>
 
 </android.support.v7.widget.Toolbar>
