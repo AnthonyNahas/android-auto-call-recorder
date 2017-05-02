@@ -18,11 +18,13 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -57,6 +59,9 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
     public static final String REC_DURATION_KEY = "recdurationkey";
     public static final String REC_ISINCOMING_KEY = "recisincomingkey";
 
+
+    private Toolbar mToolbar;
+
     private ImageView mImageProfile;
     private TextView mTV_Number_CN;
     private SeekBar mSeekbarRec;
@@ -67,6 +72,7 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
     private FloatingActionButton mFloatingActionButton_delete;
     private FloatingActionButton mFloatingActionButton_call;
     private FloatingActionButton mFloatingActionButton_upload;
+
     private MediaPlayer mMediaPlayer;
     private Handler mSeekHandler = new Handler();
     private boolean isPaused;
@@ -89,8 +95,8 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         int isIncoming = sentArgs.getInt(REC_ISINCOMING_KEY);
         mContactID = sentArgs.getLong(REC_CONTACT_ID_KEY);
 
-        Log.d(TAG,"isIncoming = " + isIncoming);
-        Log.d(TAG,"number = " + mNumber_CN);
+        Log.d(TAG, "isIncoming = " + isIncoming);
+        Log.d(TAG, "number = " + mNumber_CN);
 
         //---------------------------------------------------
 
@@ -106,7 +112,7 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         updateSeekBar();
 
         mTV_Number_CN.setText(mNumber_CN);
-        Log.d(TAG,"id = " + mID);
+        Log.d(TAG, "id = " + mID);
 
         return builder.create();
     }
@@ -125,15 +131,26 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         super.onAttach(activity);
     }
 
-    private void init(View view){
+    private void init(View view) {
+
+        mToolbar = (Toolbar) view.findViewById(R.id.toolbar_rec_dialog);
+        mToolbar.inflateMenu(R.menu.menu_record_dialog);
+
+        Button closeButton = (Button) view.findViewById(R.id.button_rec_dialog_close);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
+
         mImageProfile = (ImageView) view.findViewById(R.id.img_profile_recDialog);
         //setContactBitMap();
         //mImageProfile.setImageBitmap(ImageHelper.getRoundedCornerBitmap(getContactBitMap(),100));
-        Bitmap contactPhoto = ImageHelper.getRoundedCroppedBitmap(getContactBitMap(),convert_dp_To_px(150));
-        if(contactPhoto != null){
+        Bitmap contactPhoto = ImageHelper.getRoundedCroppedBitmap(getContactBitMap(), convert_dp_To_px(150));
+        if (contactPhoto != null) {
             mImageProfile.setImageBitmap(contactPhoto);
-        }
-        else {
+        } else {
             mImageProfile.setImageResource(R.drawable.custmtranspprofpic);
         }
 
@@ -162,10 +179,9 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         mFloatingActionButton_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPaused){
+                if (isPaused) {
                     playMediaPlayer();
-                }
-                else {
+                } else {
                     stopMediaPlayer();
                 }
             }
@@ -177,11 +193,11 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                if(!isPaused){
+                if (!isPaused) {
                     isPaused = true;
                     mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
                 }
-                if(mMediaPlayer != null){
+                if (mMediaPlayer != null) {
                     mMediaPlayer.reset();
                     mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
                     isPaused = true;
@@ -228,8 +244,8 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         mFloatingActionButton_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG,"onUpload()");
-                UploadAudioFile uploadAudioFile = new UploadAudioFile(getActivity().getApplication().getApplicationContext(), MainActivity.mApi,MainActivity.DROPBOX_FILE_DIR,mPathFile,mFileName);
+                Log.d(TAG, "onUpload()");
+                UploadAudioFile uploadAudioFile = new UploadAudioFile(getActivity().getApplication().getApplicationContext(), MainActivity.mApi, MainActivity.DROPBOX_FILE_DIR, mPathFile, mFileName);
                 uploadAudioFile.execute();
                 //getAudioFilePath(String.valueOf(mID));
             }
@@ -243,11 +259,11 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         }
     };
 
-    private void updateSeekBar(){
-        if(mMediaPlayer != null){
+    private void updateSeekBar() {
+        if (mMediaPlayer != null) {
             mSeekbarRec.setProgress(mMediaPlayer.getCurrentPosition());
         }
-        mSeekHandler.postDelayed(run,100);
+        mSeekHandler.postDelayed(run, 100);
     }
 
     public static String getTimeString(int duration) {
@@ -259,11 +275,10 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if(iSDurationTextPressed){
+        if (iSDurationTextPressed) {
             mTV_Duration.setText(getTimeString(progress) + "/" + getTimeString(mSeekbarRec.getMax()));
-        }
-        else {
-            mTV_Duration.setText(getTimeString(mSeekbarRec.getMax()-progress));
+        } else {
+            mTV_Duration.setText(getTimeString(mSeekbarRec.getMax() - progress));
         }
     }
 
@@ -277,50 +292,50 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
     public void onStopTrackingTouch(SeekBar seekBar) {
         mMediaPlayer.seekTo(mSeekbarRec.getProgress());
         playMediaPlayer();
-        mSeekHandler.postDelayed(run,100);
+        mSeekHandler.postDelayed(run, 100);
     }
 
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        Log.d(TAG,"onCancel()");
-        if(mMediaPlayer != null){
+        Log.d(TAG, "onCancel()");
+        if (mMediaPlayer != null) {
             mMediaPlayer.release();
             mSeekHandler.removeCallbacks(run);
         }
     }
 
-    private void setAndPrepareMediaPlayer(){
-        if(mMediaPlayer != null) {
+    private void setAndPrepareMediaPlayer() {
+        if (mMediaPlayer != null) {
             try {
                 mMediaPlayer.setDataSource(getActivity(),
                         ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mID));
                 mMediaPlayer.prepare();
             } catch (IOException e) {
-                Log.e(TAG, "error - IOException",e);
+                Log.e(TAG, "error - IOException", e);
                 //todo - 26.04 - create dialog fragment --> no source file found 404 - id now found in the media store
                 //throw new RuntimeException();
             }
         }
     }
 
-    private void playMediaPlayer(){
+    private void playMediaPlayer() {
         isPaused = false;
         mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_pause);
         mMediaPlayer.start();
     }
 
-    private void stopMediaPlayer(){
+    private void stopMediaPlayer() {
         isPaused = true;
         mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
         mMediaPlayer.pause();
     }
 
-    private void showSnackbar(){
+    private void showSnackbar() {
         //Snackbar snackbar = Snackbar.make()
     }
 
-    private void deleteRecord(){
+    private void deleteRecord() {
         //getActivity().getContentResolver().delete(ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id),null,null);
         //getActivity().getContentResolver().delete(ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, id),null,null);
         ArrayList<String> filesToDelete = new ArrayList<>();
@@ -330,39 +345,37 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
     }
 
     private void call_the_contact() {
-        Intent in=new Intent(Intent.ACTION_DIAL, Uri.parse("tel: " + mNumber)); //"tel: " + "+46 (999) 44 55 66"
-        try{
+        Intent in = new Intent(Intent.ACTION_DIAL, Uri.parse("tel: " + mNumber)); //"tel: " + "+46 (999) 44 55 66"
+        try {
             startActivity(in);
-        }
-
-        catch (android.content.ActivityNotFoundException ex){
-            Toast.makeText(getActivity().getApplicationContext(),"Error", Toast.LENGTH_SHORT).show();
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getActivity().getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private String getAudioFilePath(String id){
-        AudioFileHelper audioFileHelper = new AudioFileHelper(id,getActivity().getApplicationContext());
+    private String getAudioFilePath(String id) {
+        AudioFileHelper audioFileHelper = new AudioFileHelper(id, getActivity().getApplicationContext());
         try {
             Cursor audioCursor = audioFileHelper.execute().get();
-            String id2  = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media._ID));
+            String id2 = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media._ID));
             mPathFile = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
             mFileName = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
-            Log.d(TAG,"id original = " + id);
-            Log.d(TAG," id = " + id2 + " | data = " + mPathFile + " name = " + mFileName);
+            Log.d(TAG, "id original = " + id);
+            Log.d(TAG, " id = " + id2 + " | data = " + mPathFile + " name = " + mFileName);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
-            Log.e(TAG,"Error : ", e);
-        } catch (IndexOutOfBoundsException e){
-            Log.e(TAG,"Error: IndexOutOfBound", e);
+            Log.e(TAG, "Error : ", e);
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG, "Error: IndexOutOfBound", e);
         }
         return mPathFile;
     }
 
-    private void setContactBitMap(){
+    private void setContactBitMap() {
         InputStream in;
         BufferedInputStream buf;
         try {
-            in = ContactHelper.openLargeDisplayPhoto(getActivity().getContentResolver(),mContactID);
+            in = ContactHelper.openLargeDisplayPhoto(getActivity().getContentResolver(), mContactID);
             buf = new BufferedInputStream(in);
             Bitmap bMap = BitmapFactory.decodeStream(buf);
             mImageProfile.setImageBitmap(bMap);
@@ -373,11 +386,11 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         }
     }
 
-    private Bitmap getContactBitMap(){
+    private Bitmap getContactBitMap() {
         InputStream in;
         BufferedInputStream buf;
         try {
-            in = ContactHelper.openLargeDisplayPhoto(getActivity().getContentResolver(),mContactID);
+            in = ContactHelper.openLargeDisplayPhoto(getActivity().getContentResolver(), mContactID);
             buf = new BufferedInputStream(in);
             Bitmap bMap = BitmapFactory.decodeStream(buf);
             in.close();
@@ -389,10 +402,10 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         return null;
     }
 
-    private int convert_dp_To_px(int dp){
+    private int convert_dp_To_px(int dp) {
         Resources r = this.getResources();
         return (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,dp,
+                TypedValue.COMPLEX_UNIT_DIP, dp,
                 r.getDisplayMetrics()
         );
     }
