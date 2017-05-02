@@ -11,5 +11,6 @@ public class Resources {
 
     //Local Broadcast actions key for intent
     public static final String ACTION_MODE_SATE = "action_mode_state";
+    public static final String ACTION_MODE_SENDER = "action_mode_sender";
 
 }

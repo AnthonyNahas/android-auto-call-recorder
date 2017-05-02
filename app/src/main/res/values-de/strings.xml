@@ -30,4 +30,5 @@
     <string name="preference_chexbox_auto_call_recording"></string>
     <string name="tst_list_empty">Es gibt keine Aufzeichnung zu löschen!</string>
     <string name="toolbar_action_mode_text">Auswahl von Aufzeichnungen</string>
+    <string name="all">alle</string>
 </resources>

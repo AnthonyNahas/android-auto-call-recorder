@@ -96,7 +96,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                 }
             }.execute().get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error: ", e);
         }
 
 
@@ -138,7 +138,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         int isLove = mCursor.getInt(mCursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
         call_isLove.setImageResource(isLove == 1 ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
 
-        if (RecordsRecyclerListFragment.is_in_action_mode) {
+        if (RecordsRecyclerListFragment.sIsInActionMode) {
             call_selected.setVisibility(View.VISIBLE);
             call_selected.setChecked(false);
         } else {

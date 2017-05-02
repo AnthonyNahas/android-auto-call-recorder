@@ -17,45 +17,73 @@
     app:contentInsetStart="0dp"
     app:theme="@style/ThemeToolbar_inActionMode">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/relativeLayout_action_mode_checking"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-
+            android:layout_height="wrap_content">
             <CheckBox
+                android:id="@+id/checkbox_action_mode_selection"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/colorPrimary"
+                android:layout_centerVertical="true"
                 android:textColor="@color/colorPrimary"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:visibility="visible" />
 
+
             <TextView
+                android:id="@+id/textView_action_mode_all_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Alle"
-                android:textColor="@color/colorPrimary" />
+                android:layout_below="@+id/checkbox_action_mode_selection"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:text="@string/all"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
-        </LinearLayout>
+
 
 
         <TextView
             android:id="@+id/counter_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="13dp"
+            android:layout_marginStart="13dp"
+            android:layout_toEndOf="@+id/relativeLayout_action_mode_checking"
+            android:layout_toRightOf="@+id/relativeLayout_action_mode_checking"
+            android:ellipsize="none"
+            android:maxLines="2"
+            android:scrollHorizontally="false"
+            android:text="@string/toolbar_action_mode_text"
             android:textColor="@color/colorPrimary"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/button_action_mode_delete"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/action_delete"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
 
 </android.support.v7.widget.Toolbar>

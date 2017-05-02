@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
 /**
@@ -130,6 +131,9 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
 
 
     public abstract void onBindViewHolder(VH viewHolder, Cursor cursor);
+
+    public void bindViewHolder(VH viewHolder) {
+    }
 
 
     private class NotifyingDataSetObserver extends DataSetObserver {

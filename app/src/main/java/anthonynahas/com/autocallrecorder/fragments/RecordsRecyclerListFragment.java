@@ -1,8 +1,10 @@
 package anthonynahas.com.autocallrecorder.fragments;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -10,7 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -26,6 +28,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +65,8 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static anthonynahas.com.autocallrecorder.R.id.recyclerView;
 
 /**
@@ -73,7 +78,7 @@ import static anthonynahas.com.autocallrecorder.R.id.recyclerView;
  * create an instance of this fragment.
  *
  * @author Anthony Nahas
- * @version 1.2.9
+ * @version 1.4.0
  * @since 29.03.2017
  */
 public class RecordsRecyclerListFragment extends Fragment implements
@@ -99,7 +104,6 @@ public class RecordsRecyclerListFragment extends Fragment implements
     private LinearLayoutManager mLayoutManager;
     private SharedPreferences mSharedPreferences;
     private RecordsCursorRecyclerViewAdapter mAdapter;
-    private FloatingActionButton mFloatingActionButton;
 
     private ContentLoadingProgressBar mContentLoadingProgressBar;
     private SwipeRefreshLayout mSwipeContainer;
@@ -107,9 +111,10 @@ public class RecordsRecyclerListFragment extends Fragment implements
     private Toast shortToast;
 
     private Toolbar mToolbar;
-    public static boolean is_in_action_mode = false;
     private TextView mCounterTV;
-
+    private Button mDeleteButton;
+    public static boolean sIsInActionMode = false;
+    private BroadcastReceiver mActionModeBroadcastReceiver;
 
     private OnFragmentInteractionListener mListener;
 
@@ -184,14 +189,14 @@ public class RecordsRecyclerListFragment extends Fragment implements
         mRecyclerView = (RecyclerView) mView.findViewById(recyclerView);
 
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar_action_mode);
-        mToolbar.setVisibility(View.GONE);
+        mToolbar.setVisibility(GONE);
         mCounterTV = (TextView) mView.findViewById(R.id.counter_text);
-        mCounterTV.setVisibility(View.GONE);
+        mDeleteButton = (Button) mView.findViewById(R.id.button_action_mode_delete);
         updateToolbarText();
 
 
         mRecyclerView.setItemAnimator(Type.values()[4].getAnimator());
-        mRecyclerView.getItemAnimator().setAddDuration(500);
+        //mRecyclerView.getItemAnimator().setAddDuration(500);
         mRecyclerView.getItemAnimator().setRemoveDuration(500);
         //mRecyclerView.setItemAnimator(new SlideInLeftAnimator()); // https://github.com/wasabeef/recyclerview-animators
         //SlideInUpAnimator animator = new SlideInUpAnimator(new OvershootInterpolator(1f));
@@ -216,7 +221,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                         Log.d(TAG, "position = " + position);
-                        if (is_in_action_mode) {
+                        if (sIsInActionMode) {
                             //Cursor cursor = mAdapter.getCursor();
                             //cursor.moveToPosition(position);
                             AppCompatCheckBox call_selected = ((AppCompatCheckBox) v.findViewById(R.id.call_selected));
@@ -239,14 +244,11 @@ public class RecordsRecyclerListFragment extends Fragment implements
         ItemClickSupport.addTo(mRecyclerView).setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
+                if (sIsInActionMode) {
+                    return false;
+                }
+                //handleActionMode(false);
                 notifyOnActionMode(true);
-                mToolbar.getMenu().clear();
-                mToolbar.inflateMenu(R.menu.action_mode_menu);
-                //((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-                mToolbar.setVisibility(View.VISIBLE);
-                mCounterTV.setVisibility(View.VISIBLE);
-                is_in_action_mode = true;
-                refresh();
                 return false;
             }
         });
@@ -290,6 +292,51 @@ public class RecordsRecyclerListFragment extends Fragment implements
         getLoaderManager().restartLoader(0, null, this);
 
         return mView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "on activity created");
+        mActionModeBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String senderClassName = intent.getStringExtra(Resources.ACTION_MODE_SENDER);
+                boolean isInActionMode = intent.getBooleanExtra(Resources.ACTION_MODE_SATE, false);
+                handleActionMode(isInActionMode);
+                Log.d(TAG, "on receive action mode: " + isInActionMode + " from --> " + senderClassName);
+            }
+        };
+
+        LocalBroadcastManager.getInstance(mContext)
+                .registerReceiver(mActionModeBroadcastReceiver,
+                        new IntentFilter(Resources.BROADCAST_ACTION_ON_ACTION_MODE));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mActionModeBroadcastReceiver);
+
+    }
+
+    public void handleActionMode(boolean isInActionMode) {
+        if (!isInActionMode) {
+            //leave action mode
+            mToolbar.getMenu().clear();
+            mToolbar.setVisibility(GONE);
+            mCounterTV.setVisibility(GONE);
+            sIsInActionMode = false;
+        } else {
+            //enter action mode
+            mToolbar.getMenu().clear();
+            //mToolbar.inflateMenu(R.menu.action_mode_menu);
+            mToolbar.setVisibility(VISIBLE);
+            mCounterTV.setVisibility(VISIBLE);
+            sIsInActionMode = true;
+        }
+
+        refresh();
     }
 
 
@@ -518,18 +565,23 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
     private void notifyOnActionMode(boolean state) {
         Intent intent = new Intent(Resources.BROADCAST_ACTION_ON_ACTION_MODE);
+        intent.putExtra(Resources.ACTION_MODE_SENDER, RecordsRecyclerListFragment.class.getSimpleName());
         intent.putExtra(Resources.ACTION_MODE_SATE, state);
         LocalBroadcastManager.getInstance(mContext)
                 .sendBroadcast(intent);
-        is_in_action_mode = true;
-        mAdapter.notifyItemChanged(0);
+        sIsInActionMode = true;
+        //mAdapter.notifyItemChanged(0);
     }
 
     private void updateToolbarText() {
         if (sCounter == 0) {
+            mDeleteButton.setVisibility(GONE);
             mCounterTV.setText(getResources().getString(R.string.toolbar_action_mode_text));
         } else {
             mCounterTV.setText(String.valueOf(sCounter));
+            if (mDeleteButton.getVisibility() == GONE) {
+                mDeleteButton.setVisibility(VISIBLE);
+            }
         }
     }
 

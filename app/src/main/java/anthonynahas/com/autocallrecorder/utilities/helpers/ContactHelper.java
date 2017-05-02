@@ -24,20 +24,21 @@ import java.util.ArrayList;
  */
 public class ContactHelper {
 
+    private static final String TAG = ContactHelper.class.getSimpleName();
+
     public static Cursor getContactCursorByName(ContentResolver contactHelper, String startsWith) {
-        String[] projection = { ContactsContract.CommonDataKinds.Phone._ID, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER };
+        String[] projection = {ContactsContract.CommonDataKinds.Phone._ID, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
         Cursor cur = null;
         try {
             if (startsWith != null && !startsWith.equals("")) {
-                cur = contactHelper.query (ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like \"" + startsWith + "%\"", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+                cur = contactHelper.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like \"" + startsWith + "%\"", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
             } else {
-                cur = contactHelper.query (ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+                cur = contactHelper.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
             }
             if (cur != null) {
                 cur.moveToFirst();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return cur;
@@ -46,8 +47,8 @@ public class ContactHelper {
     public static boolean insertContact(ContentResolver contactAdder, String firstName, String mobileNumber) {
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         ops.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI).withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null).withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null).build());
-        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(ContactsContract.Data.MIMETYPE,ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME,firstName).build());
-        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(ContactsContract.Data.MIMETYPE,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Phone.NUMBER,mobileNumber).withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE).build());
+        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, firstName).build());
+        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI).withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE).withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, mobileNumber).withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE).build());
         try {
             contactAdder.applyBatch(ContactsContract.AUTHORITY, ops);
         } catch (Exception e) {
@@ -58,7 +59,7 @@ public class ContactHelper {
 
     public static void deleteContact(ContentResolver contactHelper, String number) {
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
-        String[] args = new String[] { String.valueOf(getContactID(contactHelper, number)) };
+        String[] args = new String[]{String.valueOf(getContactID(contactHelper, number))};
         ops.add(ContentProviderOperation.newDelete(ContactsContract.RawContacts.CONTENT_URI).withSelection(ContactsContract.RawContacts.CONTACT_ID + "=?", args).build());
         try {
             contactHelper.applyBatch(ContactsContract.AUTHORITY, ops);
@@ -69,12 +70,12 @@ public class ContactHelper {
         }
     }
 
-    public static long getContactID(ContentResolver contactHelper,String number) {
+    public static long getContactID(ContentResolver contactHelper, String number) {
         Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
-        String[] projection = { ContactsContract.PhoneLookup._ID };
+        String[] projection = {ContactsContract.PhoneLookup._ID};
         Cursor cursor = null;
         try {
-            cursor = contactHelper.query(contactUri, projection, null, null,null);
+            cursor = contactHelper.query(contactUri, projection, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 int personID = cursor.getColumnIndex(ContactsContract.PhoneLookup._ID);
                 return cursor.getLong(personID);
@@ -92,10 +93,10 @@ public class ContactHelper {
 
     public static String getContactName(ContentResolver contactHelper, String number) {
         Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
-        String[] projection = { ContactsContract.PhoneLookup.DISPLAY_NAME };
+        String[] projection = {ContactsContract.PhoneLookup.DISPLAY_NAME};
         Cursor cursor = null;
         try {
-            cursor = contactHelper.query(contactUri, projection, null, null,null);
+            cursor = contactHelper.query(contactUri, projection, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 int contactNameRow = cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME);
                 return cursor.getString(contactNameRow);
@@ -140,8 +141,7 @@ public class ContactHelper {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
-        finally {
+        } finally {
             if (cursor != null) {
                 cursor.close();
             }
@@ -152,6 +152,7 @@ public class ContactHelper {
 
     /**
      * Retrieving the larger photo version
+     *
      * @param contactHelper
      * @param contactId
      * @return
@@ -172,6 +173,7 @@ public class ContactHelper {
 
     /**
      * Retrieving the thumbnail-sized photo
+     *
      * @param contactHelper
      * @param contactId
      * @return
@@ -180,7 +182,7 @@ public class ContactHelper {
         Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
         Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
         Cursor cursor = contactHelper.query(photoUri,
-                new String[] {ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
+                new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
         if (cursor == null) {
             return null;
         }
@@ -197,16 +199,16 @@ public class ContactHelper {
         return null;
     }
 
-    public static Bitmap getBitmapForContactID(ContentResolver contentResolver,int mode, long contactID ){
+    public static Bitmap getBitmapForContactID(ContentResolver contentResolver, int mode, long contactID) {
         InputStream in = null;
         BufferedInputStream buf;
         try {
-            switch (mode){
+            switch (mode) {
                 case 0: //large
-                    in = ContactHelper.openLargeDisplayPhoto(contentResolver,contactID);
+                    in = ContactHelper.openLargeDisplayPhoto(contentResolver, contactID);
                     break;
                 case 1: //thumbnail
-                    in = ContactHelper.openThumbnailPhoto(contentResolver,contactID);
+                    in = ContactHelper.openThumbnailPhoto(contentResolver, contactID);
             }
             assert in != null;
             buf = new BufferedInputStream(in);
@@ -215,7 +217,7 @@ public class ContactHelper {
             buf.close();
             return bMap;
         } catch (Exception e) {
-            Log.e("Error reading file", e.toString());
+            Log.e(TAG, "Error reading file", e);
         }
         return null;
     }

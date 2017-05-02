@@ -17,19 +17,20 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/appbar_padding_top"
         android:theme="@style/AppTheme.AppBarOverlay"
-        >
+        android:baselineAligned="false">
 
         <com.arlib.floatingsearchview.FloatingSearchView
             android:id="@+id/floating_search_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             app:floatingSearch_close_search_on_keyboard_dismiss="true"
             app:floatingSearch_leftActionMode="showHamburger"
             app:floatingSearch_menu="@menu/menu_main_tabs"
             app:floatingSearch_searchBarMarginTop="10dp"
             app:floatingSearch_searchHint="Search..."
             app:floatingSearch_showSearchKey="false"
-            app:floatingSearch_suggestionsListAnimDuration="250"/>
+            app:floatingSearch_suggestionsListAnimDuration="250" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
@@ -41,7 +42,6 @@
             app:tabSelectedTextColor="@color/colorAccent"
             app:tabTextAppearance="@style/TextAppearance.Design.Tab"
             app:tabTextColor="@color/dark_gray"/>
-
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
@@ -51,11 +51,11 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/fab_go_in_action_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email"/>
+        app:srcCompat="@drawable/ic_delete_white"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -45,6 +45,12 @@ public class RecordsCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter 
     }
 
     @Override
+    public void bindViewHolder(RecyclerView.ViewHolder viewHolder) {
+        // TODO: 02.05.2017
+        RecordViewHolder holder = (RecordViewHolder) viewHolder;
+    }
+
+    @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, Cursor cursor) {
         RecordViewHolder holder = (RecordViewHolder) viewHolder;
         cursor.moveToPosition(cursor.getPosition());

@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -50,13 +49,17 @@ public class MainTabsActivity extends AppCompatActivity implements
 
     private DrawerLayout mDrawer;
     private FloatingSearchView mSearchView;
+    private TabLayout mTabLayout;
     private SwitchCompat mSwitch_auto_rec;
     private SharedPreferences mSharedPreferences;
     private int mCurrentFragmentPosition;
     private AppCompatActivity mActivity;
+    private FloatingActionButton fabActionMode;
     private FloatingSearchView.OnQueryChangeListener mOnQueryChangeListener;
 
     private BroadcastReceiver mActionModeBroadcastReceiver;
+
+    public static boolean sIsInActionMode = false;
 
 
     /**
@@ -94,16 +97,17 @@ public class MainTabsActivity extends AppCompatActivity implements
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabActionMode = (FloatingActionButton) findViewById(R.id.fab_go_in_action_mode);
+        fabActionMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                notifyOnActionMode(sIsInActionMode = !sIsInActionMode);
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                //      .setAction("Action", null).show();
             }
         });
 
@@ -166,14 +170,10 @@ public class MainTabsActivity extends AppCompatActivity implements
         mActionModeBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                String senderClassName = intent.getStringExtra(Resources.ACTION_MODE_SENDER);
                 boolean isInActionMode = intent.getBooleanExtra(Resources.ACTION_MODE_SATE, false);
-                if (isInActionMode) {
-                    mSearchView.setVisibility(View.GONE);
-                    tabLayout.setVisibility(View.GONE);
-                } else {
-                    mSearchView.setVisibility(View.VISIBLE);
-                    tabLayout.setVisibility(View.GONE);
-                }
+                handleActionMode(isInActionMode);
+                Log.d(TAG, "on receive action mode: " + isInActionMode + " from --> " + senderClassName);
             }
         };
 
@@ -210,12 +210,19 @@ public class MainTabsActivity extends AppCompatActivity implements
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (sIsInActionMode) {
+            notifyOnActionMode(sIsInActionMode = !sIsInActionMode);
         } else {
             super.onBackPressed();
         }
     }
 
 
+    /**
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -251,6 +258,39 @@ public class MainTabsActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Adjust the layout on entering or leaving the action mode
+     *
+     * @param isInActionMode - whether the app is in action mode.
+     */
+    public void handleActionMode(boolean isInActionMode) {
+        if (isInActionMode) {
+            mSearchView.setVisibility(View.GONE);
+            mTabLayout.setVisibility(View.GONE);
+            fabActionMode.setImageResource(R.drawable.ic_close_white);
+
+        } else {
+            mSearchView.setVisibility(View.VISIBLE);
+            mTabLayout.setVisibility(View.VISIBLE);
+            fabActionMode.setImageResource(R.drawable.ic_delete_white);
+        }
+
+        sIsInActionMode = isInActionMode;
+    }
+
+    /**
+     * Notify all receiver that the app is going in action mode
+     *
+     * @param state - whether the app is in action mode (true)
+     */
+    private void notifyOnActionMode(boolean state) {
+        Intent intent = new Intent(Resources.BROADCAST_ACTION_ON_ACTION_MODE);
+        intent.putExtra(Resources.ACTION_MODE_SENDER, MainTabsActivity.class.getSimpleName());
+        intent.putExtra(Resources.ACTION_MODE_SATE, state);
+        LocalBroadcastManager.getInstance(this)
+                .sendBroadcast(intent);
     }
 
     /**
