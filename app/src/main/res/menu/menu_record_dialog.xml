@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_sort"
-        android:title="@string/action_sort"
-        app:showAsAction="never">
-    </item>
+        android:id="@+id/action_share"
+        android:title="@string/action_share"
+        app:showAsAction="never" />
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        app:showAsAction="never">
-    </item>
+        android:id="@+id/action_upload"
+        android:title="@string/action_upload"
+        app:showAsAction="never" />
+
 </menu>

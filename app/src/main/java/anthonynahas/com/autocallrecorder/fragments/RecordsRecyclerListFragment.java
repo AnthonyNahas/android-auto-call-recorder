@@ -485,7 +485,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
         mRecyclerView.setAdapter(mAdapter);
         mContentLoadingProgressBar.hide();
         mSwipeContainer.setRefreshing(false);
-        mAdapter.notifyItemInserted(0);
+        //mAdapter.notifyItemInserted(0);
     }
 
     private void mergeCursor(Cursor data) {

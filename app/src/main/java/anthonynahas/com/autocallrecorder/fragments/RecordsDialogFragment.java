@@ -18,10 +18,14 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -71,7 +75,6 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
     private FloatingActionButton mFloatingActionButton_share;
     private FloatingActionButton mFloatingActionButton_delete;
     private FloatingActionButton mFloatingActionButton_call;
-    private FloatingActionButton mFloatingActionButton_upload;
 
     private MediaPlayer mMediaPlayer;
     private Handler mSeekHandler = new Handler();
@@ -135,6 +138,9 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
 
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar_rec_dialog);
         mToolbar.inflateMenu(R.menu.menu_record_dialog);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setHasOptionsMenu(true);
 
         Button closeButton = (Button) view.findViewById(R.id.button_rec_dialog_close);
         closeButton.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +175,6 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         mFloatingActionButton_share = (FloatingActionButton) view.findViewById(R.id.floating_action_button_share);
         mFloatingActionButton_delete = (FloatingActionButton) view.findViewById(R.id.floating_action_button_delete);
         mFloatingActionButton_call = (FloatingActionButton) view.findViewById(R.id.floating_action_button_call);
-        mFloatingActionButton_upload = (FloatingActionButton) view.findViewById(R.id.floating_action_button_upload);
         getAudioFilePath(String.valueOf(mID));
         mMediaPlayer = new MediaPlayer();
         setAndPrepareMediaPlayer();
@@ -241,15 +246,30 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
                 call_the_contact();
             }
         });
-        mFloatingActionButton_upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onUpload()");
-                UploadAudioFile uploadAudioFile = new UploadAudioFile(getActivity().getApplication().getApplicationContext(), MainActivity.mApi, MainActivity.DROPBOX_FILE_DIR, mPathFile, mFileName);
-                uploadAudioFile.execute();
-                //getAudioFilePath(String.valueOf(mID));
-            }
-        });
+
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_record_dialog, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(TAG, "onOptionsItemSelected");
+        //handle item action
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                shareRecord();
+                return true;
+            case R.id.action_upload:
+                uploadRecord();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     Runnable run = new Runnable() {
@@ -408,5 +428,20 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
                 TypedValue.COMPLEX_UNIT_DIP, dp,
                 r.getDisplayMetrics()
         );
+    }
+
+    private void shareRecord() {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("audio/*");
+        share.putExtra(Intent.EXTRA_STREAM, ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mID));
+        startActivity(Intent.createChooser(share, "Share Sound File"));
+    }
+
+    private void uploadRecord(){
+        // TODO: 04.05.2017 : dropbox - fdp server - google drive ...
+        Log.d(TAG, "onUpload()");
+        UploadAudioFile uploadAudioFile = new UploadAudioFile(getActivity().getApplication().getApplicationContext(), MainActivity.mApi, MainActivity.DROPBOX_FILE_DIR, mPathFile, mFileName);
+        uploadAudioFile.execute();
+        //getAudioFilePath(String.valueOf(mID));
     }
 }

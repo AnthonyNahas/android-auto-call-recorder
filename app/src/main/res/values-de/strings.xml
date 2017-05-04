@@ -32,4 +32,6 @@
     <string name="toolbar_action_mode_text">Auswahl von Aufzeichnungen</string>
     <string name="all">alle</string>
     <string name="close">schließen</string>
+    <string name="action_share">Teilen</string>
+    <string name="action_upload">Hochladen</string>
 </resources>

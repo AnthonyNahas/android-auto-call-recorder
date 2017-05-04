@@ -13,6 +13,7 @@
         <item name="colorAccent">@android:color/holo_red_dark</item>
     </style>
 
+
     <!-- Dropbox switch color -->
     <style name="Color1SwitchStyle">
         <item name="colorControlActivated">@android:color/holo_blue_dark</item>
@@ -43,6 +44,20 @@
     <style name="SelectableItemBackground">
         <item name="android:theme">@style/SelectableItemTheme</item>
         <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
+
+    <style name="MyToolbarStyle" parent="ThemeOverlay.AppCompat.ActionBar">
+        <!-- Used to for the title of the Toolbar -->
+        <item name="android:textColorPrimary">#fff</item>
+        <!-- Used to for the title of the Toolbar when parent is Theme.AppCompat.Light -->
+        <item name="android:textColorPrimaryInverse">@android:color/black</item>
+        <!-- Used to color the text of the action menu icons -->
+        <item name="android:textColorSecondary">#fff</item>
+        <!-- Used to color the overflow menu icon -->
+        <item name="android:actionMenuTextColor">@android:color/holo_orange_light</item>
+        <!-- Color of the Toolbar -->
+        <!-- <item name="android:background">#455a64</item> -->
     </style>
 
 </resources>

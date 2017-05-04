@@ -17,13 +17,12 @@
         android:background="?android:attr/selectableItemBackground"
         android:fitsSystemWindows="true"
         android:minHeight="?attr/actionBarSize"
-        android:titleTextColor="@android:color/white"
+        android:theme="@style/MyToolbarStyle"
+        app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
         app:contentInsetEnd="0dp"
         app:contentInsetLeft="0dp"
         app:contentInsetRight="0dp"
-        app:contentInsetStart="0dp"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        app:contentInsetStart="0dp">
 
         <Button
             android:id="@+id/button_rec_dialog_close"
@@ -126,16 +125,6 @@
                 android:layout_toLeftOf="@id/floating_action_button_share"
                 android:src="@android:drawable/ic_menu_call"
                 app:backgroundTint="@android:color/holo_green_dark"
-                app:fabSize="mini" />
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floating_action_button_upload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:layout_toLeftOf="@id/floating_action_button_call"
-                android:src="@android:drawable/ic_menu_upload"
-                app:backgroundTint="@android:color/holo_orange_dark"
                 app:fabSize="mini" />
 
             <!--

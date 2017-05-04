@@ -200,8 +200,11 @@ public class ContactHelper {
     }
 
     public static Bitmap getBitmapForContactID(ContentResolver contentResolver, int mode, long contactID) {
+
         InputStream in = null;
-        BufferedInputStream buf;
+        Bitmap bitmap = null;
+        BufferedInputStream buf = null;
+
         try {
             switch (mode) {
                 case 0: //large
@@ -209,16 +212,26 @@ public class ContactHelper {
                     break;
                 case 1: //thumbnail
                     in = ContactHelper.openThumbnailPhoto(contentResolver, contactID);
+                    break;
             }
-            assert in != null;
             buf = new BufferedInputStream(in);
-            Bitmap bMap = BitmapFactory.decodeStream(buf);
-            in.close();
-            buf.close();
-            return bMap;
+            bitmap = BitmapFactory.decodeStream(buf);
+
         } catch (Exception e) {
             Log.e(TAG, "Error reading file", e);
+        } finally {
+
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (buf != null) {
+                    buf.close();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Error: ", e);
+            }
         }
-        return null;
+        return bitmap;
     }
 }
