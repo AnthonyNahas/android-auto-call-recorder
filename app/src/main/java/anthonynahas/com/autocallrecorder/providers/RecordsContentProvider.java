@@ -63,7 +63,7 @@ public class RecordsContentProvider extends ContentProvider {
 
     @Override
     synchronized public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Log.d(TAG, "query1()");
+        Log.d(TAG, "query()");
         //create a new querybuilder for table with records
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(RecordDbContract.RecordItem.TABLE_NAME);
@@ -110,6 +110,7 @@ public class RecordsContentProvider extends ContentProvider {
         }
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        logCursor(cursor);
 
         return cursor;
     }
@@ -232,14 +233,16 @@ public class RecordsContentProvider extends ContentProvider {
     private void logCursor(Cursor cursor) {
         if (cursor.moveToFirst()) {
             do {
-                String contact_id = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
+                String _id = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID));
+                long contact_id = cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
                 int isLove = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
-                Log.d(TAG, "contact id = " + contact_id + " --> isLove = " + isLove);
+                Log.d(TAG, "_id = " + _id + " " +  "contact id = " + contact_id + " --> isLove = " + isLove);
                 //String date = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));
                 //Log.d(TAG, "date = " + date);
             } while (cursor.moveToNext());
         }
-        cursor.close();
+        cursor.moveToFirst();
+        //cursor.close();
     }
 
     /**

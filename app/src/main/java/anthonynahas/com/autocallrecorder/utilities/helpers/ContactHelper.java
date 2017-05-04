@@ -20,28 +20,54 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
- * Created by A on 03.06.16.
+ * Helper class that deals with contacts, like android's contact api and more
+ * --> insert, retrieve, delete...
+ *
+ * @author Anthony Nahas
+ * @version 1.0
+ * @since 03.06.2016
  */
 public class ContactHelper {
 
     private static final String TAG = ContactHelper.class.getSimpleName();
 
+    /**
+     * Get a contact by name
+     *
+     * @param contactHelper - the used content resolver
+     * @param startsWith    - the string to query contacts by name
+     * @return
+     */
     public static Cursor getContactCursorByName(ContentResolver contactHelper, String startsWith) {
-        String[] projection = {ContactsContract.CommonDataKinds.Phone._ID, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
-        Cursor cur = null;
+
+        Cursor cursor = null;
+
+        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        String[] projection =
+                {
+                        ContactsContract.CommonDataKinds.Phone._ID,
+                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                        ContactsContract.CommonDataKinds.Phone.NUMBER
+                };
+        String selection = null;
+        String[] selectionArgs = null;
+        String orderBy = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
+
         try {
             if (startsWith != null && !startsWith.equals("")) {
-                cur = contactHelper.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like \"" + startsWith + "%\"", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
-            } else {
-                cur = contactHelper.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+                selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like \"" + startsWith + "%\"";
+                //cursor = contactHelper.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like \"" + startsWith + "%\"", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
             }
-            if (cur != null) {
-                cur.moveToFirst();
+            cursor = contactHelper.query(uri, projection, selection, selectionArgs, orderBy);
+
+            if (cursor != null) {
+                cursor.moveToFirst();
+                logContactCursor(cursor);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error: ", e);
         }
-        return cur;
+        return cursor;
     }
 
     public static boolean insertContact(ContentResolver contactAdder, String firstName, String mobileNumber) {
@@ -233,5 +259,23 @@ public class ContactHelper {
             }
         }
         return bitmap;
+    }
+
+    private static void logContactCursor(Cursor cursor) {
+        if (cursor.moveToFirst()) {
+            do {
+                String contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
+                String contact_display_name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                Log.d(TAG, "contact id = "
+                        + contact_id
+                        + " --> name = "
+                        + contact_display_name
+                        + " --> number = "
+                        + contact_number);
+            } while (cursor.moveToNext());
+
+            cursor.moveToFirst();
+        }
     }
 }

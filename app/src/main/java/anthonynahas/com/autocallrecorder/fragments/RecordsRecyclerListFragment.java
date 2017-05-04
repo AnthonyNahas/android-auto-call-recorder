@@ -42,6 +42,7 @@ import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
 import anthonynahas.com.autocallrecorder.providers.RecordsQueryHandler;
 import anthonynahas.com.autocallrecorder.utilities.decoraters.ItemClickSupport;
+import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
 import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
@@ -149,6 +150,12 @@ public class RecordsRecyclerListFragment extends Fragment implements
         public BaseItemAnimator getAnimator() {
             return mAnimator;
         }
+    }
+
+    enum BundleArgs {
+        mode,
+        search,
+        searchKey
     }
 
 
@@ -405,15 +412,27 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
         mContentLoadingProgressBar.show();
         String[] projection = new String[]{"*"};
         String selection = null;
         String[] selectionArgs = null;
-        if (!mSearchKey.isEmpty() && mSearchKey.length() > 0) {
-            //selection = RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE '%" + mSearchKey + "%'";
-            selection = RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE ?";
-            selectionArgs = new String[]{"%" + mSearchKey + "%"};
-            offset = 0;
+
+        if (args != null) {
+            String mode = args.getString(BundleArgs.mode.name());
+            if (mode != null && mode.equals(BundleArgs.search.name())) {
+                String searchKey = args.getString(BundleArgs.searchKey.name());
+                if (searchKey != null && !searchKey.isEmpty() && searchKey.length() > 0) {
+                    //selection = RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE '%" + mSearchKey + "%'";
+                    selection = RecordDbContract.RecordItem.COLUMN_NUMBER
+                            + " LIKE ?"
+                            + " OR "
+                            + RecordDbContract.RecordItem.COLUMN_CONTACT_ID
+                            + "= 682";
+                    selectionArgs = new String[]{"%" + searchKey + "%"};
+                    offset = 0; // TODO: 04.05.17 replace offset with limit
+                }
+            }
         }
         String sort = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION,
                 RecordDbContract.RecordItem.COLUMN_DATE)
@@ -560,7 +579,12 @@ public class RecordsRecyclerListFragment extends Fragment implements
     public void onSearchTextChanged(String oldQuery, String newQuery) {
         Log.d(TAG, "oldQuery = " + oldQuery + " | newQuery = " + newQuery);
         mSearchKey = newQuery;
-        hardResetLoader();
+        ContactHelper.getContactCursorByName(mContext.getContentResolver(), newQuery);
+        Bundle args = new Bundle();
+        args.putString(BundleArgs.mode.name(), BundleArgs.search.name());
+        args.putString(BundleArgs.searchKey.name(), newQuery);
+        getLoaderManager().restartLoader(0, args, this);
+        //hardResetLoader();
     }
 
     private void notifyOnActionMode(boolean state) {
