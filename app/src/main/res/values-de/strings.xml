@@ -34,4 +34,6 @@
     <string name="close">schließen</string>
     <string name="action_share">Teilen</string>
     <string name="action_upload">Hochladen</string>
+    <string name="page_title_records">Aufzeichnungen</string>
+    <string name="page_title_favorite">Favoriten</string>
 </resources>

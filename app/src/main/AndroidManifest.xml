@@ -115,7 +115,6 @@
             android:authorities="anthonynahas.com.autocallrecorder.providers.RecentSuggestionProvider"
             android:exported="false" />
 
-        <activity android:name=".activities.RecordsInActionModeActivity"></activity>
     </application>
 
 </manifest>

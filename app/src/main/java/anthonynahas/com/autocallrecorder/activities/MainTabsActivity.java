@@ -37,6 +37,7 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.classes.Resources;
 import anthonynahas.com.autocallrecorder.fragments.RecordsRecyclerListFragment;
+import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.decoraters.DemoRecordSupport;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.MemoryCacheHelper;
@@ -132,7 +133,7 @@ public class MainTabsActivity extends AppCompatActivity implements
                 //noinspection SimplifiableIfStatement
                 switch (id) {
                     case R.id.action_add_demo_record:
-                        DemoRecordSupport.getInstance().createDemoRecords(getApplicationContext());
+                        DemoRecordSupport.getInstance().createDemoRecord(getApplicationContext());
                         break;
                     case R.id.action_sort:
                         Log.d(TAG, "MenuItem = sort");
@@ -332,15 +333,28 @@ public class MainTabsActivity extends AppCompatActivity implements
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private RecordsRecyclerListFragment mRecordsRecyclerListFragment;
+        private RecordsRecyclerListFragment mLoveRecordsListFragment;
 
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-            mRecordsRecyclerListFragment = RecordsRecyclerListFragment.getInstance();
+        private SectionsPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+            mRecordsRecyclerListFragment = RecordsRecyclerListFragment.newInstance();
+
+            Bundle args = new Bundle();
+            String selection = RecordDbContract.RecordItem.COLUMN_IS_LOVE + " =1";
+            args.putString(RecordsRecyclerListFragment.BundleArgs.selection.name(), selection);
+            mLoveRecordsListFragment = RecordsRecyclerListFragment.newInstance(args);
         }
 
+
+        /**
+         * Get the correct tab by position
+         *
+         * @param position - the desired position of the tab
+         * @return - the desired tab by position
+         */
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
@@ -351,27 +365,40 @@ public class MainTabsActivity extends AppCompatActivity implements
                     mSearchView.setOnQueryChangeListener(mRecordsRecyclerListFragment.getOnQueryChangeListener());
                     return mRecordsRecyclerListFragment;
                 case 1:
-                    return PlaceholderFragment.newInstance(position);
+                    mSearchView.setOnQueryChangeListener(mLoveRecordsListFragment.getOnQueryChangeListener());
+                    return mLoveRecordsListFragment;
                 default:
                     return null;
             }
         }
 
+        /**
+         * Get the number of available tabs
+         *
+         * @return - the total number of the tabs
+         */
         @Override
         public int getCount() {
-            // Show 3 total pages (TABS).
+            // Show 2 total pages (TABS).
             return 2;
         }
 
+        /**
+         * Get tab's title
+         *
+         * @param position - the fragment (TAB)'s position
+         * @return - the title of the tab
+         */
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Aufzeichnungen";
+                    return getString(R.string.page_title_records);
                 case 1:
-                    return "Favoriten";
+                    return getString(R.string.page_title_favorite);
+                default:
+                    return null;
             }
-            return null;
         }
     }
 }

@@ -89,20 +89,22 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
     private static final String TAG = RecordsRecyclerListFragment.class.getSimpleName();
 
-    private static RecordsRecyclerListFragment mFragment;
+    private static RecordsRecyclerListFragment sFragment;
 
 
     public int sCounter = 0;
-    public final int limit = 30;
-    private int offset = 0;
-    private String mSearchKey = "";
+    private int mOffset = 0;
+    private final int mLimit = 30;
+    private final int mLoaderManagerID = 0;
 
-    private Handler handlerToWait = new Handler();
+    private Bundle mArgs = null;
+    private String mSelection = null;
+    private String[] mSelectionArgs = null;
 
-    private View mView;
+    private Handler mHandlerToWait = new Handler();
+
     private Context mContext;
     private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLayoutManager;
     private SharedPreferences mSharedPreferences;
     private RecordsCursorRecyclerViewAdapter mAdapter;
 
@@ -152,15 +154,17 @@ public class RecordsRecyclerListFragment extends Fragment implements
         }
     }
 
-    enum BundleArgs {
+    public enum BundleArgs {
         mode,
         search,
-        searchKey
+        searchKey,
+        selection,
+        selectionArgs
     }
 
 
     public RecordsRecyclerListFragment() {
-        Log.d(TAG, "on new RecordsRecyclerListFragment");
+        Log.d(TAG, "on new RecordsRecyclerListFragment Instance");
     }
 
     /**
@@ -169,25 +173,44 @@ public class RecordsRecyclerListFragment extends Fragment implements
      *
      * @return A new instance of fragment RecordsRecyclerListFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public synchronized static RecordsRecyclerListFragment getInstance() {
-        if (mFragment == null) {
-            mFragment = new RecordsRecyclerListFragment();
+    public synchronized static RecordsRecyclerListFragment getInstance() { // TODO: 05.05.2017 : 2 Instance pro app - get or new instance
+        if (sFragment == null) {
+            sFragment = new RecordsRecyclerListFragment();
         }
-        return mFragment;
+        return sFragment;
+    }
+
+    public static RecordsRecyclerListFragment newInstance() {
+        return new RecordsRecyclerListFragment();
+    }
+
+    public static RecordsRecyclerListFragment newInstance(Bundle args) {
+        RecordsRecyclerListFragment recordsRecyclerListFragment = new RecordsRecyclerListFragment();
+        recordsRecyclerListFragment.setArguments(args);
+        return recordsRecyclerListFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+
+        if (args != null) {
+            mArgs = args;
+            //mSelection = args.getString(BundleArgs.selection.name());
+            //mSelectionArgs = args.getStringArray(BundleArgs.selection.name());
+        }
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
         setHasOptionsMenu(true);
         // Inflate the layout for this fragment
-        mView = inflater.inflate(R.layout.fragment_recrods_card_list, container, false);
+        View mView = inflater.inflate(R.layout.fragment_recrods_card_list, container, false);
         mContext = mView.getContext();
 
         mContentLoadingProgressBar = (ContentLoadingProgressBar) mView.findViewById(R.id.content_loading_progressbar);
@@ -212,7 +235,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(mContext);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // use this setting to improve performance if you know that changes
@@ -283,20 +306,20 @@ public class RecordsRecyclerListFragment extends Fragment implements
                 int maxPositions = layoutManager.getItemCount();
 
                 if (lastVisibleItemPosition == maxPositions - 1
-                        && maxPositions * offset == limit * offset
-                        && offset != 0) {
+                        && maxPositions * mOffset == mLimit * mOffset
+                        && mOffset != 0) {
                     if (onLoadingMore) {
                         return;
                     }
 
                     onLoadingMore = true;
-                    offset++;
+                    mOffset++;
                     refresh();
                 }
             }
         });
 
-        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().initLoader(mLoaderManagerID, mArgs, this);
 
         return mView;
     }
@@ -367,15 +390,15 @@ public class RecordsRecyclerListFragment extends Fragment implements
      */
     public void refresh() {
         Log.d(TAG, "onRefresh()");
-        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().restartLoader(mLoaderManagerID, mArgs, this);
     }
 
 
     public void hardResetLoader() {
-        offset = 0;
+        mOffset = 0;
         mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
-        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().restartLoader(mLoaderManagerID, mArgs, this);
     }
 
     /**
@@ -430,8 +453,15 @@ public class RecordsRecyclerListFragment extends Fragment implements
                             + RecordDbContract.RecordItem.COLUMN_CONTACT_ID
                             + "= 682";
                     selectionArgs = new String[]{"%" + searchKey + "%"};
-                    offset = 0; // TODO: 04.05.17 replace offset with limit
+                    mOffset = 0; // TODO: 04.05.17 replace mOffset with mLimit
                 }
+            }
+            String loveSelection = args.getString(BundleArgs.selection.name());
+            if (loveSelection != null && !loveSelection.isEmpty() && loveSelection.length() > 0) {
+                if (selection != null && !selection.isEmpty()) {
+                    selection += " AND ";
+                }
+                selection = loveSelection;
             }
         }
         String sort = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION,
@@ -440,14 +470,14 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
         switch (id) {
             case 0:
-                //Uri uri = RecordsContentProvider.urlForItems(limit * offset);
+                //Uri uri = RecordsContentProvider.urlForItems(mLimit * mOffset);
                 Uri uri = RecordDbContract.CONTENT_URL
                         .buildUpon()
                         .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_LIMIT,
-                                String.valueOf(limit))
+                                String.valueOf(mLimit))
                         .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_OFFSET,
-                                String.valueOf(offset))
-                        //.encodedQuery("limit=" + limit + "," + offset)
+                                String.valueOf(mOffset))
+                        //.encodedQuery("mLimit=" + mLimit + "," + mOffset)
                         .build();
                 return new CursorLoader(getActivity(),
                         uri, projection, selection, selectionArgs, sort);
@@ -508,7 +538,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
     }
 
     private void mergeCursor(Cursor data) {
-        shortToast.setText("loading MORE " + offset);
+        shortToast.setText("loading MORE " + mOffset);
         shortToast.show();
         Cursor cursor =
                 ((RecordsCursorRecyclerViewAdapter) mRecyclerView.getAdapter()).getCursor();
@@ -523,7 +553,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
         ((RecordsCursorRecyclerViewAdapter) mRecyclerView.getAdapter()).swapCursor(mx);
 
 
-        handlerToWait.postDelayed(new Runnable() {
+        mHandlerToWait.postDelayed(new Runnable() {
             @Override
             public void run() {
                 onLoadingMore = false;
@@ -578,12 +608,12 @@ public class RecordsRecyclerListFragment extends Fragment implements
     @Override
     public void onSearchTextChanged(String oldQuery, String newQuery) {
         Log.d(TAG, "oldQuery = " + oldQuery + " | newQuery = " + newQuery);
-        mSearchKey = newQuery;
         ContactHelper.getContactCursorByName(mContext.getContentResolver(), newQuery);
-        Bundle args = new Bundle();
-        args.putString(BundleArgs.mode.name(), BundleArgs.search.name());
-        args.putString(BundleArgs.searchKey.name(), newQuery);
-        getLoaderManager().restartLoader(0, args, this);
+
+        mArgs.putString(BundleArgs.mode.name(), BundleArgs.search.name());
+        mArgs.putString(BundleArgs.searchKey.name(), newQuery);
+
+        getLoaderManager().restartLoader(mLoaderManagerID, mArgs, this);
         //hardResetLoader();
     }
 

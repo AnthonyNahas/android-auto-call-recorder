@@ -148,5 +148,7 @@
     <string name="close">close</string>
     <string name="action_share">share</string>
     <string name="action_upload">upload</string>
+    <string name="page_title_records">Records</string>
+    <string name="page_title_favorite">Favorites</string>
 
 </resources>

@@ -2,14 +2,18 @@ package anthonynahas.com.autocallrecorder.utilities.decoraters;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.TimeZone;
 
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordsQueryHandler;
+import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 
 /**
  * This class is responsible to mock and generate demo records for test
@@ -35,19 +39,63 @@ public class DemoRecordSupport {
      *
      * @param context - the used context to add the demo record
      */
-    public void createDemoRecords(Context context) {
+    public void createDummyRecord(Context context) {
         ContentValues values = new ContentValues();
         values.put(RecordDbContract.RecordItem.COLUMN_ID, String.valueOf(generateNumber(10000, 5000)));
         values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
         values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, generatePhoneNumber());
         values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, generateNumber(1, 0));
         values.put(RecordDbContract.RecordItem.COLUMN_SIZE, generateNumber(100, 1));
-        values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(600, 0));
+        values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(800, 400));
         RecordsQueryHandler.getInstance(context.getContentResolver())
                 .startInsert(RecordsQueryHandler.INSERT_DEMO, null, RecordDbContract.CONTENT_URL, values);
 
         //context.getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
-        Log.d(TAG, "contentResolver inserted record");
+        Log.d(TAG, "contentResolver inserted dummy record");
+    }
+
+    public void createDemoRecord(Context context) {
+
+        ArrayList<String> contactListNumbers = new ArrayList<>();
+
+        // retrieve all contacts
+        Cursor cursor = ContactHelper.getContactCursorByName(context.getContentResolver(), "");
+
+        if (cursor.moveToNext()) {
+            do {
+                long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
+                String contact_display_name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                contactListNumbers.add(contact_number);
+
+                Log.d(TAG, "phonelookup_contact_id = "
+                        + contact_id
+                        + " -- phonelookup_id ---> "
+                        + ContactHelper.getContactID(context.getContentResolver(), contact_number)
+                        + " --> name = "
+                        + contact_display_name
+                        + " --> number = "
+                        + contact_number);
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        int random = generateNumber(contactListNumbers.size() - 1, 0);
+
+        ContentValues values = new ContentValues();
+        values.put(RecordDbContract.RecordItem.COLUMN_ID, String.valueOf(generateNumber(10000, 5000)));
+        values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
+        values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, contactListNumbers.get(random));
+        values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, generateNumber(1, 0));
+        values.put(RecordDbContract.RecordItem.COLUMN_SIZE, generateNumber(100, 1));
+        values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(600, 0));
+
+        RecordsQueryHandler.getInstance(context.getContentResolver())
+                .startInsert(RecordsQueryHandler.INSERT_DEMO, null, RecordDbContract.CONTENT_URL, values);
+
+        Log.d(TAG, "contentResolver inserted demo record");
     }
 
     /**
@@ -58,7 +106,7 @@ public class DemoRecordSupport {
      */
     private long generateDate() {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-        calendar.set(Calendar.YEAR, generateNumber(calendar.get(Calendar.YEAR), 1998));
+        calendar.set(Calendar.YEAR, generateNumber(calendar.get(Calendar.YEAR), 2015));
         calendar.set(Calendar.MONTH, generateNumber(12, 1));
         calendar.set(Calendar.DAY_OF_MONTH, generateNumber(29, 1));
         calendar.set(Calendar.HOUR_OF_DAY, generateNumber(24, 0));
