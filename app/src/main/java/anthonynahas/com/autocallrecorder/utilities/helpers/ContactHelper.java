@@ -25,8 +25,8 @@ import java.util.ArrayList;
  *
  * @author Anthony Nahas
  * @version 1.0
- * @since 03.06.2016
  * @see //developer.android.com/reference/android/provider/ContactsContract.PhoneLookup.html
+ * @since 03.06.2016
  */
 public class ContactHelper {
 
@@ -46,10 +46,11 @@ public class ContactHelper {
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         String[] projection =
                 {
+                        ContactsContract.Contacts._ID,
                         ContactsContract.Data.CONTACT_ID,
                         ContactsContract.Data.RAW_CONTACT_ID,
                         ContactsContract.PhoneLookup._ID,
-                        //ContactsContract.PhoneLookup.CONTACT_ID,
+                        ContactsContract.PhoneLookup.CONTACT_ID,
                         ContactsContract.CommonDataKinds.Phone._ID,
                         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
                         ContactsContract.CommonDataKinds.Phone.NUMBER
@@ -269,16 +270,19 @@ public class ContactHelper {
     private static void logContactCursor(Cursor cursor) {
         if (cursor.moveToFirst()) {
             do {
+                long Contact_contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 long data_raw_contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID));
-                //long phone_lookup_contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID)); //this is the right onw
+                long phone_lookup_contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID)); //this is the right onw
                 long phone_lookup_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
                 String contact_display_name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 Log.d(TAG,
-                        "Data.CONTACT_ID = "
+                        "ContactsContract.Contacts._ID "
+                                + Contact_contact_id
+                                + " Data.CONTACT_ID = "
                                 + data_raw_contact_id
                                 + " PhoneLookup._ID = "
-                               // + phone_lookup_contact_id
+                                + phone_lookup_contact_id
                                 + " contact id = "
                                 + phone_lookup_id
                                 + " --> display name = "

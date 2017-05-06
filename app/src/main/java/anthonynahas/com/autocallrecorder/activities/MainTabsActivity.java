@@ -365,7 +365,7 @@ public class MainTabsActivity extends AppCompatActivity implements
                     mSearchView.setOnQueryChangeListener(mRecordsRecyclerListFragment.getOnQueryChangeListener());
                     return mRecordsRecyclerListFragment;
                 case 1:
-                    mSearchView.setOnQueryChangeListener(mLoveRecordsListFragment.getOnQueryChangeListener());
+                    //mSearchView.setOnQueryChangeListener(mLoveRecordsListFragment.getOnQueryChangeListener());
                     return mLoveRecordsListFragment;
                 default:
                     return null;

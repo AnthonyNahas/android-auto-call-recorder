@@ -97,7 +97,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
     private final int mLimit = 30;
     private final int mLoaderManagerID = 0;
 
-    private Bundle mArgs = null;
+    private Bundle mArgs = new Bundle();
     private String mSelection = null;
     private String[] mSelectionArgs = null;
 
@@ -459,9 +459,11 @@ public class RecordsRecyclerListFragment extends Fragment implements
             String loveSelection = args.getString(BundleArgs.selection.name());
             if (loveSelection != null && !loveSelection.isEmpty() && loveSelection.length() > 0) {
                 if (selection != null && !selection.isEmpty()) {
-                    selection += " AND ";
+                    //selection += " AND ";
                 }
-                selection = loveSelection;
+                else{
+                    selection = loveSelection;
+                }
             }
         }
         String sort = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION,

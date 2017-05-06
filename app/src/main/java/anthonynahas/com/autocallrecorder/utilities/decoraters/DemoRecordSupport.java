@@ -63,7 +63,16 @@ public class DemoRecordSupport {
 
         if (cursor.moveToNext()) {
             do {
-                long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
+                //long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                //long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
+                // TODO: 05.05.17 control if it works with api < 24
+                long contact_id;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID));
+                }
+                else{
+                    contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
+                }
                 String contact_display_name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
