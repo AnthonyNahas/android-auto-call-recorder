@@ -27,3 +27,23 @@ This README would normally document whatever steps are necessary to get your app
 
 * Repo owner or admin
 * Other community or team contact
+
+## Pull SQLite DB from Android Device 
+
+1.  Connect your device and launch the application in debug mode.
+2.  You may want to use adb -d shell "run-as com.yourpackge.name ls /data/data/com.yourpackge.name/databases/" to see what the database filename is.
+    Notice: com.yourpackge.name is your application package name. You can get it from the manifest file.
+    
+3.  Copy the database file from your application folder to your SD card.
+    
+    adb -d shell "run-as com.yourpackge.name cat /data/data/com.yourpackge.name/databases/filename.sqlite > /sdcard/filename.sqlite"
+    Notice: filename.sqlite is your database name you used when you created the database
+    
+4.  Pull the database files to your machine:
+    
+    adb pull /sdcard/filename.sqlite
+    This will copy the database from the SD card to the place where your ADB exist.
+    
+    Install Firefox SQLite Manager: https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/
+    Open Firefox SQLite Manager (Tools->SQLite Manager) and open your database file from step 3 above.
+    Enjoy!
