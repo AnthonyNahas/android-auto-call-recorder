@@ -32,20 +32,20 @@
 
     <ListPreference
         android:defaultValue="-1"
-        android:entries="@array/pref_general_audio_source"
-        android:entryValues="@array/pref_general_audio_source_values"
-        android:key="AUDIO_SOURCE"
+        android:entries="@array/pref_general_output_format"
+        android:entryValues="@array/pref_general_output_format_values"
+        android:key="OUTPUT_FORMAT"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_title_add_friends_to_messages" />
+        android:title="@string/pref_title_output_format" />
 
     <ListPreference
         android:defaultValue="-1"
-        android:entries="@array/pref_general_audio_source"
-        android:entryValues="@array/pref_general_audio_source_values"
+        android:entries="@array/pref_general_audio_encoder"
+        android:entryValues="@array/pref_general_audio_encoder_values"
         android:key="AUDIO_ENCODER"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_title_add_friends_to_messages" />
+        android:title="@string/pref_title_audio_encoder" />
 
 </PreferenceScreen>
