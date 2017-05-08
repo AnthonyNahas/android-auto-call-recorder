@@ -44,6 +44,7 @@ import anthonynahas.com.autocallrecorder.providers.RecordsQueryHandler;
 import anthonynahas.com.autocallrecorder.utilities.decoraters.ItemClickSupport;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.SQLiteHelper;
 import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
 import jp.wasabeef.recyclerview.animators.FadeInDownAnimator;
@@ -69,6 +70,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static anthonynahas.com.autocallrecorder.R.id.recyclerView;
+import static anthonynahas.com.autocallrecorder.utilities.helpers.SQLiteHelper.convertArrayToInOperatorArguments;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -447,13 +449,19 @@ public class RecordsRecyclerListFragment extends Fragment implements
                 String searchKey = args.getString(BundleArgs.searchKey.name());
                 if (searchKey != null && !searchKey.isEmpty() && searchKey.length() > 0) {
                     //selection = RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE '%" + mSearchKey + "%'";
+                    String contactIDsArguments = SQLiteHelper
+                            .convertArrayToInOperatorArguments(ContactHelper
+                                    .getContactIDsByName(ContactHelper
+                                            .getContactCursorByName(mContext
+                                                    .getContentResolver(), searchKey)));
                     selection = RecordDbContract.RecordItem.COLUMN_NUMBER
                             + " LIKE ?"
                             + " OR "
                             + RecordDbContract.RecordItem.COLUMN_CONTACT_ID
-                            + " LIKE ?";
+                            + " IN "
+                            + contactIDsArguments;
                     //+ "= 682";
-                    selectionArgs = new String[]{"%" + searchKey + "%", "680"};
+                    selectionArgs = new String[]{"%" + searchKey + "%"};
                     mOffset = 0; // TODO: 04.05.17 replace mOffset with mLimit
                 }
             }

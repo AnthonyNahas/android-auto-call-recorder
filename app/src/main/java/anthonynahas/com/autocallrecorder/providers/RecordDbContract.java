@@ -8,6 +8,7 @@ import android.net.Uri;
  * @author Anthony Nahas
  * @version 1.0
  * @since 29.4.16
+ * @see "http://www.sqlitetutorial.net/sqlite-where"
  */
 public class RecordDbContract {
     //db

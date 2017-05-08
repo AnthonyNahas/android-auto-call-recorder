@@ -111,7 +111,7 @@ public class RecordsContentProvider extends ContentProvider {
         }
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
-        //logCursor(cursor);
+        logCursor(cursor);
 
         return cursor;
     }

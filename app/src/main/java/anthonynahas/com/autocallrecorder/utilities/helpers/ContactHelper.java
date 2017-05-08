@@ -68,7 +68,7 @@ public class ContactHelper {
 
             if (cursor != null) {
                 cursor.moveToFirst();
-                //logContactCursor(cursor);
+                logContactCursor(cursor);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error: ", e);
@@ -77,8 +77,27 @@ public class ContactHelper {
     }
 
 
-    public static String[] getContactIDsByName(Cursor cursor){
-        return  null;
+    public static String[] getContactIDsByName(Cursor cursor) {
+
+        ArrayList<String> idsList = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                String contact_id;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
+                } else {
+                    contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
+                }
+
+                if(!idsList.contains(contact_id)){
+                    idsList.add(contact_id);
+                }
+
+            } while (cursor.moveToNext());
+        }
+
+        return  idsList.toArray(new String[idsList.size()]);
     }
 
     public static boolean insertContact(ContentResolver contactAdder, String firstName, String mobileNumber) {
