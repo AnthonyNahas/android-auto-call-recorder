@@ -42,12 +42,14 @@ import anthonynahas.com.autocallrecorder.utilities.decoraters.DemoRecordSupport;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PermissionsHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 public class MainTabsActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainTabsActivity.class.getSimpleName();
 
+    private PreferenceHelper mPreferenceHelper;
     private DrawerLayout mDrawer;
     private FloatingSearchView mSearchView;
     private TabLayout mTabLayout;
@@ -84,6 +86,8 @@ public class MainTabsActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_navigation_drawer_tabs);
         mActivity = this;
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        mPreferenceHelper = new PreferenceHelper(this);
 
         MemoryCacheHelper.init();
 
@@ -194,6 +198,7 @@ public class MainTabsActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, " AUDIO SOURCE = " + mPreferenceHelper.getAudioSource());
         if (mSwitch_auto_rec != null) {
             mSwitch_auto_rec.setChecked(mSharedPreferences.getBoolean(SettingsActivityOld.KEY_PREF_AUTO_RECORD, true));
             Log.d(TAG, "switch state | auto record = " + mSwitch_auto_rec.isChecked());

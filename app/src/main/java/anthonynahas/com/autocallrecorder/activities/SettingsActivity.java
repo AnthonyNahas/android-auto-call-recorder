@@ -3,7 +3,6 @@ package anthonynahas.com.autocallrecorder.activities;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
@@ -14,10 +13,10 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,9 +24,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import anthonynahas.com.autocallrecorder.R;
-
 import java.util.List;
+
+import anthonynahas.com.autocallrecorder.R;
+import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -58,23 +58,25 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            String stringValue = newValue.toString();
+
+            Log.d(TAG, "new value = " + newValue);
 
             if (preference instanceof ListPreference) {
-                // For list preferences, look up the correct display value in
+                // For list preferences, look up the correct display newValue in
                 // the preference's 'entries' list.
                 ListPreference listPreference = (ListPreference) preference;
                 int index = listPreference.findIndexOfValue(stringValue);
 
-                // Set the summary to reflect the new value.
+                // Set the summary to reflect the new newValue.
                 preference.setSummary(
                         index >= 0
                                 ? listPreference.getEntries()[index]
                                 : null);
 
             } else if (preference instanceof RingtonePreference) {
-                // For ringtone preferences, look up the correct display value
+                // For ringtone preferences, look up the correct display newValue
                 // using RingtoneManager.
                 if (TextUtils.isEmpty(stringValue)) {
                     // Empty values correspond to 'silent' (no ringtone).
@@ -96,7 +98,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 }
 
             } else {
-                // For all other preferences, set the summary to the value's
+                // For all other preferences, set the summary to the newValue's
                 // simple string representation.
                 preference.setSummary(stringValue);
             }
@@ -226,8 +228,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            bindPreferenceSummaryToValue(findPreference(PreferenceHelper.Key.AUDIO_SOURCE.name())); //list preference
+            bindPreferenceSummaryToValue(findPreference(PreferenceHelper.Key.OUTPUT_FORMAT.name()));
+            bindPreferenceSummaryToValue(findPreference(PreferenceHelper.Key.AUDIO_ENCODER.name()));
         }
 
         @Override

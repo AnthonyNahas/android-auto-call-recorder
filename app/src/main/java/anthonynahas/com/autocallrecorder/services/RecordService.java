@@ -19,7 +19,7 @@ import java.util.Date;
 
 import anthonynahas.com.autocallrecorder.broadcasts.CallReceiver;
 import anthonynahas.com.autocallrecorder.broadcasts.DoneRecReceiver;
-import anthonynahas.com.autocallrecorder.classes.CallRecordedFile;
+import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
  * Created by A on 28.03.16.
@@ -30,6 +30,7 @@ public class RecordService extends Service {
     private static final String FILENAME = "com.anthonynahas.autocallrecorder";
     private static Bundle sCallData;
     private MediaRecorder mMediaRecorder;
+    private PreferenceHelper mPreferenceHelper;
 
 
     public static final String FILEPATHKEY = "filepathkey";
@@ -46,6 +47,7 @@ public class RecordService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG,"onCreate()");
+        mPreferenceHelper = new PreferenceHelper(this);
     }
 
     @Override
@@ -81,7 +83,8 @@ public class RecordService extends Service {
         //String number = callData.getString(CallReceiver.NUMBERKEY);
         //int isIncomingCall = callData.getInt(CallReceiver.INCOMINGCALLKEY);
 
-        sRecordFile = new File(getChildDir(Long.valueOf(id_date)),id_date + CallRecordedFile._3GP);
+        // TODO: 08.05.17 rename file
+        sRecordFile = new File(getChildDir(Long.valueOf(id_date)),id_date);
         sCallData.putString(FILEPATHKEY,sRecordFile.getAbsolutePath());
 
         /*
@@ -125,9 +128,9 @@ public class RecordService extends Service {
     private void startAndSaveRecord(File recordFile){
         stopRecord();
         mMediaRecorder = new MediaRecorder();
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);   //or default mic
-        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mMediaRecorder.setAudioSource(mPreferenceHelper.getAudioSource());   //or default mic
+        mMediaRecorder.setOutputFormat(mPreferenceHelper.getOutputFormat());
+        mMediaRecorder.setAudioEncoder(mPreferenceHelper.getAudioEncoder()); //AMR_NB
 
         try {
             if(!recordFile.createNewFile()){

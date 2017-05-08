@@ -87,15 +87,57 @@
     <string name="pref_default_display_name">John Smith</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
+    <string-array name="pref_general_audio_source">
+        <item>DEFAULT</item>
+        <item>MIC</item>
+        <item>REMOTE_SUBMIX</item>
+        <item>UNPROCESSED</item>
+        <item>VOICE_CALL</item>
+        <item>VOICE_COMMUNICATION</item>
     </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
+    <string-array name="pref_general_audio_source_values">
         <item>0</item>
-        <item>-1</item>
+        <item>1</item>
+        <item>8</item>
+        <item>9</item>
+        <item>4</item>
+        <item>7</item>
+    </string-array>
+
+    <string name="pref_title_output_format">Output Format</string>
+    <string-array name="pref_general_output_format">
+        <item>DEFAULT</item>
+        <item>AAC_ADTS</item>
+        <item>AMR_NB</item>
+        <item>AMR_WB</item>
+        <item>MPEG_4</item>
+    </string-array>
+    <string-array name="pref_general_output_format_values">
+        <item>0</item>
+        <item>6</item>
+        <item>3</item>
+        <item>4</item>
+        <item>2</item>
+    </string-array>
+
+    <string name="pref_title_audio_encoder">Audio Encoder</string>
+    <string-array name="pref_general_audio_encoder">
+        <item>DEFAULT</item>
+        <item>AAC</item>
+        <item>AAC_ELD</item>
+        <item>AMR_NB</item>
+        <item>AMR_WB</item>
+        <item>HE_AAC</item>
+        <item>VORBIS</item>
+    </string-array>
+    <string-array name="pref_general_audio_encoder_values">
+        <item>0</item>
+        <item>3</item>
+        <item>5</item>
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+        <item>6</item>
     </string-array>
 
     <!-- Example settings for Data & Sync -->
