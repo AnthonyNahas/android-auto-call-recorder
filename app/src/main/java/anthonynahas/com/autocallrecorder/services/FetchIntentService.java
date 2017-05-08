@@ -69,7 +69,7 @@ public class FetchIntentService extends IntentService {
         String whereClause = "(" + MediaStore.Audio.Media.DISPLAY_NAME+ " == " + date + ".3gp)";
         //String selection = MediaStore.Audio.Media.DISPLAY_NAME + "=? ";
         String selection = MediaStore.Images.Media.DISPLAY_NAME + " like ? ";
-        String [] args =  {date + ".3gp"};
+        String [] args =  {date};
 
 
         Cursor audioCursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,projection, selection, args, null);
@@ -91,6 +91,7 @@ public class FetchIntentService extends IntentService {
                 if (audioCursor.isLast()) {
                     Log.d(TAG, "cursor is last");
                 }*/
+        // TODO: 08.05.17 cursor with try and catch
                 id = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media._ID));
                 data = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                 size = audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.SIZE));
