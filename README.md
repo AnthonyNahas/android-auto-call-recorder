@@ -36,7 +36,8 @@ This README would normally document whatever steps are necessary to get your app
     
 3.  Copy the database file from your application folder to your SD card.
     
-    adb -d shell "run-as com.yourpackge.name cat /data/data/com.yourpackge.name/databases/filename.sqlite > /sdcard/filename.sqlite"
+    adb -d shell "run-as anthonynahas.com.autocallrecorder cat /data/data/anthonynahas.com.autocallrecorder/databases/filename.sqlite > /sdcard/filename.sqlite"
+    
     Notice: filename.sqlite is your database name you used when you created the database
     
 4.  Pull the database files to your machine:

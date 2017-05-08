@@ -12,7 +12,9 @@ import android.net.Uri;
 public class RecordDbContract {
     //db
     public static final String DATABASE_NAME = "Records.db";
-    public static final int DATABASE_VERSION = 1;
+    public static String DATABASE_PATH = DATABASE_NAME;
+    public static String DATABASE_PATH_SDCARD = "/mnt/sdcard/anahas/"; // TODO: 07.05.17 context.getExternalSotrage... https://developer.android.com/reference/android/content/Context.html#getExternalFilesDir%28java.lang.String%29
+    public static final int DATABASE_VERSION = 2;
 
     /**
      * The authority of the Auto Call Recorder app provider

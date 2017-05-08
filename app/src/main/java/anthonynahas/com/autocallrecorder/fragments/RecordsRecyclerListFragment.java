@@ -451,8 +451,9 @@ public class RecordsRecyclerListFragment extends Fragment implements
                             + " LIKE ?"
                             + " OR "
                             + RecordDbContract.RecordItem.COLUMN_CONTACT_ID
-                            + "= 682";
-                    selectionArgs = new String[]{"%" + searchKey + "%"};
+                            + " LIKE ?";
+                    //+ "= 682";
+                    selectionArgs = new String[]{"%" + searchKey + "%", "680"};
                     mOffset = 0; // TODO: 04.05.17 replace mOffset with mLimit
                 }
             }
@@ -460,8 +461,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
             if (loveSelection != null && !loveSelection.isEmpty() && loveSelection.length() > 0) {
                 if (selection != null && !selection.isEmpty()) {
                     //selection += " AND ";
-                }
-                else{
+                } else {
                     selection = loveSelection;
                 }
             }

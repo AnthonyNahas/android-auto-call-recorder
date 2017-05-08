@@ -94,6 +94,7 @@ public class RecordsContentProvider extends ContentProvider {
                 String limit = uri.getQueryParameter(QUERY_PARAMETER_LIMIT);
                 String offset = uri.getQueryParameter(QUERY_PARAMETER_OFFSET);
                 String limitString = offset + "," + limit;
+                // TODO: 07.05.17 try and catch --> runtimeException ex: selectionArgs > selection ? or no such column found...
                 cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder, limitString);
                 break;
 
@@ -301,6 +302,8 @@ public class RecordsContentProvider extends ContentProvider {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.d(TAG, "onUpgrade() DB");
+            // TODO: 07.05.17 db migration --> query - store in cursor - migrate
+            // TODO: 08.05.17 android.database.sqlite.SQLiteException --> try and catch
             db.execSQL(DROP_TABLE);
             db.execSQL(CREATE_TABLE);
         }

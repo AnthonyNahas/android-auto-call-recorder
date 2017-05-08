@@ -69,8 +69,7 @@ public class DemoRecordSupport {
                 long contact_id;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID));
-                }
-                else{
+                } else {
                     contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
                 }
                 String contact_display_name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
@@ -89,6 +88,11 @@ public class DemoRecordSupport {
             } while (cursor.moveToNext());
 
             cursor.close();
+        }
+
+        if (contactListNumbers.size() == 0) {
+            createDummyRecord(context);
+            return;
         }
 
         int random = generateNumber(contactListNumbers.size() - 1, 0);

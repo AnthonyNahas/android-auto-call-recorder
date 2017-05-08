@@ -68,12 +68,17 @@ public class ContactHelper {
 
             if (cursor != null) {
                 cursor.moveToFirst();
-                logContactCursor(cursor);
+                //logContactCursor(cursor);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error: ", e);
         }
         return cursor;
+    }
+
+
+    public static String[] getContactIDsByName(Cursor cursor){
+        return  null;
     }
 
     public static boolean insertContact(ContentResolver contactAdder, String firstName, String mobileNumber) {
