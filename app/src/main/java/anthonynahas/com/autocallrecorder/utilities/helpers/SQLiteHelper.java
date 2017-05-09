@@ -4,6 +4,10 @@ import android.util.Log;
 
 /**
  * Created by anahas on 08.05.2017.
+ *
+ * @author Anthony Nahas
+ * @version 1.0
+ * @since 08.05.2017
  */
 
 public class SQLiteHelper {

@@ -32,29 +32,11 @@
             enable the search dialog to send searches to SearchableActivity
             a issue took here place: value has not be given as full package! Attention!
             -->
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value="anthonynahas.com.autocallrecorder.activities.SearchableActivity" />
         </activity>
         <activity
             android:name=".activities.SettingsActivity"
-            android:label="@string/title_activity_settings2"
+            android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.SettingsActivityOld"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.SearchableActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-        </activity>
 
         <!-- DROP BOX API CORE -->
         <activity

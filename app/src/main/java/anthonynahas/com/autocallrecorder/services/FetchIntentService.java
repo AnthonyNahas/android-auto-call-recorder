@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,11 +18,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOError;
 
-import anthonynahas.com.autocallrecorder.activities.SettingsActivityOld;
 import anthonynahas.com.autocallrecorder.broadcasts.CallReceiver;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DropBoxHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
  * Created by A on 29.04.16.
@@ -32,29 +31,31 @@ public class FetchIntentService extends IntentService {
 
     private static final String TAG = FetchIntentService.class.getSimpleName();
 
+    private PreferenceHelper mPreferenceHelper;
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
      */
     public FetchIntentService() {
         super("FetchIntentService");
+        mPreferenceHelper = new PreferenceHelper(this);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG,"onHandleIntent()");
+        Log.d(TAG, "onHandleIntent()");
 
-        Log.d(TAG,"sRecordFile = " + RecordService.sRecordFile);
+        Log.d(TAG, "sRecordFile = " + RecordService.sRecordFile);
         //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(RecordService.sRecordFile)));
 
         Bundle callData = intent.getExtras();
         String rec_path = intent.getStringExtra(RecordService.FILEPATHKEY);
         String date = callData.getString(CallReceiver.LONGDATEKEY);
-        Log.d(TAG,"date = " + date);
+        Log.d(TAG, "date = " + date);
         String number = callData.getString(CallReceiver.NUMBERKEY);
-        Log.d(TAG,"num: " + number);
+        Log.d(TAG, "num: " + number);
         int isIncomingCall = callData.getInt(CallReceiver.INCOMINGCALLKEY);
-        Log.d(TAG,"isInc = " + isIncomingCall);
+        Log.d(TAG, "isInc = " + isIncomingCall);
 
         //String [] projectALL = new String[] { "*" };
 
@@ -63,16 +64,16 @@ public class FetchIntentService extends IntentService {
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.DISPLAY_NAME,
                 MediaStore.Audio.Media.SIZE,
-                MediaStore.Audio.Media.DURATION };
+                MediaStore.Audio.Media.DURATION};
 
 
-        String whereClause = "(" + MediaStore.Audio.Media.DISPLAY_NAME+ " == " + date + ".3gp)";
+        String whereClause = "(" + MediaStore.Audio.Media.DISPLAY_NAME + " == " + date + ".3gp)";
         //String selection = MediaStore.Audio.Media.DISPLAY_NAME + "=? ";
         String selection = MediaStore.Images.Media.DISPLAY_NAME + " like ? ";
-        String [] args =  {date};
+        String[] args = {date + ".3gp"}; // TODO: 09.05.2017 args should be dynamic
 
 
-        Cursor audioCursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,projection, selection, args, null);
+        Cursor audioCursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, args, null);
         String id;
         int size;
         int duration;
@@ -83,7 +84,7 @@ public class FetchIntentService extends IntentService {
 
 
         assert audioCursor != null;
-        Log.d(TAG,"cursor count = " + audioCursor.getCount());
+        Log.d(TAG, "cursor count = " + audioCursor.getCount());
         audioCursor.moveToFirst();
         /*
         if (audioCursor.moveToFirst()) {
@@ -92,41 +93,41 @@ public class FetchIntentService extends IntentService {
                     Log.d(TAG, "cursor is last");
                 }*/
         // TODO: 08.05.17 cursor with try and catch
-                id = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media._ID));
-                data = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                size = audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.SIZE));
-                duration = audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                displayName = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
-                // do what ever you want here
-                Log.d(TAG, data + " id = " + id + " | size = " + size + " name = " + displayName);
-                Log.d(TAG,"sCounter = " + counter++);
-          //  }
+        id = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media._ID));
+        data = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+        size = audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.SIZE));
+        duration = audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+        displayName = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
+        // do what ever you want here
+        Log.d(TAG, data + " id = " + id + " | size = " + size + " name = " + displayName);
+        Log.d(TAG, "sCounter = " + counter++);
+        //  }
         //}
         audioCursor.close();
 
-        long contactID = ContactHelper.getContactID(this.getContentResolver(),number);
+        long contactID = ContactHelper.getContactID(this.getContentResolver(), number);
 
 
         ContentValues values = new ContentValues();
-        values.put(RecordDbContract.RecordItem.COLUMN_ID,id);
-        values.put(RecordDbContract.RecordItem.COLUMN_DATE,date);
-        values.put(RecordDbContract.RecordItem.COLUMN_NUMBER,number);
-        values.put(RecordDbContract.RecordItem.COLUMN_INCOMING,isIncomingCall);
-        values.put(RecordDbContract.RecordItem.COLUMN_SIZE,size);
-        values.put(RecordDbContract.RecordItem.COLUMN_DURATION,duration);
-        if(contactID != -1){
-            values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID,contactID);
+        values.put(RecordDbContract.RecordItem.COLUMN_ID, id);
+        values.put(RecordDbContract.RecordItem.COLUMN_DATE, date);
+        values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, number);
+        values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, isIncomingCall);
+        values.put(RecordDbContract.RecordItem.COLUMN_SIZE, size);
+        values.put(RecordDbContract.RecordItem.COLUMN_DURATION, duration);
+        if (contactID != -1) {
+            values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, contactID);
         }
-        getApplicationContext().getContentResolver().insert(RecordDbContract.CONTENT_URL,values);
-        Log.d(TAG,"contentResolver inserted record");
+        getApplicationContext().getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
+        Log.d(TAG, "contentResolver inserted record");
 
-        Log.d(TAG,"---------------------------------------------------------------");
+        Log.d(TAG, "---------------------------------------------------------------");
 
         //logRecContentProvider();
 
-        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsActivityOld.KEY_PREF_AUTO_UPLOAD_ON_DROPBOX, false)){
-            Log.d(TAG,"onUpload()");
-            uploadAudioFile(data,displayName);
+        if (mPreferenceHelper.canUploadOnDropBox()) {
+            Log.d(TAG, "onUpload()");
+            uploadAudioFile(data, displayName);
 
         }
 
@@ -139,35 +140,34 @@ public class FetchIntentService extends IntentService {
 
     @Override
     public void onStart(Intent intent, int startId) {
-        Log.d(TAG,"onStart()");
+        Log.d(TAG, "onStart()");
         super.onStart(intent, startId);
     }
 
     @Override
     public void onDestroy() {
-        Log.d(TAG,"onDestroy() fetching..");
+        Log.d(TAG, "onDestroy() fetching..");
         super.onDestroy();
     }
 
-    private void getAllChildDirectories(File parentDir){
+    private void getAllChildDirectories(File parentDir) {
 
-        try{
-            File [] allFiles = parentDir.listFiles();
+        try {
+            File[] allFiles = parentDir.listFiles();
             logFiles(allFiles);
-        }
-        catch (IOError e){
-            Log.e(TAG,"error " + e);
-        }
-    }
-
-    private void logFiles(File[] files){
-        for(File f:files){
-            Log.d(TAG,f.getName() + " isDir = " + f.isDirectory());
+        } catch (IOError e) {
+            Log.e(TAG, "error " + e);
         }
     }
 
-    private void logRecContentProvider(){
-        Cursor c = getApplicationContext().getContentResolver().query(RecordDbContract.CONTENT_URL, new String[] { "*" }, null, null, null);
+    private void logFiles(File[] files) {
+        for (File f : files) {
+            Log.d(TAG, f.getName() + " isDir = " + f.isDirectory());
+        }
+    }
+
+    private void logRecContentProvider() {
+        Cursor c = getApplicationContext().getContentResolver().query(RecordDbContract.CONTENT_URL, new String[]{"*"}, null, null, null);
 
         assert c != null;
         if (c.moveToFirst()) {
@@ -179,13 +179,13 @@ public class FetchIntentService extends IntentService {
                 int duration = c.getInt(c.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION));
                 int incoming = c.getInt(c.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING));
                 // do what ever you want here
-                Log.d(TAG," id = " + id + " | number = " + number + " | date = "+ date +" | size = " + size + " | duration = " + duration + " | incoming = " +incoming );
+                Log.d(TAG, " id = " + id + " | number = " + number + " | date = " + date + " | size = " + size + " | duration = " + duration + " | incoming = " + incoming);
             } while (c.moveToNext());
         }
         c.close();
     }
 
-    private boolean uploadAudioFile(String filePath, String fileName){
+    private boolean uploadAudioFile(String filePath, String fileName) {
         DropBoxHelper dropBoxHelper = new DropBoxHelper(this);
         File tmpFile = new File(filePath);
 
@@ -209,12 +209,12 @@ public class FetchIntentService extends IntentService {
         return false;
     }
 
-    private void showToastFromService(final String msg){
+    private void showToastFromService(final String msg) {
         Handler h = new Handler(getApplicationContext().getMainLooper());
         h.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
             }
         });
     }

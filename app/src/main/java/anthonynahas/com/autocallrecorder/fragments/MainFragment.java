@@ -10,13 +10,11 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -42,23 +40,23 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.activities.SettingsActivityOld;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorAdapter;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
  * Created by A on 25.04.16.
  *
  * @author Anthony Nahas
- * @since 25.04.2016
  * @version 1.0
+ * @since 25.04.2016
  */
 public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private View v;
-    private SharedPreferences mSharedPreferences;
     private ListView mRecListView;
+    private PreferenceHelper mPreferenceHelper;
 
     private CoordinatorLayout mCoordinatorLayout;
     private FloatingActionButton mFloatingActionButton;
@@ -79,24 +77,23 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         v = inflater.inflate(R.layout.fragment_main, container, false);
 
         setHasOptionsMenu(true);
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(v.getContext());
         mCoordinatorLayout = (CoordinatorLayout) v.findViewById(R.id.coordinator);
         mRecListView = (ListView) v.findViewById(R.id.listView_records_main);
+        mPreferenceHelper = new PreferenceHelper(v.getContext());
 
         mFloatingActionButton = (FloatingActionButton) v.findViewById(R.id.floating_action_button_search);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 assert mRecListView != null;
-                if(mRecListView.getCount() > 0){
+                if (mRecListView.getCount() > 0) {
                     mRecListView.setItemChecked(0, true);
                     ProgressDialog s = new ProgressDialog(getActivity());
                     s.setMessage("Test");
                     //s.show();
-                }
-                else{
+                } else {
                     Toast.makeText(getActivity().getApplicationContext(),
-                            getResources().getString(R.string.tst_list_empty),Toast.LENGTH_LONG).show();
+                            getResources().getString(R.string.tst_list_empty), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -154,7 +151,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 switch (item.getItemId()) {
                     case R.id.action_delete:
                         mDeleteFilesTask.execute(mSelectedRecItems);
-                        for (Long id : mSelectedRecItemsById){
+                        for (Long id : mSelectedRecItemsById) {
                             getActivity().getContentResolver().delete(RecordDbContract.CONTENT_URL, RecordDbContract.RecordItem.COLUMN_ID + "= '" + id + "'", null);
                         }
                         //showSnackbar();
@@ -317,8 +314,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             }
         }
 
-        String sort = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION, RecordDbContract.RecordItem.COLUMN_DATE)
-                + mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_ARRANGE, " DESC");
+        String sort = mPreferenceHelper.getSortSelection()
+                + mPreferenceHelper.getSortArrange();
         return new CursorLoader(getActivity(), RecordDbContract.CONTENT_URL, projectALL, selection, null, sort);
     }
 

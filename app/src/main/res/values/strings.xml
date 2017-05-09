@@ -71,7 +71,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="toolbar_action_mode_text">Selection of recordings</string>
-    <string name="title_activity_settings2">Settings2</string>
+    <string name="title_activity_settings">Settings2</string>
 
     <!-- Strings related to Settings -->
 
@@ -107,6 +107,7 @@
     <string name="pref_title_output_format">Output Format</string>
     <string-array name="pref_general_output_format">
         <item>DEFAULT</item>
+        <item>THREE_GPP</item>
         <item>AAC_ADTS</item>
         <item>AMR_NB</item>
         <item>AMR_WB</item>
@@ -114,6 +115,7 @@
     </string-array>
     <string-array name="pref_general_output_format_values">
         <item>0</item>
+        <item>1</item>
         <item>6</item>
         <item>3</item>
         <item>4</item>

@@ -40,7 +40,7 @@
         android:title="@string/pref_title_output_format" />
 
     <ListPreference
-        android:defaultValue="-1"
+        android:defaultValue="1"
         android:entries="@array/pref_general_audio_encoder"
         android:entryValues="@array/pref_general_audio_encoder_values"
         android:key="AUDIO_ENCODER"

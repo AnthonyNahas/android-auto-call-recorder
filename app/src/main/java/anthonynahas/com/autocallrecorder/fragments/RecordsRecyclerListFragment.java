@@ -5,13 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -35,7 +33,6 @@ import android.widget.Toast;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.activities.SettingsActivityOld;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
 import anthonynahas.com.autocallrecorder.classes.Resources;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
@@ -44,6 +41,7 @@ import anthonynahas.com.autocallrecorder.providers.RecordsQueryHandler;
 import anthonynahas.com.autocallrecorder.utilities.decoraters.ItemClickSupport;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.SQLiteHelper;
 import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
@@ -70,7 +68,6 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static anthonynahas.com.autocallrecorder.R.id.recyclerView;
-import static anthonynahas.com.autocallrecorder.utilities.helpers.SQLiteHelper.convertArrayToInOperatorArguments;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -107,7 +104,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
     private Context mContext;
     private RecyclerView mRecyclerView;
-    private SharedPreferences mSharedPreferences;
+    private PreferenceHelper mPreferenceHelper;
     private RecordsCursorRecyclerViewAdapter mAdapter;
 
     private ContentLoadingProgressBar mContentLoadingProgressBar;
@@ -123,7 +120,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
     private OnFragmentInteractionListener mListener;
 
-    enum Type {
+    private enum Type {
         FadeIn(new FadeInAnimator()),//0
         FadeInDown(new FadeInDownAnimator()),//1
         FadeInUp(new FadeInUpAnimator()),//2
@@ -214,6 +211,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
         // Inflate the layout for this fragment
         View mView = inflater.inflate(R.layout.fragment_recrods_card_list, container, false);
         mContext = mView.getContext();
+        mPreferenceHelper = new PreferenceHelper(mContext);
 
         mContentLoadingProgressBar = (ContentLoadingProgressBar) mView.findViewById(R.id.content_loading_progressbar);
         // Lookup the swipe container view
@@ -235,7 +233,6 @@ public class RecordsRecyclerListFragment extends Fragment implements
         //mRecyclerView.setItemAnimator(animator);
         //mAdapter.notifyItemRemoved();
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         // use a linear layout manager
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -474,9 +471,9 @@ public class RecordsRecyclerListFragment extends Fragment implements
                 }
             }
         }
-        String sort = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION,
-                RecordDbContract.RecordItem.COLUMN_DATE)
-                + mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_ARRANGE, " DESC");
+
+        String sort = mPreferenceHelper.getSortSelection()
+                + mPreferenceHelper.getSortArrange();
 
         switch (id) {
             case 0:

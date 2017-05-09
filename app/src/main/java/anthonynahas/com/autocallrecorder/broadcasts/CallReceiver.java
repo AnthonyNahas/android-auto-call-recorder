@@ -4,13 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import anthonynahas.com.autocallrecorder.activities.SettingsActivityOld;
 import anthonynahas.com.autocallrecorder.services.FetchIntentService;
 import anthonynahas.com.autocallrecorder.services.RecordService;
+import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
  * Created by A on 04.04.16. using telephonymanager API
@@ -43,7 +42,9 @@ public class CallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean(SettingsActivityOld.KEY_PREF_AUTO_RECORD, false)) {
+        PreferenceHelper preferenceHelper = new PreferenceHelper(context);
+
+        if (preferenceHelper.canAutoRecord()) {
 
             Log.d(TAG, "onReceive()");
 

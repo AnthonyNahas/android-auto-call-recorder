@@ -19,6 +19,7 @@ import java.util.Date;
 
 import anthonynahas.com.autocallrecorder.broadcasts.CallReceiver;
 import anthonynahas.com.autocallrecorder.broadcasts.DoneRecReceiver;
+import anthonynahas.com.autocallrecorder.classes.CallRecordedFile;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
@@ -84,7 +85,7 @@ public class RecordService extends Service {
         //int isIncomingCall = callData.getInt(CallReceiver.INCOMINGCALLKEY);
 
         // TODO: 08.05.17 rename file
-        sRecordFile = new File(getChildDir(Long.valueOf(id_date)),id_date);
+        sRecordFile = new File(getChildDir(Long.valueOf(id_date)),id_date + CallRecordedFile._3GP);
         sCallData.putString(FILEPATHKEY,sRecordFile.getAbsolutePath());
 
         /*

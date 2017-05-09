@@ -40,17 +40,12 @@ import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends AppCompatPreferenceActivity {
+public class SettingsActivity extends AppCompatPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 
-    private static final String TAG = SettingsActivityOld.class.getSimpleName();
+    private static final String TAG = SettingsActivity.class.getSimpleName();
 
     private SharedPreferences mSharedPreferences;
-
-    public static final String KEY_SORT_SELECTION = "sortSelection_KEY";
-    public static final String KEY_SORT_ARRANGE = "sortArrange_KEY";
-    public static final String KEY_PREF_AUTO_RECORD = "autoRecord_KEY";
-    public static final String KEY_PREF_AUTO_UPLOAD_ON_DROPBOX = "autoUploadOnDropBox_KEY";
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -210,6 +205,25 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName)
                 || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume()");
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause()");
+        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+
     }
 
     /**

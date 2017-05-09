@@ -164,9 +164,8 @@ public class MainTabsActivity extends AppCompatActivity implements
             mSwitch_auto_rec.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mSharedPreferences.edit().putBoolean(SettingsActivityOld.KEY_PREF_AUTO_RECORD, isChecked).apply();
-                    Log.d(TAG, "autorecord = "
-                            + mSwitch_auto_rec.isChecked());
+                    Log.d(TAG, "autorecord = " + mSwitch_auto_rec.isChecked());
+                    mPreferenceHelper.setCanAutoRecord(isChecked);
                 }
             });
         }
@@ -199,8 +198,9 @@ public class MainTabsActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         Log.d(TAG, " AUDIO SOURCE = " + mPreferenceHelper.getAudioSource());
+
         if (mSwitch_auto_rec != null) {
-            mSwitch_auto_rec.setChecked(mSharedPreferences.getBoolean(SettingsActivityOld.KEY_PREF_AUTO_RECORD, true));
+            mSwitch_auto_rec.setChecked(mPreferenceHelper.canAutoRecord());
             Log.d(TAG, "switch state | auto record = " + mSwitch_auto_rec.isChecked());
         }
     }

@@ -3,9 +3,7 @@ package anthonynahas.com.autocallrecorder.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
@@ -15,8 +13,8 @@ import android.view.View;
 import android.widget.RadioGroup;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.activities.SettingsActivityOld;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
+import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
  * Created by A on 14.06.16.
@@ -27,19 +25,20 @@ public class SortDialogFragment extends DialogFragment {
 
     private String mSelect;
     private String mArrange;
-    private SharedPreferences mSharedPreferences;
+    private PreferenceHelper mPreferenceHelper;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         View view = inflater.inflate(R.layout.sort_dialog_layout, null);
 
-        mSelect = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_SELECTION,RecordDbContract.RecordItem.COLUMN_DATE);
-        mArrange = mSharedPreferences.getString(SettingsActivityOld.KEY_SORT_ARRANGE," DESC");
+         mPreferenceHelper = new PreferenceHelper(view.getContext());
+
+        mSelect = mPreferenceHelper.getSortSelection();
+        mArrange = mPreferenceHelper.getSortArrange();
 
         RadioGroup select_radio_group = (RadioGroup) view.findViewById(R.id.radiogroup_sort_select);
         checkSelectRadioGroup(select_radio_group,mSelect);
@@ -87,11 +86,10 @@ public class SortDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.sort_dialog_positive_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        mSharedPreferences
-                                .edit()
-                                .putString(SettingsActivityOld.KEY_SORT_SELECTION,mSelect)
-                                .putString(SettingsActivityOld.KEY_SORT_ARRANGE,mArrange)
-                                .apply();
+
+                        mPreferenceHelper.setSortSelection(mSelect);
+                        mPreferenceHelper.setSortArrange(mArrange);
+
                         notifyTargetFragment(Activity.RESULT_OK);
                     }
                 })
