@@ -136,6 +136,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setupActionBar();
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     /**

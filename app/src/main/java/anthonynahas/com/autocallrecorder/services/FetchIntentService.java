@@ -38,7 +38,6 @@ public class FetchIntentService extends IntentService {
      */
     public FetchIntentService() {
         super("FetchIntentService");
-        mPreferenceHelper = new PreferenceHelper(this);
     }
 
     @Override
@@ -136,6 +135,7 @@ public class FetchIntentService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
+        mPreferenceHelper = new PreferenceHelper(this);
     }
 
     @Override
