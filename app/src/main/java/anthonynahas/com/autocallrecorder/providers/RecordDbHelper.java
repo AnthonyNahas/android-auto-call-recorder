@@ -1,6 +1,5 @@
 package anthonynahas.com.autocallrecorder.providers;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -32,6 +31,5 @@ public class RecordDbHelper {
         String[] selectionArgs = {id};
         RecordsQueryHandler.getInstance(context.getContentResolver())
                 .startUpdate(RecordsQueryHandler.UPDATE_IS_LOVE, null, uri, contentValues, selection, selectionArgs);
-        //return contentResolver.update(uri, contentValues, selection, selectionArgs);
     }
 }

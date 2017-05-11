@@ -90,52 +90,45 @@ public class FetchIntentService extends IntentService {
         int counter = 0;
 
 
-        assert audioCursor != null;
-        Log.d(TAG, "cursor count = " + audioCursor.getCount());
-        audioCursor.moveToFirst();
-        /*
-        if (audioCursor.moveToFirst()) {
-            while (audioCursor.moveToNext()) {
-                if (audioCursor.isLast()) {
-                    Log.d(TAG, "cursor is last");
-                }*/
-        // TODO: 08.05.17 cursor with try and catch
-        id = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media._ID));
-        data = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-        size = audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.SIZE));
-        duration = audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-        displayName = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
-        // do what ever you want here
-        Log.d(TAG, data + " id = " + id + " | size = " + size + " name = " + displayName);
-        Log.d(TAG, "sCounter = " + counter++);
-        //  }
-        //}
-        audioCursor.close();
+        if(audioCursor != null && audioCursor.moveToFirst()){
 
-        long contactID = ContactHelper.getContactID(this.getContentResolver(), number);
+            Log.d(TAG, "cursor count = " + audioCursor.getCount());
+            // TODO: 08.05.17 cursor with try and catch
+            id = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media._ID));
+            data = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+            size = audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.SIZE));
+            duration = audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+            displayName = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
+            // do what ever you want here
+            Log.d(TAG, data + " id = " + id + " | size = " + size + " name = " + displayName);
+            Log.d(TAG, "sCounter = " + counter++);
+            //  }
+            //}
+            audioCursor.close();
+
+            long contactID = ContactHelper.getContactID(this.getContentResolver(), number);
 
 
-        ContentValues values = new ContentValues();
-        values.put(RecordDbContract.RecordItem.COLUMN_ID, id);
-        values.put(RecordDbContract.RecordItem.COLUMN_DATE, date);
-        values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, number);
-        values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, isIncomingCall);
-        values.put(RecordDbContract.RecordItem.COLUMN_SIZE, size);
-        values.put(RecordDbContract.RecordItem.COLUMN_DURATION, duration);
-        if (contactID != -1) {
-            values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, contactID);
-        }
-        getApplicationContext().getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
-        Log.d(TAG, "contentResolver inserted record");
+            ContentValues values = new ContentValues();
+            values.put(RecordDbContract.RecordItem.COLUMN_ID, id);
+            values.put(RecordDbContract.RecordItem.COLUMN_DATE, date);
+            values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, number);
+            values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, isIncomingCall);
+            values.put(RecordDbContract.RecordItem.COLUMN_SIZE, size);
+            values.put(RecordDbContract.RecordItem.COLUMN_DURATION, duration);
+            if (contactID != -1) {
+                values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, contactID);
+            }
 
-        Log.d(TAG, "---------------------------------------------------------------");
 
-        //logRecContentProvider();
+            getApplicationContext().getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
 
-        if (mPreferenceHelper.canUploadOnDropBox()) {
-            Log.d(TAG, "onUpload()");
-            uploadAudioFile(data, displayName);
 
+            if (mPreferenceHelper.canUploadOnDropBox()) {
+                Log.d(TAG, "onUpload()");
+                uploadAudioFile(data, displayName);
+
+            }
         }
 
     }
@@ -159,24 +152,6 @@ public class FetchIntentService extends IntentService {
     }
 
 
-    private void logRecContentProvider() {
-        Cursor c = getApplicationContext().getContentResolver().query(RecordDbContract.CONTENT_URL, new String[]{"*"}, null, null, null);
-
-        assert c != null;
-        if (c.moveToFirst()) {
-            do {
-                String id = c.getString(c.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID));
-                String number = c.getString(c.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
-                long date = c.getLong(c.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));
-                int size = c.getInt(c.getColumnIndex(RecordDbContract.RecordItem.COLUMN_SIZE));
-                int duration = c.getInt(c.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION));
-                int incoming = c.getInt(c.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING));
-                // do what ever you want here
-                Log.d(TAG, " id = " + id + " | number = " + number + " | date = " + date + " | size = " + size + " | duration = " + duration + " | incoming = " + incoming);
-            } while (c.moveToNext());
-        }
-        c.close();
-    }
 
     private boolean uploadAudioFile(String filePath, String fileName) {
         DropBoxHelper dropBoxHelper = new DropBoxHelper(this);
