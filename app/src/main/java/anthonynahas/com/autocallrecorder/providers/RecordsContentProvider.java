@@ -275,7 +275,7 @@ public class RecordsContentProvider extends ContentProvider {
                 + ")";
 
         //drop table query
-        private static final String DROP_TABLE = "DROP TABLE IF IT EXISTS " +
+        private static final String DROP_TABLE = "DROP TABLE IF EXISTS " +
                 RecordDbContract.RecordItem.TABLE_NAME + ";";
 
         /**
