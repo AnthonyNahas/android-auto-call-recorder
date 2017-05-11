@@ -42,7 +42,7 @@ import java.util.concurrent.ExecutionException;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorAdapter;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
-import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileAsyncTask;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
@@ -385,10 +385,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private String getAudioFilePath(String id) {
-        AudioFileHelper audioFileHelper = new AudioFileHelper(id, getActivity().getApplicationContext());
+        AudioFileAsyncTask audioFileAsyncTask = new AudioFileAsyncTask(id, getActivity().getApplicationContext());
         String path = "";
         try {
-            Cursor audioCursor = audioFileHelper.execute().get();
+            Cursor audioCursor = audioFileAsyncTask.execute().get();
             String id2 = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media._ID));
             path = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 

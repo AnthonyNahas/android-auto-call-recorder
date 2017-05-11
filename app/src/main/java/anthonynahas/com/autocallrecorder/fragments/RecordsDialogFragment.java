@@ -43,7 +43,7 @@ import java.util.concurrent.ExecutionException;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.activities.MainActivity;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
-import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileAsyncTask;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.FileDeleterTask;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ImageHelper;
@@ -374,9 +374,9 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
     }
 
     private String getAudioFilePath(String id) {
-        AudioFileHelper audioFileHelper = new AudioFileHelper(id, getActivity().getApplicationContext());
+        AudioFileAsyncTask audioFileAsyncTask = new AudioFileAsyncTask(id, getActivity().getApplicationContext());
         try {
-            Cursor audioCursor = audioFileHelper.execute().get();
+            Cursor audioCursor = audioFileAsyncTask.execute().get();
             String id2 = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media._ID));
             mPathFile = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
             mFileName = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
