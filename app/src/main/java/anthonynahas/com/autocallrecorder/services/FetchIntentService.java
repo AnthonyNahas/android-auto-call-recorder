@@ -16,12 +16,12 @@ import com.dropbox.client2.exception.DropboxUnlinkedException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOError;
 
 import anthonynahas.com.autocallrecorder.broadcasts.CallReceiver;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DropBoxHelper;
+import anthonynahas.com.autocallrecorder.utilities.helpers.FileHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
@@ -66,13 +66,21 @@ public class FetchIntentService extends IntentService {
                 MediaStore.Audio.Media.DURATION};
 
 
-        String whereClause = "(" + MediaStore.Audio.Media.DISPLAY_NAME + " == " + date + ".3gp)";
+        String whereClause = "("
+                + MediaStore.Audio.Media.DISPLAY_NAME
+                + " == "
+                + date
+                + FileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
         //String selection = MediaStore.Audio.Media.DISPLAY_NAME + "=? ";
         String selection = MediaStore.Images.Media.DISPLAY_NAME + " like ? ";
-        String[] args = {date + ".3gp"}; // TODO: 09.05.2017 args should be dynamic
+        String suffixFile = FileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
+        String[] args = {date + suffixFile}; // TODO: 09.05.2017 args should be dynamic
 
 
-        Cursor audioCursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, args, null);
+        // TODO: 11.05.17 query should be achieved with asyncquery handler
+        Cursor audioCursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                projection, selection, args, null);
+
         String id;
         int size;
         int duration;
@@ -150,21 +158,6 @@ public class FetchIntentService extends IntentService {
         super.onDestroy();
     }
 
-    private void getAllChildDirectories(File parentDir) {
-
-        try {
-            File[] allFiles = parentDir.listFiles();
-            logFiles(allFiles);
-        } catch (IOError e) {
-            Log.e(TAG, "error " + e);
-        }
-    }
-
-    private void logFiles(File[] files) {
-        for (File f : files) {
-            Log.d(TAG, f.getName() + " isDir = " + f.isDirectory());
-        }
-    }
 
     private void logRecContentProvider() {
         Cursor c = getApplicationContext().getContentResolver().query(RecordDbContract.CONTENT_URL, new String[]{"*"}, null, null, null);

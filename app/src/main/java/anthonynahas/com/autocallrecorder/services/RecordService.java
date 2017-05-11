@@ -19,11 +19,15 @@ import java.util.Date;
 
 import anthonynahas.com.autocallrecorder.broadcasts.CallReceiver;
 import anthonynahas.com.autocallrecorder.broadcasts.DoneRecReceiver;
-import anthonynahas.com.autocallrecorder.classes.CallRecordedFile;
+import anthonynahas.com.autocallrecorder.utilities.helpers.FileHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
  * Created by A on 28.03.16.
+ *
+ * @author Anthony Nahas
+ * @since 28.03.2016
+ * @version 0.5.9
  */
 public class RecordService extends Service {
 
@@ -37,17 +41,11 @@ public class RecordService extends Service {
     public static final String FILEPATHKEY = "filepathkey";
     public static File sRecordFile;
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        Log.d(TAG,"onBind()");
-        return null;
-    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG,"onCreate()");
+        Log.d(TAG, "onCreate()");
         mPreferenceHelper = new PreferenceHelper(this);
     }
 
@@ -60,19 +58,25 @@ public class RecordService extends Service {
         //this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(sRecordFile.getAbsoluteFile())));
         //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(getBaseDir().getAbsoluteFile())));
         //startService(new Intent().putExtras(sCallData));
-        String [] string_rec_path ={sRecordFile.getAbsolutePath()};
+        String[] string_rec_path = {sRecordFile.getAbsolutePath()};
 
         MediaScannerConnection.scanFile(getApplicationContext(), string_rec_path, null, new MediaScannerConnection.OnScanCompletedListener() {
             @Override
             public void onScanCompleted(String path, Uri uri) {
-                Log.d(TAG,"scan completed");
+                Log.d(TAG, "scan completed");
                 Intent i = new Intent();
                 i.putExtras(sCallData);
                 i.setAction(DoneRecReceiver.ACTION);
                 sendBroadcast(i);
-                Log.d(TAG,"broadcast sent");
+                Log.d(TAG, "broadcast sent");
             }
         });
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     @Override
@@ -84,9 +88,11 @@ public class RecordService extends Service {
         //String number = callData.getString(CallReceiver.NUMBERKEY);
         //int isIncomingCall = callData.getInt(CallReceiver.INCOMINGCALLKEY);
 
-        // TODO: 08.05.17 rename file
-        sRecordFile = new File(getChildDir(Long.valueOf(id_date)),id_date + CallRecordedFile._3GP);
-        sCallData.putString(FILEPATHKEY,sRecordFile.getAbsolutePath());
+        // TODO: 08.05.17 to check
+        //sRecordFile = new File(getChildDir(Long.valueOf(id_date)), id_date + CallRecordedFile._3GP);
+        String fileSuffix = FileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
+        sRecordFile = new File(getChildDir(Long.valueOf(id_date)), id_date + fileSuffix);
+        sCallData.putString(FILEPATHKEY, sRecordFile.getAbsolutePath());
 
         /*
         ContentValues values = new ContentValues();
@@ -100,33 +106,35 @@ public class RecordService extends Service {
 
         //String sysDate = intent.getStringExtra(CallReceiver.LONGDATEKEY);
 
-        Log.d(TAG,sRecordFile.getAbsolutePath());
+        Log.d(TAG, sRecordFile.getAbsolutePath());
 
         startAndSaveRecord(sRecordFile);
 
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public static File getBaseDir(){
-        File baseFileDir = new File(Environment.getExternalStorageDirectory(),FILENAME);
-        Log.d(TAG,baseFileDir.toString());
+    // TODO: 11.05.17 method should be moved to FileHelper class
+    public static File getBaseDir() {
+        File baseFileDir = new File(Environment.getExternalStorageDirectory(), FILENAME);
+        Log.d(TAG, baseFileDir.toString());
         //make dir
-        if(!baseFileDir.mkdir()){
-            Log.w(TAG,"Base directory has been already given!");
+        if (!baseFileDir.mkdir()) {
+            Log.w(TAG, "Base directory has been already given!");
         }
         return baseFileDir;
     }
 
-    private static File getChildDir(long currentDate){
+    // TODO: 11.05.17 method should be moved to FileHelper class
+    private static File getChildDir(long currentDate) {
         File childFile = new File(getBaseDir().getPath(), getDate(currentDate));
-        Log.d(TAG,childFile.getAbsolutePath());
-        if(!childFile.mkdir()){
-            Log.w(TAG,"Child directory has been already given!");
+        Log.d(TAG, childFile.getAbsolutePath());
+        if (!childFile.mkdir()) {
+            Log.w(TAG, "Child directory has been already given!");
         }
         return childFile;
     }
 
-    private void startAndSaveRecord(File recordFile){
+    private void startAndSaveRecord(File recordFile) {
         stopRecord();
         mMediaRecorder = new MediaRecorder();
         mMediaRecorder.setAudioSource(mPreferenceHelper.getAudioSource());   //or default mic
@@ -134,25 +142,24 @@ public class RecordService extends Service {
         mMediaRecorder.setAudioEncoder(mPreferenceHelper.getAudioEncoder()); //AMR_NB
 
         try {
-            if(!recordFile.createNewFile()){
-                Log.w(TAG,"File name has been already given");
+            if (!recordFile.createNewFile()) {
+                Log.i(TAG, "File name has been already given");
             }
             mMediaRecorder.setOutputFile(recordFile.getAbsolutePath());
             mMediaRecorder.prepare();
             mMediaRecorder.start();
         } catch (IOException e) {
-            e.printStackTrace();
-            Log.e(TAG,"Recording could not be starting!");
+            Log.e(TAG, "Error: Recording could not be starting!", e);
         }
     }
 
 
-    private void stopRecord(){
-        if(mMediaRecorder != null){
+    private void stopRecord() {
+        if (mMediaRecorder != null) {
             //free record ressource
             mMediaRecorder.release();
             mMediaRecorder = null;
-            Log.d(TAG,"media recoreder has been released");
+            Log.d(TAG, "media recoreder has been released");
             //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(sRecordFile.getAbsoluteFile())));
 
             /*
@@ -164,7 +171,7 @@ public class RecordService extends Service {
         }
     }
 
-    private static String getDate(long l){
+    private static String getDate(long l) {
         DateFormat dateFormat = new SimpleDateFormat("hh:mm dd-MM-yy");
         Date date = new Date(l);
 
