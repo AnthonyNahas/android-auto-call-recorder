@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.activities.MainActivity;
+import anthonynahas.com.autocallrecorder.activities.MainOldActivity;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileAsyncTask;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
@@ -440,7 +440,7 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
     private void uploadRecord(){
         // TODO: 04.05.2017 : dropbox - fdp server - google drive ...
         Log.d(TAG, "onUpload()");
-        UploadAudioFile uploadAudioFile = new UploadAudioFile(getActivity().getApplication().getApplicationContext(), MainActivity.mApi, MainActivity.DROPBOX_FILE_DIR, mPathFile, mFileName);
+        UploadAudioFile uploadAudioFile = new UploadAudioFile(getActivity().getApplication().getApplicationContext(), MainOldActivity.mApi, MainOldActivity.DROPBOX_FILE_DIR, mPathFile, mFileName);
         uploadAudioFile.execute();
         //getAudioFilePath(String.valueOf(mID));
     }

@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import java.lang.ref.WeakReference;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.activities.MainActivity;
+import anthonynahas.com.autocallrecorder.activities.MainOldActivity;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 
 /**
@@ -32,7 +32,7 @@ public class BitmapWorkerTask extends AsyncTask<Void,Void,Bitmap> {
         Bitmap img = ContactHelper.getBitmapForContactID(context.getContentResolver(),1,
                 cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
         if(img != null){
-            MainActivity.setBitmapToMemoryCache(cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_NUMBER)),img);
+            MainOldActivity.setBitmapToMemoryCache(cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_NUMBER)),img);
         }
         return null;
     }

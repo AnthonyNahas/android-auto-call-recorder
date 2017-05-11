@@ -47,9 +47,9 @@ import anthonynahas.com.autocallrecorder.fragments.MainFragment;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.UploadFile;
 
-public class MainActivity extends AppCompatActivity {
+public class MainOldActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MainOldActivity.class.getSimpleName();
 
     public static int REQUEST_CODE_SETTINGS = 12;
 
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate()");
         setContentView(R.layout.activity_main_plus);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        context = MainActivity.this;
+        context = MainOldActivity.this;
         // Set a Toolbar to replace the ActionBar.
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.navigation_fragment_settings:
                 //fragment = new SettingsFragment();
                 menuItem.setChecked(true);
-                startActivityForResult(new Intent(MainActivity.this, SettingsActivity.class), REQUEST_CODE_SETTINGS);
+                startActivityForResult(new Intent(MainOldActivity.this, SettingsActivity.class), REQUEST_CODE_SETTINGS);
                 //menuItem.setChecked(true);
                 // Close the navigation drawer
                 mDrawerLayout.closeDrawers();
@@ -519,9 +519,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Start the remote authentication
             if (USE_OAUTH1) {
-                mApi.getSession().startAuthentication(MainActivity.this);
+                mApi.getSession().startAuthentication(MainOldActivity.this);
             } else {
-                mApi.getSession().startOAuth2Authentication(MainActivity.this, "", sAuthenticatedUid);
+                mApi.getSession().startOAuth2Authentication(MainOldActivity.this, "", sAuthenticatedUid);
             }
         }
     }

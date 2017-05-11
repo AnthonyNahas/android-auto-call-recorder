@@ -177,7 +177,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         //initialize the loader
         getLoaderManager().initLoader(LOADER_ID, null, this);
 
-        //((MainActivity)getActivity()).checkPermission(Manifest.permission.READ_CONTACTS, MainActivity.MY_PERMISSIONS_REQUEST_CONTACTS)
+        //((MainOldActivity)getActivity()).checkPermission(Manifest.permission.READ_CONTACTS, MainOldActivity.MY_PERMISSIONS_REQUEST_CONTACTS)
 
         mDeleteFilesTask = new AsyncTask<ArrayList<String>, Void, Void>() {
 
