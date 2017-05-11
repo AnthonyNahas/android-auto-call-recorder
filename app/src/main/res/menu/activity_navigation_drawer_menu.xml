@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import"/>
+            android:title="Import" />
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery"/>
+            android:title="Gallery" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow"/>
+            android:title="Slideshow" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools"/>
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_build"
+            android:title="Tools" />
     </group>
 
     <item android:title="Communicate">
@@ -26,11 +26,11 @@
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share"/>
+                android:title="Share" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send"/>
+                android:title="Send" />
         </menu>
     </item>
 
@@ -41,26 +41,12 @@
             android:id="@+id/nav_switch_auto_rec"
             android:checkable="false"
             android:title="@string/action_view_switch_auto_rec"
-            app:actionLayout="@layout/action_view_switch"/>
+            app:actionLayout="@layout/action_view_switch" />
         <item
             android:id="@+id/nav_switch_auto_upload_on_dropbox"
             android:checkable="false"
             android:title="@string/action_view_switch_dropbox"
-            app:actionLayout="@layout/action_view_switch_dropbox"/>
+            app:actionLayout="@layout/action_view_switch_dropbox" />
     </group>
-
-    <!--
-        <item android:title="string/nav_sub_menu">
-            <menu>
-                <item
-                    android:icon="@android:drawable/ic_menu_today"
-                    android:title="string/nav_sub_menu_item01" />
-                <item
-                    android:icon="@android:drawable/ic_menu_today"
-                    android:title="string/nav_sub_menu_item02" />
-            </menu>
-        </item>
-
-        -->
 
 </menu>

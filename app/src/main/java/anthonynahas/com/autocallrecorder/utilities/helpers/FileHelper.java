@@ -1,10 +1,14 @@
 package anthonynahas.com.autocallrecorder.utilities.helpers;
 
 import android.media.MediaRecorder;
+import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
 import java.io.IOError;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Class helper that deals with the file system and more.
@@ -17,6 +21,35 @@ import java.io.IOError;
 public class FileHelper {
 
     private static final String TAG = FileHelper.class.getSimpleName();
+
+    private static final String FILENAME = "com.anthonynahas.autocallrecorder";
+
+
+    public static File getChildDir(long currentDate) {
+        File childFile = new File(getBaseDir().getPath(), getDate(currentDate));
+        Log.d(TAG, childFile.getAbsolutePath());
+        if (!childFile.mkdir()) {
+            Log.w(TAG, "Child directory has been already given!");
+        }
+        return childFile;
+    }
+
+    public static File getBaseDir() {
+        File baseFileDir = new File(Environment.getExternalStorageDirectory(), FILENAME);
+        Log.d(TAG, baseFileDir.toString());
+        //make dir
+        if (!baseFileDir.mkdir()) {
+            Log.w(TAG, "Base directory has been already given!");
+        }
+        return baseFileDir;
+    }
+
+    private static String getDate(long l) {
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+        Date date = new Date(l);
+
+        return dateFormat.format(date);
+    }
 
 
     public static String getAudioFileSuffix(int audioOutPutFormat) {

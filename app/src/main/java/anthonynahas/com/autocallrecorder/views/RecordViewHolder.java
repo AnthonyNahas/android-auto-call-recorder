@@ -121,8 +121,11 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         } else {
             //BitmapWorkerTask bitmapWorkerTask =  new BitmapWorkerTask(viewHolder.call_contact_profile,context,cursor);
             //bitmapWorkerTask.execute();
-            Bitmap img = ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1,
-                    cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
+
+            long contactID = cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
+            Log.d(TAG, "contact id --> " + contactID);
+            Bitmap img = ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1, contactID);
+
             if (img != null) {
                 call_contact_profile.setImageBitmap(img);
                 MemoryCacheHelper.setBitmapToMemoryCache(phoneNumber, img);

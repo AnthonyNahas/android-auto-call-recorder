@@ -31,7 +31,7 @@
         android:title="@string/pref_title_add_friends_to_messages" />
 
     <ListPreference
-        android:defaultValue="-1"
+        android:defaultValue="3"
         android:entries="@array/pref_general_output_format"
         android:entryValues="@array/pref_general_output_format_values"
         android:key="OUTPUT_FORMAT"

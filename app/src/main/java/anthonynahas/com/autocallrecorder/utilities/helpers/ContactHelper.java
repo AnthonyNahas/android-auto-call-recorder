@@ -81,23 +81,24 @@ public class ContactHelper {
 
         ArrayList<String> idsList = new ArrayList<>();
 
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
                 String contact_id;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
+                    contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID));
                 } else {
                     contact_id = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
                 }
 
-                if(!idsList.contains(contact_id)){
+                if (!idsList.contains(contact_id)) {
+                    Log.d(TAG, "on getContactIDsByName --> add: " + contact_id);
                     idsList.add(contact_id);
                 }
 
             } while (cursor.moveToNext());
         }
 
-        return  idsList.toArray(new String[idsList.size()]);
+        return idsList.toArray(new String[idsList.size()]);
     }
 
     public static boolean insertContact(ContentResolver contactAdder, String firstName, String mobileNumber) {
@@ -296,20 +297,26 @@ public class ContactHelper {
             do {
                 long Contact_contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 long data_raw_contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID));
-                long phone_lookup_contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID)); //this is the right onw
+
                 long phone_lookup_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
+                long phone_lookup_contact_id = 0; //this is the right one
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    phone_lookup_contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID));
+                }
+
                 String contact_display_name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
                 Log.d(TAG,
-                        "ContactsContract.Contacts._ID "
-                                + Contact_contact_id
-                                + " Data.CONTACT_ID = "
-                                + data_raw_contact_id
-                                + " PhoneLookup._ID = "
-                                + phone_lookup_contact_id
-                                + " contact id = "
-                                + phone_lookup_id
-                                + " --> display name = "
+                        //"ContactsContract.Contacts._ID "
+                          //      + Contact_contact_id
+                            //    + " Data.CONTACT_ID = "
+                              //  + data_raw_contact_id
+                                 " PhoneLookup._ID = "
+                                         + phone_lookup_id
+                                         + " contact id = "
+                                         + phone_lookup_contact_id
+                                         + " --> display name = "
                                 + contact_display_name
                                 + " --> number = "
                                 + contact_number);

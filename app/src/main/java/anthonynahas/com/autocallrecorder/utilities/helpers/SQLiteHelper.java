@@ -29,6 +29,9 @@ public class SQLiteHelper {
             }
             result += " )";
         }
+
+        result = result.isEmpty() ? " () " : result;
+
         Log.d(TAG, "IN = " + result);
         return result;
     }

@@ -1,8 +1,10 @@
 package anthonynahas.com.autocallrecorder.utilities.decoraters;
 
+import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
 
@@ -20,7 +22,7 @@ import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
  * and debug purposes.
  *
  * @author Anthony Nahas
- * @version 1.0
+ * @version 0.5.0
  * @since 25.04.2017
  */
 
@@ -45,6 +47,7 @@ public class DemoRecordSupport {
         values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
         values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, generatePhoneNumber());
         values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, generateNumber(1, 0));
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, generateNumber(1, 0));
         values.put(RecordDbContract.RecordItem.COLUMN_SIZE, generateNumber(100, 1));
         values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(800, 400));
         RecordsQueryHandler.getInstance(context.getContentResolver())
@@ -54,61 +57,62 @@ public class DemoRecordSupport {
         Log.d(TAG, "contentResolver inserted dummy record");
     }
 
-    public void createDemoRecord(Context context) {
+    public void createDemoRecord(final Context context) {
 
-        ArrayList<String> contactListNumbers = new ArrayList<>();
+        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        String[] projection =
+                {
+                        ContactsContract.Contacts._ID,
+                        ContactsContract.Data.CONTACT_ID,
+                        ContactsContract.Data.RAW_CONTACT_ID,
+                        ContactsContract.PhoneLookup._ID,
+                        ContactsContract.PhoneLookup.CONTACT_ID,
+                        ContactsContract.CommonDataKinds.Phone._ID,
+                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                        ContactsContract.CommonDataKinds.Phone.NUMBER
+                };
 
-        // retrieve all contacts
-        Cursor cursor = ContactHelper.getContactCursorByName(context.getContentResolver(), "");
+        String orderBy = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
 
-        if (cursor.moveToNext()) {
-            do {
-                //long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                //long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
-                // TODO: 05.05.17 control if it works with api < 24
+        AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(context.getContentResolver()) {
+            @Override
+            protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+
+                if (cursor.getCount() == 0) {
+                    createDummyRecord(context);
+                    return;
+                }
+
+                int random = generateNumber(cursor.getCount() - 1, 0);
+
+                cursor.moveToPosition(random);
+
                 long contact_id;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID));
                 } else {
                     contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
                 }
-                String contact_display_name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                contactListNumbers.add(contact_number);
+                ContentValues values = new ContentValues();
+                values.put(RecordDbContract.RecordItem.COLUMN_ID, String.valueOf(generateNumber(10000, 5000)));
+                values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
+                values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, contact_number);
+                values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, contact_id);
+                values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, generateNumber(1, 0));
+                values.put(RecordDbContract.RecordItem.COLUMN_SIZE, generateNumber(100, 1));
+                values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(600, 0));
+                values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, generateNumber(1, 0));
 
-                Log.d(TAG, "phonelookup_contact_id = "
-                        + contact_id
-                        + " -- phonelookup_id ---> "
-                        + ContactHelper.getContactID(context.getContentResolver(), contact_number)
-                        + " --> name = "
-                        + contact_display_name
-                        + " --> number = "
-                        + contact_number);
-            } while (cursor.moveToNext());
+                RecordsQueryHandler.getInstance(context.getContentResolver())
+                        .startInsert(RecordsQueryHandler.INSERT_DEMO, null, RecordDbContract.CONTENT_URL, values);
+            }
+        };
 
-            cursor.close();
-        }
+        // retrieve all contacts
+        asyncQueryHandler.startQuery(0, null, uri, projection, null, null, orderBy);
 
-        if (contactListNumbers.size() == 0) {
-            createDummyRecord(context);
-            return;
-        }
-
-        int random = generateNumber(contactListNumbers.size() - 1, 0);
-
-        ContentValues values = new ContentValues();
-        values.put(RecordDbContract.RecordItem.COLUMN_ID, String.valueOf(generateNumber(10000, 5000)));
-        values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
-        values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, contactListNumbers.get(random));
-        values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, generateNumber(1, 0));
-        values.put(RecordDbContract.RecordItem.COLUMN_SIZE, generateNumber(100, 1));
-        values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(600, 0));
-
-        RecordsQueryHandler.getInstance(context.getContentResolver())
-                .startInsert(RecordsQueryHandler.INSERT_DEMO, null, RecordDbContract.CONTENT_URL, values);
-
-        Log.d(TAG, "contentResolver inserted demo record");
     }
 
     /**

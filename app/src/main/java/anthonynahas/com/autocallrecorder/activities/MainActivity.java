@@ -44,10 +44,10 @@ import anthonynahas.com.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PermissionsHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
-public class MainTabsActivity extends AppCompatActivity implements
+public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = MainTabsActivity.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private PreferenceHelper mPreferenceHelper;
     private DrawerLayout mDrawer;
@@ -242,18 +242,10 @@ public class MainTabsActivity extends AppCompatActivity implements
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        switch (id) {
+            case R.id.nav_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -293,45 +285,10 @@ public class MainTabsActivity extends AppCompatActivity implements
      */
     private void notifyOnActionMode(boolean state) {
         Intent intent = new Intent(Resources.BROADCAST_ACTION_ON_ACTION_MODE);
-        intent.putExtra(Resources.ACTION_MODE_SENDER, MainTabsActivity.class.getSimpleName());
+        intent.putExtra(Resources.ACTION_MODE_SENDER, MainActivity.class.getSimpleName());
         intent.putExtra(Resources.ACTION_MODE_SATE, state);
         LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(intent);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main_tabs, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
     }
 
     /**

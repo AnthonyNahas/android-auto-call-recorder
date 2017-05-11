@@ -26,13 +26,13 @@ import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
  * Created by A on 28.03.16.
  *
  * @author Anthony Nahas
- * @since 28.03.2016
  * @version 0.5.9
+ * @since 28.03.2016
  */
 public class RecordService extends Service {
 
     private static final String TAG = RecordService.class.getSimpleName();
-    private static final String FILENAME = "com.anthonynahas.autocallrecorder";
+
     private static Bundle sCallData;
     private MediaRecorder mMediaRecorder;
     private PreferenceHelper mPreferenceHelper;
@@ -89,49 +89,15 @@ public class RecordService extends Service {
         //int isIncomingCall = callData.getInt(CallReceiver.INCOMINGCALLKEY);
 
         // TODO: 08.05.17 to check
-        //sRecordFile = new File(getChildDir(Long.valueOf(id_date)), id_date + CallRecordedFile._3GP);
         String fileSuffix = FileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
-        sRecordFile = new File(getChildDir(Long.valueOf(id_date)), id_date + fileSuffix);
+        sRecordFile = new File(FileHelper.getChildDir(Long.valueOf(id_date)), id_date + fileSuffix);
         sCallData.putString(FILEPATHKEY, sRecordFile.getAbsolutePath());
-
-        /*
-        ContentValues values = new ContentValues();
-        values.put(RecordDbContract.RecordItem.COLUMN_ID,id_date);
-        values.put(RecordDbContract.RecordItem.COLUMN_DATE,id_date);
-        values.put(RecordDbContract.RecordItem.COLUMN_NUMBER,number);
-        values.put(RecordDbContract.RecordItem.TABLE_NAME,recordFile.getAbsolutePath());
-        values.put(RecordDbContract.RecordItem.COLUMN_INCOMING,isIncomingCall);
-        mContentResolver.insert(RecordDbContract.CONTENT_URL,values);
-        Log.d(TAG,"contentResolver inserted record");*/
-
-        //String sysDate = intent.getStringExtra(CallReceiver.LONGDATEKEY);
 
         Log.d(TAG, sRecordFile.getAbsolutePath());
 
         startAndSaveRecord(sRecordFile);
 
         return super.onStartCommand(intent, flags, startId);
-    }
-
-    // TODO: 11.05.17 method should be moved to FileHelper class
-    public static File getBaseDir() {
-        File baseFileDir = new File(Environment.getExternalStorageDirectory(), FILENAME);
-        Log.d(TAG, baseFileDir.toString());
-        //make dir
-        if (!baseFileDir.mkdir()) {
-            Log.w(TAG, "Base directory has been already given!");
-        }
-        return baseFileDir;
-    }
-
-    // TODO: 11.05.17 method should be moved to FileHelper class
-    private static File getChildDir(long currentDate) {
-        File childFile = new File(getBaseDir().getPath(), getDate(currentDate));
-        Log.d(TAG, childFile.getAbsolutePath());
-        if (!childFile.mkdir()) {
-            Log.w(TAG, "Child directory has been already given!");
-        }
-        return childFile;
     }
 
     private void startAndSaveRecord(File recordFile) {
@@ -169,12 +135,5 @@ public class RecordService extends Service {
             sendBroadcast(i);
             */
         }
-    }
-
-    private static String getDate(long l) {
-        DateFormat dateFormat = new SimpleDateFormat("hh:mm dd-MM-yy");
-        Date date = new Date(l);
-
-        return dateFormat.format(date);
     }
 }
