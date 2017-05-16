@@ -90,10 +90,9 @@
 
                 <ImageView
                     android:id="@+id/call_icon_isIncoming"
-                    android:layout_width="5dp"
-                    android:layout_height="5dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:layout_toEndOf="@+id/call_contact_name_number"
-                    android:background="@android:color/background_light"
                     android:contentDescription="for incoming or outgoing call" />
             </RelativeLayout>
 

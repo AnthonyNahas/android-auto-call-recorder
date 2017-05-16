@@ -1,14 +1,112 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.v7.widget.CardView android:id="@+id/card_view"
+                                    xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"
+                                    android:clickable="true"
+                                    android:foreground="?selectableItemBackground"
+                                    card_view:cardBackgroundColor="#d6d6d6"
+                                    card_view:cardCornerRadius="12dp"
+                                    card_view:cardElevation="3dp"
+                                    card_view:contentPadding="4dp">
+
     <!-- A CardView that contains a TextView -->
-
-
-    <TextView
-        android:id="@+id/info_text"
+    <RelativeLayout
+        android:id="@+id/relative_layout1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/info_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="1"
+            android:textSize="30dp"
+            android:textStyle="bold"/>
+
+        <anthonynahas.com.autocallrecorder.customs.RoundedImageView
+            android:id="@+id/img_profile"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="false"
+            android:layout_marginLeft="14dp"
+            android:layout_marginStart="14dp"
+            android:contentDescription="@string/imageview_profile"
+            android:scaleType="fitXY"
+            android:src="@drawable/custmtranspprofpic200px"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_profile"
+            android:layout_marginTop="15dp">
 
 
-</LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <LinearLayout
+                    android:id="@+id/linearLayout1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/img_incoming"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:contentDescription="incoming calls"
+                        card_view:srcCompat="@drawable/ic_call_received"/>
+
+                    <TextView
+                        android:id="@+id/tv_call_incoming"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="15"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/linearLayout1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/img_ouging"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:contentDescription="outgoing calls"
+                        card_view:srcCompat="@drawable/ic_call_made"/>
+
+                    <TextView
+                        android:id="@+id/tv_call_outgoing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="15"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

@@ -26,16 +26,12 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
         // each data item is just a string in this case
         public TextView mTextView;
 
-        public RecordViewHolder(View view){
+        public RecordViewHolder(View view) {
             super(view);
 
             mTextView = (TextView) view.findViewById(R.id.info_text);
         }
 
-        public RecordViewHolder(TextView v) {
-            super(v);
-            mTextView = v;
-        }
     }
 
     @Override
@@ -58,13 +54,10 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     public RecordViewHolder onCreateViewHolder(ViewGroup parent,
                                                int viewType) {
         // create a new view
-        if (mRootView == null) {
-            mRootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_text_view, parent, false);
-        }
-        // set the view's size, margins, paddings and layout parameters
-            TextView t = (TextView) mRootView.findViewById(R.id.info_text);
-            RecordViewHolder vh = new RecordViewHolder(t);
-            return vh;
+
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_text_view, parent, false);
+
+        return new RecordViewHolder(view);
 
     }
 

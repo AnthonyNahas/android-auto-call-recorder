@@ -1,15 +1,17 @@
 package anthonynahas.com.autocallrecorder.activities;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.adapters.StatisticRecordsAdapter;
@@ -23,13 +25,16 @@ import anthonynahas.com.autocallrecorder.adapters.StatisticRecordsAdapter;
  * @version 1.0
  * @since 16.05.2017
  */
-public class StatisticActivity extends AppCompatActivity {
+public class StatisticActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
 
     private static final String TAG = StatisticActivity.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private Context mContext;
+    private final int mLoaderManagerID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,5 +92,25 @@ public class StatisticActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+
+        String[] projection = new String[]{"*"};
+        String selection = null;
+        String[] selectionArgs = null;
+
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Object data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+
     }
 }

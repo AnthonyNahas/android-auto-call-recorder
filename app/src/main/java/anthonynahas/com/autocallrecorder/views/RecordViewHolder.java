@@ -136,7 +136,9 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         }
 
         int isIncomingCall = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING));
-        call_icon_isIncoming.setBackgroundColor(isIncomingCall == 1 ? Color.RED : Color.GREEN);
+        //call_icon_isIncoming.setBackgroundColor(isIncomingCall == 1 ? Color.RED : Color.GREEN);
+        call_icon_isIncoming.setImageResource(isIncomingCall == 1 ? R.drawable.ic_call_received : R.drawable.ic_call_made);
+        call_icon_isIncoming.setColorFilter(isIncomingCall == 1 ? Color.RED : Color.GREEN);
 
         int isLove = mCursor.getInt(mCursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
         call_isLove.setImageResource(isLove == 1 ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
