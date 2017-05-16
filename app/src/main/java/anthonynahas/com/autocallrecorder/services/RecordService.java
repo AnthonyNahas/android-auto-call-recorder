@@ -6,16 +6,12 @@ import android.media.MediaRecorder;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import anthonynahas.com.autocallrecorder.broadcasts.CallReceiver;
 import anthonynahas.com.autocallrecorder.broadcasts.DoneRecReceiver;
@@ -103,10 +99,11 @@ public class RecordService extends Service {
     private void startAndSaveRecord(File recordFile) {
         stopRecord();
         mMediaRecorder = new MediaRecorder();
+        // TODO: 16.05.17 not working well
         mMediaRecorder.setAudioSource(mPreferenceHelper.getAudioSource());   //or default mic
         mMediaRecorder.setOutputFormat(mPreferenceHelper.getOutputFormat());
         mMediaRecorder.setAudioEncoder(mPreferenceHelper.getAudioEncoder()); //AMR_NB
-
+        mMediaRecorder.getMaxAmplitude();
         try {
             if (!recordFile.createNewFile()) {
                 Log.i(TAG, "File name has been already given");
@@ -123,6 +120,8 @@ public class RecordService extends Service {
     private void stopRecord() {
         if (mMediaRecorder != null) {
             //free record ressource
+            mMediaRecorder.stop();
+            mMediaRecorder.reset();
             mMediaRecorder.release();
             mMediaRecorder = null;
             Log.d(TAG, "media recoreder has been released");

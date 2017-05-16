@@ -62,6 +62,8 @@ public class FileHelper {
                 return ".amr";
 
             case MediaRecorder.OutputFormat.AAC_ADTS:
+                return ".aac";
+
             case MediaRecorder.OutputFormat.MPEG_4:
 
                 return ".mp4";

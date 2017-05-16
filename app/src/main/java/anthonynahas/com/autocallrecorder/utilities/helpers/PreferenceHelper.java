@@ -83,19 +83,19 @@ public class PreferenceHelper {
 
     public int getAudioSource() {
         String audioSource = mSharedPreferences.getString(Key.AUDIO_SOURCE.name(),
-                String.valueOf(MediaRecorder.AudioSource.VOICE_CALL));
+                String.valueOf(MediaRecorder.AudioSource.VOICE_COMMUNICATION));
         return Integer.valueOf(audioSource);
     }
 
     public int getOutputFormat() {
         String outputFormat = mSharedPreferences.getString(Key.OUTPUT_FORMAT.name(),
-                String.valueOf(MediaRecorder.OutputFormat.AMR_NB));
+                String.valueOf(MediaRecorder.OutputFormat.MPEG_4));
         return Integer.valueOf(outputFormat);
     }
 
     public int getAudioEncoder() {
         String audioEncoder = mSharedPreferences.getString(Key.AUDIO_ENCODER.name(),
-                String.valueOf(MediaRecorder.AudioEncoder.AMR_NB));
+                String.valueOf(MediaRecorder.AudioEncoder.HE_AAC));
         return Integer.valueOf(audioEncoder);
     }
 
