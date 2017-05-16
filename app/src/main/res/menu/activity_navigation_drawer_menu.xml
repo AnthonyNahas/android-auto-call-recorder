@@ -21,9 +21,9 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_statistik"
+            android:id="@+id/nav_statistic"
             android:icon="@drawable/ic_timeline"
-            android:title="statistik" />
+            android:title="statistic" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings"

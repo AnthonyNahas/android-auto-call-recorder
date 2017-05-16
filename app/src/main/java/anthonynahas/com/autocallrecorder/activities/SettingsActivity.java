@@ -47,6 +47,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
 
     private SharedPreferences mSharedPreferences;
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate()");
+        super.onCreate(savedInstanceState);
+        setupActionBar();
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    }
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -131,13 +140,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
                         .getString(preference.getKey(), ""));
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate()");
-        super.onCreate(savedInstanceState);
-        setupActionBar();
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-    }
 
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
@@ -154,7 +156,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         ViewGroup rootView = (ViewGroup) findViewById(R.id.action_bar_root); //id from appcompat
 
         if (rootView != null) {
-            View view = getLayoutInflater().inflate(R.layout.settings_toolbar_layout, rootView, false);
+            View view = getLayoutInflater().inflate(R.layout.material_toolbar_layout, rootView, false);
             rootView.addView(view, 0);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -170,6 +172,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         }
     }
 
+    /**
+     * E.G: < button: finishes the current activity
+     *
+     * @param item - item in the toolbar
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

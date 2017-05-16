@@ -246,6 +246,9 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
+            case R.id.nav_statistic:
+                startActivity(new Intent(this, StatisticActivity.class));
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

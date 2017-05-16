@@ -67,7 +67,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static anthonynahas.com.autocallrecorder.R.id.recyclerView;
+import static anthonynahas.com.autocallrecorder.R.id.recycler_view;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -215,8 +215,8 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
         mContentLoadingProgressBar = (ContentLoadingProgressBar) mView.findViewById(R.id.content_loading_progressbar);
         // Lookup the swipe container view
-        mSwipeContainer = (SwipeRefreshLayout) mView.findViewById(R.id.swipeContainer);
-        mRecyclerView = (RecyclerView) mView.findViewById(recyclerView);
+        mSwipeContainer = (SwipeRefreshLayout) mView.findViewById(R.id.swipe_container);
+        mRecyclerView = (RecyclerView) mView.findViewById(recycler_view);
 
         mToolbar = (Toolbar) mView.findViewById(R.id.toolbar_action_mode);
         mToolbar.setVisibility(GONE);
@@ -242,6 +242,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
+
         RecordsQueryHandler.getInstance(mContext.getContentResolver()).setAdapter(mAdapter);
         mSwipeContainer.setOnRefreshListener(this);
 

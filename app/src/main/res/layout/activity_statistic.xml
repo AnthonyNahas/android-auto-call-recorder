@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/action_mode_toolbar_layout"></include>
-
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/content_loading_progressbar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -16,15 +14,10 @@
         android:layout_gravity="center_horizontal"
         android:indeterminate="true" />
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/swipe_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
