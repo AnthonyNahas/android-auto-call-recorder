@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -77,6 +79,7 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
     private FloatingActionButton mFloatingActionButton_call;
 
     private MediaPlayer mMediaPlayer;
+    private AudioManager mAudioManager;
     private Handler mSeekHandler = new Handler();
     private boolean isPaused;
     private boolean iSDurationTextPressed;
@@ -124,10 +127,13 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
     public void onStart() {
         super.onStart();
         Window window = getDialog().getWindow();
-        window.setBackgroundDrawableResource(android.R.color.transparent);
-        window.setDimAmount(0.9f);
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+            window.setDimAmount(0.9f);
+        }
         //window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -177,6 +183,20 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         mFloatingActionButton_call = (FloatingActionButton) view.findViewById(R.id.floating_action_button_call);
         getAudioFilePath(String.valueOf(mID));
         mMediaPlayer = new MediaPlayer();
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+        // TODO: 17.05.17 with listener
+        //PLAY ON EARPIECE
+        //mMediaPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+        //mAudioManager.setMode(AudioManager.MODE_IN_CALL);
+        //mAudioManager.setSpeakerphoneOn(false);
+
+        //PLAY ON SPEAKER
+        /*
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mAudioManager.setMode(AudioManager.MODE_IN_CALL);
+        mAudioManager.setSpeakerphoneOn(true);
+        */
+
         setAndPrepareMediaPlayer();
         mTV_Duration.setText(getTimeString(mMediaPlayer.getDuration()));
         mSeekbarRec.setMax(mMediaPlayer.getDuration());
@@ -320,8 +340,12 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         super.onCancel(dialog);
         Log.d(TAG, "onCancel()");
         if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.reset();
             mMediaPlayer.release();
+            mMediaPlayer = null;
             mSeekHandler.removeCallbacks(run);
+            mSeekHandler.removeCallbacksAndMessages(null);
         }
     }
 
@@ -434,7 +458,7 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         startActivity(Intent.createChooser(share, "Share Sound File"));
     }
 
-    private void uploadRecord(){
+    private void uploadRecord() {
         // TODO: 04.05.2017 : dropbox - fdp server - google drive ...
         Log.d(TAG, "onUpload()");
         UploadAudioFile uploadAudioFile = new UploadAudioFile(getActivity().getApplication().getApplicationContext(), MainOldActivity.mApi, MainOldActivity.DROPBOX_FILE_DIR, mPathFile, mFileName);
