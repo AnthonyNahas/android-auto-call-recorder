@@ -28,7 +28,7 @@
         android:key="AUDIO_SOURCE"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_title_add_friends_to_messages" />
+        android:title="@string/pref_title_audio_source" />
 
     <ListPreference
         android:defaultValue="6"
