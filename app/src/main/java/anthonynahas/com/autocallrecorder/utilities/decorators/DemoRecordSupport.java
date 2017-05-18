@@ -1,4 +1,4 @@
-package anthonynahas.com.autocallrecorder.utilities.decoraters;
+package anthonynahas.com.autocallrecorder.utilities.decorators;
 
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
 
-import anthonynahas.com.autocallrecorder.classes.ContactRecord;
 import anthonynahas.com.autocallrecorder.classes.Record;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordsQueryHandler;

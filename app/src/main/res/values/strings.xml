@@ -175,7 +175,7 @@
         <item>3</item>
     </string-array>
 
-    <string-array name="multi_select_list_preference_default_value" />
+    <string-array name="multi_select_list_preference_default_value"/>
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
@@ -194,5 +194,9 @@
     <string name="action_upload">upload</string>
     <string name="page_title_records">Records</string>
     <string name="page_title_favorite">Favorites</string>
+    <string name="title_activity_single_contact_record">SingleContactRecordActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 
 </resources>
