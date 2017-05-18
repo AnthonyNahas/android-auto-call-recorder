@@ -1,28 +1,28 @@
 package anthonynahas.com.autocallrecorder.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.adapters.StatisticRecordsAdapter;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordDbHelper;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
-import anthonynahas.com.autocallrecorder.utilities.decoraters.DemoRecordSupport;
+import anthonynahas.com.autocallrecorder.utilities.decorators.ActionBarDecorator;
+import anthonynahas.com.autocallrecorder.utilities.decorators.DemoRecordSupport;
+import anthonynahas.com.autocallrecorder.utilities.decorators.ItemClickSupport;
 
 /**
  * Class that deals with the content provider (DB) in order to analyse the db and
@@ -48,7 +48,12 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
-        setupActionBar();
+
+        //Setup material action bar
+        ActionBarDecorator actionBarDecorator = new ActionBarDecorator();
+        actionBarDecorator.setup(this);
+        actionBarDecorator.getActionBar().setDisplayHomeAsUpEnabled(true);
+        actionBarDecorator.getActionBar().setTitle("Statistic");
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -64,27 +69,14 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
         mAdapter = new StatisticRecordsAdapter(DemoRecordSupport.newInstance().generateRecordsList(2));
         mRecyclerView.setAdapter(mAdapter);
 
+        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                startActivity(new Intent(getApplicationContext(), SingleContactRecordActivity.class));
+            }
+        });
+
         getSupportLoaderManager().initLoader(mLoaderManagerID, null, this);
-    }
-
-    private void setupActionBar() {
-        ViewGroup rootView = (ViewGroup) findViewById(R.id.action_bar_root); //id from appcompat
-
-        if (rootView != null) {
-            View view = getLayoutInflater().inflate(R.layout.material_toolbar_layout, rootView, false);
-            rootView.addView(view, 0);
-
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-        }
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            // Show the Up button in the action bar.
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("Statistic");
-            //actionBar.setHomeAsUpIndicator();
-        }
     }
 
     /**
