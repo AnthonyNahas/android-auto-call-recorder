@@ -26,6 +26,7 @@ public class RecordsContentProvider extends ContentProvider {
 
     public static final String QUERY_PARAMETER_LIMIT = "limit";
     public static final String QUERY_PARAMETER_OFFSET = "offset";
+    public static final String QUERY_PARAMETER_GROUP_BY = "GROUP BY";
 
     private RecordsSQLiteOpenHelper mRecordsSQLiteOpenHelper;
     private SQLiteDatabase mDB;
@@ -94,8 +95,9 @@ public class RecordsContentProvider extends ContentProvider {
                 String limit = uri.getQueryParameter(QUERY_PARAMETER_LIMIT);
                 String offset = uri.getQueryParameter(QUERY_PARAMETER_OFFSET);
                 String limitString = offset + "," + limit;
+                String groupBy = uri.getQueryParameter(QUERY_PARAMETER_GROUP_BY);
                 // TODO: 07.05.17 try and catch --> runtimeException ex: selectionArgs > selection ? or no such column found...
-                cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, null, null, sortOrder, limitString);
+                cursor = queryBuilder.query(mDB, projection, selection, selectionArgs,groupBy, null, sortOrder, limitString);
                 break;
 
             case SINGLE_ROW:
@@ -111,7 +113,7 @@ public class RecordsContentProvider extends ContentProvider {
         }
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
-        logCursor(cursor);
+        //logCursor(cursor);
 
         return cursor;
     }
@@ -214,7 +216,7 @@ public class RecordsContentProvider extends ContentProvider {
                 RecordDbContract.RecordItem.COLUMN_CONTACT_ID,
                 RecordDbContract.RecordItem.COLUMN_DATE,
                 RecordDbContract.RecordItem.COLUMN_DURATION,
-                RecordDbContract.RecordItem.COLUMN_INCOMING,
+                RecordDbContract.RecordItem.COLUMN_IS_INCOMING,
                 RecordDbContract.RecordItem.COLUMN_SIZE};
 
         Cursor cursor;
@@ -270,7 +272,7 @@ public class RecordsContentProvider extends ContentProvider {
                 + RecordDbContract.RecordItem.COLUMN_DATE + " LONG, "
                 + RecordDbContract.RecordItem.COLUMN_SIZE + " INTEGER, "
                 + RecordDbContract.RecordItem.COLUMN_DURATION + " INTEGER, "
-                + RecordDbContract.RecordItem.COLUMN_INCOMING + " INTEGER, "
+                + RecordDbContract.RecordItem.COLUMN_IS_INCOMING + " INTEGER, "
                 + RecordDbContract.RecordItem.COLUMN_IS_LOVE + " INTEGER DEFAULT 0"
                 + ")";
 

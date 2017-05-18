@@ -109,7 +109,7 @@ public class RecordsCursorAdapter extends CursorAdapter {
         }
 
 
-        switch (cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING))) {
+        switch (cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_INCOMING))) {
             case 0:
                 viewHolder.call_icon_isIncoming.setBackgroundColor(Color.GREEN);
                 break;

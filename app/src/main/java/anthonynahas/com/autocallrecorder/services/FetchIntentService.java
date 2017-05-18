@@ -113,7 +113,7 @@ public class FetchIntentService extends IntentService {
             values.put(RecordDbContract.RecordItem.COLUMN_ID, id);
             values.put(RecordDbContract.RecordItem.COLUMN_DATE, date);
             values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, number);
-            values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, isIncomingCall);
+            values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, isIncomingCall);
             values.put(RecordDbContract.RecordItem.COLUMN_SIZE, size);
             values.put(RecordDbContract.RecordItem.COLUMN_DURATION, duration);
             if (contactID != -1) {

@@ -7,8 +7,8 @@ import android.net.Uri;
  *
  * @author Anthony Nahas
  * @version 1.0
- * @since 29.4.16
  * @see "http://www.sqlitetutorial.net/sqlite-where"
+ * @since 29.4.16
  */
 public class RecordDbContract {
     //db
@@ -56,11 +56,11 @@ public class RecordDbContract {
         //columns
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_NUMBER = "number";
-        public static final String COLUMN_CONTACT_ID = "contactid";
+        public static final String COLUMN_CONTACT_ID = "contactID";
         public static final String COLUMN_DATE = "date";
         public static final String COLUMN_SIZE = "size";
         public static final String COLUMN_DURATION = "duration";
-        public static final String COLUMN_INCOMING = "incoming";
+        public static final String COLUMN_IS_INCOMING = "isIncoming";
         public static final String COLUMN_IS_LOVE = "isLove";
         public static String[] ALL_COLUMNS = new String[]
                 {
@@ -70,7 +70,7 @@ public class RecordDbContract {
                         COLUMN_DATE,
                         COLUMN_SIZE,
                         COLUMN_DURATION,
-                        COLUMN_INCOMING,
+                        COLUMN_IS_INCOMING,
                         COLUMN_IS_LOVE
                 };
     }

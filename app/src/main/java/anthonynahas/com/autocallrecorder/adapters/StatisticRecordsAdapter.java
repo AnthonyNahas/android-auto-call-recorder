@@ -6,30 +6,41 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import anthonynahas.com.autocallrecorder.R;
+import anthonynahas.com.autocallrecorder.classes.ContactRecord;
+import anthonynahas.com.autocallrecorder.classes.Record;
 
 /**
  * Created by anahas on 16.05.2017.
+ *
+ * @author Anthony Nahas
+ * @version 1.0
+ * @since 16.05.2017
  */
 
 public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecordsAdapter.RecordViewHolder> {
 
     private static final String TAG = StatisticRecordsAdapter.class.getSimpleName();
 
-    private View mRootView;
-    private String[] mDataset;
+    private List<ContactRecord> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class RecordViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView mTextView;
+        private TextView mRankTextView;
+        private TextView mCallNameOrNumber;
 
-        public RecordViewHolder(View view) {
+
+        RecordViewHolder(View view) {
             super(view);
 
-            mTextView = (TextView) view.findViewById(R.id.info_text);
+            mRankTextView = (TextView) view.findViewById(R.id.tv_rank);
+            mCallNameOrNumber = (TextView) view.findViewById(R.id.tv_call_contact_name_or_number);
         }
 
     }
@@ -40,8 +51,8 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public StatisticRecordsAdapter(String[] myDataset) {
-        mDataset = myDataset;
+    public StatisticRecordsAdapter(List<ContactRecord> mDataset) {
+        this.mDataset = mDataset;
     }
 
     @Override
@@ -51,11 +62,10 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
 
     // Create new views (invoked by the layout manager)
     @Override
-    public RecordViewHolder onCreateViewHolder(ViewGroup parent,
-                                               int viewType) {
+    public RecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_text_view, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.statistic_record_card, parent, false);
 
         return new RecordViewHolder(view);
 
@@ -63,17 +73,20 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(RecordViewHolder holder, int position) {
+    public void onBindViewHolder(RecordViewHolder viewHolder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mTextView.setText(mDataset[position]);
+
+        //viewHolder.mRankTextView.setText(mDataset.get(position).getNumber());
+        viewHolder.mRankTextView.setText("#" + (position + 1));
+        viewHolder.mCallNameOrNumber.setText(mDataset.get(position).getNumber());
 
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 
 }

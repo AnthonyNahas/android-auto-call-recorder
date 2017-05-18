@@ -24,13 +24,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 
@@ -137,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements
                 //noinspection SimplifiableIfStatement
                 switch (id) {
                     case R.id.action_add_demo_record:
-                        DemoRecordSupport.getInstance().createDemoRecord(getApplicationContext());
+                        DemoRecordSupport.newInstance().createDemoRecord(getApplicationContext());
                         break;
                     case R.id.action_sort:
                         Log.d(TAG, "MenuItem = sort");

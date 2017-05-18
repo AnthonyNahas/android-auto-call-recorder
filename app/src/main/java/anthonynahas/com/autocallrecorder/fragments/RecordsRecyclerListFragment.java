@@ -530,7 +530,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
                     data.getLong(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE)),
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_SIZE)),
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)),
-                    data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING)),
+                    data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_INCOMING)),
                     data.getInt(data.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE))
             });
         }
@@ -583,7 +583,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
         args.putString(RecordsDialogFragment.REC_AUDIO_ID_KEY, cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID)));
         args.putInt(RecordsDialogFragment.REC_DURATION_KEY, cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)));
         args.putLong(RecordsDialogFragment.REC_CONTACT_ID_KEY, cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
-        args.putInt(RecordsDialogFragment.REC_DURATION_KEY, cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_INCOMING)));
+        args.putInt(RecordsDialogFragment.REC_DURATION_KEY, cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_INCOMING)));
         RecordsDialogFragment recordsDialogFragment = new RecordsDialogFragment();
         recordsDialogFragment.setArguments(args);
         recordsDialogFragment.show(((Activity) mContext).getFragmentManager(), RecordsDialogFragment.TAG);

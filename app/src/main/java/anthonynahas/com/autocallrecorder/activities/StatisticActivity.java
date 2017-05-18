@@ -1,20 +1,28 @@
 package anthonynahas.com.autocallrecorder.activities;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.adapters.StatisticRecordsAdapter;
+import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
+import anthonynahas.com.autocallrecorder.providers.RecordDbHelper;
+import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
+import anthonynahas.com.autocallrecorder.utilities.decoraters.DemoRecordSupport;
 
 /**
  * Class that deals with the content provider (DB) in order to analyse the db and
@@ -25,7 +33,7 @@ import anthonynahas.com.autocallrecorder.adapters.StatisticRecordsAdapter;
  * @version 1.0
  * @since 16.05.2017
  */
-public class StatisticActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
+public class StatisticActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = StatisticActivity.class.getSimpleName();
 
@@ -54,8 +62,10 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
 
         // specify an adapter (see also next example)
         String[] list = {"asfa", "asfasf"};
-        mAdapter = new StatisticRecordsAdapter(list);
+        mAdapter = new StatisticRecordsAdapter(DemoRecordSupport.newInstance().generateRecordsList(2));
         mRecyclerView.setAdapter(mAdapter);
+
+        getSupportLoaderManager().initLoader(mLoaderManagerID, null, this);
     }
 
     private void setupActionBar() {
@@ -95,22 +105,48 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
     }
 
     @Override
-    public Loader onCreateLoader(int id, Bundle args) {
-
-        String[] projection = new String[]{"*"};
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d(TAG, "onCreateLoader");
+        String[] projection = new String[]{RecordDbContract.RecordItem.COLUMN_NUMBER
+                + ", COUNT ("
+                + RecordDbContract.RecordItem.COLUMN_NUMBER
+                + ")"};
         String selection = null;
+
         String[] selectionArgs = null;
+        String sort = "COUNT ( " + RecordDbContract.RecordItem.COLUMN_NUMBER + ") DESC";
 
-        return null;
+        switch (id) {
+            case 0:
+                // TODO: 17.05.2017 offset and limit control
+                Uri uri = RecordDbContract.CONTENT_URL
+                        .buildUpon()
+                        .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_LIMIT,
+                                String.valueOf(10))
+                        .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_OFFSET,
+                                String.valueOf(0))
+                        .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_GROUP_BY,
+                                RecordDbContract.RecordItem.COLUMN_NUMBER)
+                        //.encodedQuery("mLimit=" + mLimit + "," + mOffset)
+                        .build();
+                return new CursorLoader(this, uri, projection, selection, selectionArgs, sort);
+
+            default:
+                throw new IllegalArgumentException("no id handled!");
+        }
     }
 
     @Override
-    public void onLoadFinished(Loader loader, Object data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d(TAG, "onLoadFinished with cursor size --> " + data.getCount());
+        mAdapter = new StatisticRecordsAdapter(RecordDbHelper.convertCursorToConractRecordsList(data));
+        mRecyclerView.setAdapter(mAdapter);
 
     }
 
     @Override
-    public void onLoaderReset(Loader loader) {
-
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(TAG, "onLoaderReset");
+        //empty for now
     }
 }

@@ -10,12 +10,14 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
 
+import anthonynahas.com.autocallrecorder.classes.ContactRecord;
+import anthonynahas.com.autocallrecorder.classes.Record;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordsQueryHandler;
-import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 
 /**
  * This class is responsible to mock and generate demo records for test
@@ -32,7 +34,7 @@ public class DemoRecordSupport {
 
     //todo generatePics with lru cache
 
-    public static DemoRecordSupport getInstance() {
+    public static DemoRecordSupport newInstance() {
         return new DemoRecordSupport();
     }
 
@@ -46,7 +48,7 @@ public class DemoRecordSupport {
         values.put(RecordDbContract.RecordItem.COLUMN_ID, String.valueOf(generateNumber(10000, 5000)));
         values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
         values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, generatePhoneNumber());
-        values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, generateNumber(1, 0));
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, generateNumber(1, 0));
         values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, generateNumber(1, 0));
         values.put(RecordDbContract.RecordItem.COLUMN_SIZE, generateNumber(100, 1));
         values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(800, 400));
@@ -57,9 +59,16 @@ public class DemoRecordSupport {
         Log.d(TAG, "contentResolver inserted dummy record");
     }
 
+
+    /**
+     * create and insert db record using a real contact information.
+     *
+     * @param context - the used context
+     */
     public void createDemoRecord(final Context context) {
 
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        // TODO: 17.05.2017 @contact_ID
         String[] projection =
                 {
                         ContactsContract.Contacts._ID,
@@ -100,7 +109,7 @@ public class DemoRecordSupport {
                 values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
                 values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, contact_number);
                 values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, contact_id);
-                values.put(RecordDbContract.RecordItem.COLUMN_INCOMING, generateNumber(1, 0));
+                values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, generateNumber(1, 0));
                 values.put(RecordDbContract.RecordItem.COLUMN_SIZE, generateNumber(100, 1));
                 values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(600, 0));
                 values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, generateNumber(1, 0));
@@ -171,6 +180,33 @@ public class DemoRecordSupport {
         set3 = generator.nextInt(8999) + 1000;
 
         return "(+" + num1 + "" + num2 + "" + num3 + ")" + "-" + set2 + "-" + set3;
+    }
+
+
+    /**
+     * Generate a list of record in order to set it in the statistic adpater as demo
+     *
+     * @param howManyRecords - the maximum number of records object to generate and add to the list
+     * @return - the generated array list of records
+     */
+    public List<ContactRecord> generateRecordsList(int howManyRecords) {
+
+        List<ContactRecord> recordsList = new ArrayList<>();
+
+        for (int i = 0; i < howManyRecords; i++) {
+
+            Record record = new Record();
+            record.set_ID(String.valueOf(generateNumber(1000, 0)));
+            record.setNumber(generatePhoneNumber());
+            record.setContactID(generateNumber(1000, 500));
+            record.setIsIncoming(generateNumber(1000, 0) >= 500);
+            record.setIsLove(generateNumber(200, 0) >= 100);
+            record.setDate(generateDate());
+
+            recordsList.add((ContactRecord) record);
+        }
+
+        return recordsList;
     }
 
 }
