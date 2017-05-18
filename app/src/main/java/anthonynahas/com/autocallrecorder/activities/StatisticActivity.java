@@ -61,7 +61,6 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        String[] list = {"asfa", "asfasf"};
         mAdapter = new StatisticRecordsAdapter(DemoRecordSupport.newInstance().generateRecordsList(2));
         mRecyclerView.setAdapter(mAdapter);
 
@@ -122,7 +121,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
                 Uri uri = RecordDbContract.CONTENT_URL
                         .buildUpon()
                         .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_LIMIT,
-                                String.valueOf(10))
+                                String.valueOf(15))
                         .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_OFFSET,
                                 String.valueOf(0))
                         .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_GROUP_BY,
@@ -132,14 +131,23 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
                 return new CursorLoader(this, uri, projection, selection, selectionArgs, sort);
 
             default:
-                throw new IllegalArgumentException("no id handled!");
+                throw new IllegalArgumentException("no loader id handled!");
         }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(TAG, "onLoadFinished with cursor size --> " + data.getCount());
-        mAdapter = new StatisticRecordsAdapter(RecordDbHelper.convertCursorToConractRecordsList(data));
+        int rows = data.getCount();
+        String[] columnNames = data.getColumnNames();
+        int columnCount = data.getColumnCount();
+
+
+        Log.d(TAG, "onLoadFinished with cursor size --> "
+                + rows + " with columnNames --> "
+                + columnNames.toString()
+                + " with columnCount --> "
+                + columnCount);
+        mAdapter = new StatisticRecordsAdapter(RecordDbHelper.convertCursorToContactRecordsList(data));
         mRecyclerView.setAdapter(mAdapter);
 
     }
@@ -147,6 +155,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(TAG, "onLoaderReset");
+        // TODO: 18.05.2017
         //empty for now
     }
 }

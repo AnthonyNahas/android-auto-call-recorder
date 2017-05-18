@@ -8,16 +8,36 @@ package anthonynahas.com.autocallrecorder.classes;
  * @since 17.05.2017
  */
 
-public class ContactRecord extends Record {
+public class ContactRecord {
 
+    private String mName;
     private int mTotalIncomingCalls;
     private int mTotalOutgoingCall;
     private int mRank;
+
+
+    public ContactRecord() {
+    }
 
     public ContactRecord(int mTotalIncomingCalls, int mTotalOutgoingCall, int mRank) {
         this.mTotalIncomingCalls = mTotalIncomingCalls;
         this.mTotalOutgoingCall = mTotalOutgoingCall;
         this.mRank = mRank;
+    }
+
+    public ContactRecord(String mName, int mTotalIncomingCalls, int mTotalOutgoingCall, int mRank) {
+        this.mName = mName;
+        this.mTotalIncomingCalls = mTotalIncomingCalls;
+        this.mTotalOutgoingCall = mTotalOutgoingCall;
+        this.mRank = mRank;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String mName) {
+        this.mName = mName;
     }
 
     public int getTotalIncomingCalls() {

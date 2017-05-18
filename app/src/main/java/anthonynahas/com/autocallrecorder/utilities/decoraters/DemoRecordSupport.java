@@ -189,9 +189,9 @@ public class DemoRecordSupport {
      * @param howManyRecords - the maximum number of records object to generate and add to the list
      * @return - the generated array list of records
      */
-    public List<ContactRecord> generateRecordsList(int howManyRecords) {
+    public List<Record> generateRecordsList(int howManyRecords) {
 
-        List<ContactRecord> recordsList = new ArrayList<>();
+        List<Record> recordsList = new ArrayList<>();
 
         for (int i = 0; i < howManyRecords; i++) {
 
@@ -203,7 +203,7 @@ public class DemoRecordSupport {
             record.setIsLove(generateNumber(200, 0) >= 100);
             record.setDate(generateDate());
 
-            recordsList.add((ContactRecord) record);
+            recordsList.add(record);
         }
 
         return recordsList;

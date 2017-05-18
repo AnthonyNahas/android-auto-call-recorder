@@ -7,7 +7,7 @@ package anthonynahas.com.autocallrecorder.classes;
  * @version 0.1
  * @since 25.04.2016
  */
-public class Record {
+public class Record extends ContactRecord {
 
     private String m_ID; //like mDate + number
     private String mNumber; //like +49 151 20 55555 2
@@ -20,6 +20,7 @@ public class Record {
 
 
     public Record() {
+        super();
     }
 
     public Record(String m_ID,

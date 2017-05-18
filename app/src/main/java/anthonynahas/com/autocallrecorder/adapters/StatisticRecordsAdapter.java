@@ -6,11 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.classes.ContactRecord;
 import anthonynahas.com.autocallrecorder.classes.Record;
 
 /**
@@ -25,7 +23,7 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
 
     private static final String TAG = StatisticRecordsAdapter.class.getSimpleName();
 
-    private List<ContactRecord> mDataset;
+    private List<Record> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -51,7 +49,7 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public StatisticRecordsAdapter(List<ContactRecord> mDataset) {
+    public StatisticRecordsAdapter(List<Record> mDataset) {
         this.mDataset = mDataset;
     }
 
@@ -64,11 +62,8 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     @Override
     public RecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.statistic_record_card, parent, false);
-
         return new RecordViewHolder(view);
-
     }
 
     // Replace the contents of a view (invoked by the layout manager)

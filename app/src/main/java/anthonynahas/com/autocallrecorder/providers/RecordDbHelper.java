@@ -78,14 +78,21 @@ public class RecordDbHelper {
     }
 
 
-    public static List<ContactRecord> convertCursorToConractRecordsList(Cursor cursor) {
+    public static List<Record> convertCursorToContactRecordsList(Cursor cursor) {
 
-        List<ContactRecord> contactRecordList = new ArrayList<>();
+        List<Record> contactRecordList = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
             do {
 
                 String number = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
+                int totalCalls = cursor.getInt(cursor.getColumnIndexOrThrow("COUNT (number)"));
+
+                Record record = new Record();
+                record.setNumber(number);
+                record.setRank(totalCalls);
+
+                contactRecordList.add(record);
 
             } while (cursor.moveToNext());
         }

@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements
     private FloatingSearchView mSearchView;
     private TabLayout mTabLayout;
     private SwitchCompat mSwitch_auto_rec;
-    private SharedPreferences mSharedPreferences;
     private int mCurrentFragmentPosition;
     private AppCompatActivity mActivity;
     private FloatingActionButton fabActionMode;
@@ -82,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer_tabs);
         mActivity = this;
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         mPreferenceHelper = new PreferenceHelper(this);
 
