@@ -86,11 +86,10 @@
     <string name="pref_title_display_name">Display name</string>
     <string name="pref_default_display_name">John Smith</string>
 
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string name="pref_title_audio_source">Audio Source</string>
     <string-array name="pref_general_audio_source">
         <item>DEFAULT</item>
         <item>MIC</item>
-        <item>REMOTE_SUBMIX</item>
         <item>UNPROCESSED</item>
         <item>VOICE_CALL</item>
         <item>VOICE_COMMUNICATION</item>
@@ -99,7 +98,6 @@
     <string-array name="pref_general_audio_source_values">
         <item>0</item>
         <item>1</item>
-        <item>8</item>
         <item>9</item>
         <item>4</item>
         <item>7</item>
