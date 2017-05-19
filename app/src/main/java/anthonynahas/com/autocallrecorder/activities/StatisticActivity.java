@@ -53,7 +53,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
         ActionBarDecorator actionBarDecorator = new ActionBarDecorator();
         actionBarDecorator.setup(this);
         actionBarDecorator.getActionBar().setDisplayHomeAsUpEnabled(true);
-        actionBarDecorator.getActionBar().setTitle("Statistic");
+        actionBarDecorator.getActionBar().setTitle(getResources().getString(R.string.title_activity_statistic));
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 

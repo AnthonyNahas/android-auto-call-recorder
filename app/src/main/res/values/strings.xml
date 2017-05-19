@@ -28,18 +28,7 @@
     <string name="call_date_std" translatable="false">00-00-0000</string>
     <string name="call_duration_std" translatable="false">00:00</string>
 
-
-    <!-- Settings Preference -->
-    <string name="activity_settings_title">Settings</string>
-    <string name="preference_category1" translatable="true">Recording Settings</string>
-    <string name="preference_checkbox_auto_call_recording" translatable="true">Always record calls</string>
-    <string name="preference_checkbox_auto_call_recording_summary" translatable="true">Check it to enable</string>
-    <string name="preference_checkbox_upload_on_dropbox" translatable="true">Always upload on dropbox</string>
-    <string name="preference_checkbox_upload_on_dropbox_summary" translatable="true">ONLY when connected to the internet</string>
-    <string name="preference_dropxbox_folder_name" translatable="true">Folder name on DropBox</string>
-    <string name="preference_dropxbox_folder_name_summary" translatable="false">Auto Call Recorder</string>
-    <string name="preference_category2" translatable="true">Other Settings</string>
-
+    <!-- Dropbox -->
     <string name="dropbox_header" translatable="false">Dropbox</string>
 
     <!-- Sort dialog -->
@@ -53,7 +42,7 @@
     <string name="sort_dialog_positive_button">Finish</string>
 
     <!-- searchable.xml -->
-    <string name="app_label">App label</string>
+    <string name="app_label" translatable="false">App label</string>
     <string name="search_hint">Serach hint</string>
 
 
@@ -67,13 +56,26 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="toolbar_action_mode_text">Selection of recordings</string>
 
     <!-- Strings related to Settings ########################################################### -->
 
     <!-- General settings -->
+
+    <!-- Settings Preference -->
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="preference_category1" translatable="true">Recording Settings</string>
+    <string name="preference_checkbox_auto_call_recording" translatable="true">Always record calls</string>
+    <string name="preference_checkbox_auto_call_recording_summary" translatable="true">Check it to enable</string>
+    <string name="preference_checkbox_upload_on_dropbox" translatable="true">Always upload on dropbox</string>
+    <string name="preference_checkbox_upload_on_dropbox_summary" translatable="true">ONLY when connected to the internet</string>
+    <string name="preference_dropxbox_folder_name" translatable="true">Folder name on DropBox</string>
+    <string name="preference_dropxbox_folder_name_summary" translatable="false">Auto Call Recorder</string>
+    <string name="preference_category2" translatable="true">Other Settings</string>
+
     <string name="pref_header_general">General</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
@@ -120,7 +122,7 @@
         <item>2</item>
     </string-array>
 
-    <string name="pref_title_audio_encoder">Audio Encoder</string>
+    <string name="pref_title_audio_encoder" translatable="false">Audio Encoder</string>
     <string-array name="pref_general_audio_encoder">
         <item>DEFAULT</item>
         <item>AAC</item>
@@ -192,9 +194,18 @@
     <string name="action_upload">upload</string>
     <string name="page_title_records">Records</string>
     <string name="page_title_favorite">Favorites</string>
-    <string name="title_activity_single_contact_record">SingleContactRecordActivity</string>
+    <string name="radiobutton_time">Time</string>
+
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+
+    <!-- Statistic Activity -->
+    <string name="title_activity_statistic">Statistic</string>
+
+    <!-- Single Contact Record Activity -->
+    <string name="title_activity_single_contact_record">UNKNOWN</string>
+
 
 </resources>

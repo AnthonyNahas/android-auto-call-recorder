@@ -16,13 +16,9 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.List;
 
@@ -58,7 +54,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         ActionBarDecorator actionBarDecorator = new ActionBarDecorator();
         actionBarDecorator.setup(this);
         actionBarDecorator.getActionBar().setDisplayHomeAsUpEnabled(true);
-        actionBarDecorator.getActionBar().setTitle(getResources().getString(R.string.activity_settings_title));
+        actionBarDecorator.getActionBar().setTitle(getResources().getString(R.string.title_activity_settings));
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
