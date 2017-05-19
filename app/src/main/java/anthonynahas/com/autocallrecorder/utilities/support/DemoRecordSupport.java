@@ -1,4 +1,4 @@
-package anthonynahas.com.autocallrecorder.utilities.decorators;
+package anthonynahas.com.autocallrecorder.utilities.support;
 
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;

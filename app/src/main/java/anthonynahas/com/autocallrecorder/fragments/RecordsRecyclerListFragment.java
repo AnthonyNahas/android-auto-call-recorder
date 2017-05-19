@@ -38,7 +38,7 @@ import anthonynahas.com.autocallrecorder.classes.Resources;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
 import anthonynahas.com.autocallrecorder.providers.RecordsQueryHandler;
-import anthonynahas.com.autocallrecorder.utilities.decorators.ItemClickSupport;
+import anthonynahas.com.autocallrecorder.utilities.support.ItemClickSupport;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;

@@ -1,6 +1,5 @@
 package anthonynahas.com.autocallrecorder.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -21,8 +20,8 @@ import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordDbHelper;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
 import anthonynahas.com.autocallrecorder.utilities.decorators.ActionBarDecorator;
-import anthonynahas.com.autocallrecorder.utilities.decorators.DemoRecordSupport;
-import anthonynahas.com.autocallrecorder.utilities.decorators.ItemClickSupport;
+import anthonynahas.com.autocallrecorder.utilities.support.DemoRecordSupport;
+import anthonynahas.com.autocallrecorder.utilities.support.ItemClickSupport;
 
 /**
  * Class that deals with the content provider (DB) in order to analyse the db and
@@ -41,7 +40,6 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private Context mContext;
     private final int mLoaderManagerID = 0;
 
     @Override

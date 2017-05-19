@@ -33,7 +33,7 @@ import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.classes.Resources;
 import anthonynahas.com.autocallrecorder.fragments.RecordsRecyclerListFragment;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
-import anthonynahas.com.autocallrecorder.utilities.decorators.DemoRecordSupport;
+import anthonynahas.com.autocallrecorder.utilities.support.DemoRecordSupport;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PermissionsHelper;
