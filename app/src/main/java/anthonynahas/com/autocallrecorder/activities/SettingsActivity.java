@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import anthonynahas.com.autocallrecorder.R;
+import anthonynahas.com.autocallrecorder.utilities.decorators.ActionBarDecorator;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
@@ -52,7 +53,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
-        setupActionBar();
+
+        //Setup material action bar
+        ActionBarDecorator actionBarDecorator = new ActionBarDecorator();
+        actionBarDecorator.setup(this);
+        actionBarDecorator.getActionBar().setDisplayHomeAsUpEnabled(true);
+        actionBarDecorator.getActionBar().setTitle(getResources().getString(R.string.activity_settings_title));
+
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
@@ -140,37 +147,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
                         .getString(preference.getKey(), ""));
     }
 
-
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    private void setupActionBar2() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            // Show the Up button in the action bar.
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    private void setupActionBar() {
-        ViewGroup rootView = (ViewGroup) findViewById(R.id.action_bar_root); //id from appcompat
-
-        if (rootView != null) {
-            View view = getLayoutInflater().inflate(R.layout.material_toolbar_layout, rootView, false);
-            rootView.addView(view, 0);
-
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-        }
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            // Show the Up button in the action bar.
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("Settings");
-            //actionBar.setHomeAsUpIndicator();
-        }
-    }
 
     /**
      * E.G: < button: finishes the current activity

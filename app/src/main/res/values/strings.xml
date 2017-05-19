@@ -28,7 +28,9 @@
     <string name="call_date_std" translatable="false">00-00-0000</string>
     <string name="call_duration_std" translatable="false">00:00</string>
 
+
     <!-- Settings Preference -->
+    <string name="activity_settings_title">Settings</string>
     <string name="preference_category1" translatable="true">Recording Settings</string>
     <string name="preference_checkbox_auto_call_recording" translatable="true">Always record calls</string>
     <string name="preference_checkbox_auto_call_recording_summary" translatable="true">Check it to enable</string>
@@ -64,18 +66,14 @@
     <string name="title_activity_main_tabs">MainTabsActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="toolbar_action_mode_text">Selection of recordings</string>
-    <string name="title_activity_settings">Settings2</string>
 
-    <!-- Strings related to Settings -->
+    <!-- Strings related to Settings ########################################################### -->
 
-    <!-- Example General settings -->
+    <!-- General settings -->
     <string name="pref_header_general">General</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
@@ -175,7 +173,7 @@
         <item>3</item>
     </string-array>
 
-    <string-array name="multi_select_list_preference_default_value"/>
+    <string-array name="multi_select_list_preference_default_value" />
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
 

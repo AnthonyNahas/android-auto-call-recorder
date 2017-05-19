@@ -35,7 +35,7 @@
         </activity>
         <activity
             android:name=".activities.SettingsActivity"
-            android:label="@string/title_activity_settings"
+            android:label="@string/activity_settings_title"
             android:screenOrientation="portrait"/>
 
         <!-- DROP BOX API CORE -->
