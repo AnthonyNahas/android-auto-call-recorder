@@ -1,14 +1,27 @@
 package anthonynahas.com.autocallrecorder.classes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
- * Created by anahas on 17.05.2017.
+ * This class corresponds to each contact that have (been) called.
+ * Furthermore, this class implement Serializable and is Parcelable -->
+ * Goal: passing the object by intent.
+ * <p>
+ * <p>
+ * https://www.javacodegeeks.com/2014/01/android-tutorial-two-methods-of-passing-object-by-intent-serializableparcelable.html
  *
  * @author Anthony Nahas
  * @version 1.0
  * @since 17.05.2017
  */
 
-public class ContactRecord {
+public class ContactRecord implements Serializable, Parcelable {
+
+    //implements Serializable
+    private static final long serialVersionUID = -7060210544600464481L;
 
     private String mName;
     private int mTotalIncomingCalls;
@@ -63,4 +76,36 @@ public class ContactRecord {
     public void setRank(int mRank) {
         this.mRank = mRank;
     }
+
+
+    //implement Parcelable
+    public static final Parcelable.Creator<ContactRecord> CREATOR = new Parcelable.Creator<ContactRecord>() {
+        @Override
+        public ContactRecord createFromParcel(Parcel parcel) {
+            ContactRecord contactRecord = new ContactRecord();
+            contactRecord.mName = parcel.readString();
+            contactRecord.mRank = parcel.readInt();
+            contactRecord.mTotalIncomingCalls = parcel.readInt();
+            contactRecord.mTotalOutgoingCall = parcel.readInt();
+            return null;
+        }
+
+        @Override
+        public ContactRecord[] newArray(int i) {
+            return new ContactRecord[i];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(mName);
+        parcel.writeInt(mRank);
+        parcel.writeInt(mTotalIncomingCalls);
+        parcel.writeInt(mTotalOutgoingCall);
+    }
+
 }
