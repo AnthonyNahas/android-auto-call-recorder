@@ -350,13 +350,15 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
     }
 
     private void setAndPrepareMediaPlayer() {
-        if (mMediaPlayer != null) try {
-            mMediaPlayer.setDataSource(getActivity(),
-                    ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mID));
-            mMediaPlayer.prepare();
-        } catch (IOException | NullPointerException e) {
-            Log.e(TAG, "error - IOException", e);
-            //todo - 26.04 - create dialog fragment --> no source file found 404 - id now found in the media store
+        if (mMediaPlayer != null) {
+            try {
+                mMediaPlayer.setDataSource(getActivity(),
+                        ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mID));
+                mMediaPlayer.prepare();
+            } catch (IOException | NullPointerException e) {
+                Log.e(TAG, "error - IOException", e);
+                //todo - 26.04 - create dialog fragment --> no source file found 404 - id now found in the media store
+            }
         }
     }
 
