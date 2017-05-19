@@ -16,6 +16,8 @@ import android.view.View;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.adapters.StatisticRecordsAdapter;
+import anthonynahas.com.autocallrecorder.classes.Record;
+import anthonynahas.com.autocallrecorder.classes.Resources;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordDbHelper;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
@@ -37,7 +39,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
     private static final String TAG = StatisticActivity.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private StatisticRecordsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private final int mLoaderManagerID = 0;
@@ -70,7 +72,11 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
         ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                startActivity(new Intent(getApplicationContext(), SingleContactRecordActivity.class));
+                Bundle bundle = new Bundle();
+                Record record =mAdapter.getItem(position);
+                bundle.putParcelable(Resources.REC_PARC_KEY, record);
+                startActivity(new Intent(getApplicationContext(),
+                        SingleContactRecordActivity.class).putExtras(bundle));
             }
         });
 

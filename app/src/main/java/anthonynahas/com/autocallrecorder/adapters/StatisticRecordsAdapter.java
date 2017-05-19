@@ -58,6 +58,10 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
         return super.getItemId(position);
     }
 
+    public Record getItem(int position) {
+        return mDataset.get(position);
+    }
+
     // Create new views (invoked by the layout manager)
     @Override
     public RecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

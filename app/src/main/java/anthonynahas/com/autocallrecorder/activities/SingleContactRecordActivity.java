@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import anthonynahas.com.autocallrecorder.R;
+import anthonynahas.com.autocallrecorder.classes.Record;
+import anthonynahas.com.autocallrecorder.classes.Resources;
 
 public class SingleContactRecordActivity extends AppCompatActivity {
 
@@ -38,6 +40,9 @@ public class SingleContactRecordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_contact_record);
+
+        Record contactRecord = getIntent().getParcelableExtra(Resources.REC_PARC_KEY);
+
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);

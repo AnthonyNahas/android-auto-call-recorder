@@ -87,7 +87,7 @@ public class ContactRecord implements Serializable, Parcelable {
             contactRecord.mRank = parcel.readInt();
             contactRecord.mTotalIncomingCalls = parcel.readInt();
             contactRecord.mTotalOutgoingCall = parcel.readInt();
-            return null;
+            return contactRecord;
         }
 
         @Override

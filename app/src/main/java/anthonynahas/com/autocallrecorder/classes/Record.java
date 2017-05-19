@@ -1,5 +1,10 @@
 package anthonynahas.com.autocallrecorder.classes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created by A on 25.04.16.
  *
@@ -7,7 +12,10 @@ package anthonynahas.com.autocallrecorder.classes;
  * @version 0.1
  * @since 25.04.2016
  */
-public class Record extends ContactRecord {
+public class Record extends ContactRecord implements Serializable, Parcelable {
+
+    //implements Serializable
+    private static final long serialVersionUID = -5060910544141464421L;
 
     private String m_ID; //like mDate + number
     private String mNumber; //like +49 151 20 55555 2
@@ -105,4 +113,43 @@ public class Record extends ContactRecord {
     public void setIsLove(boolean mIsLove) {
         this.mIsLove = mIsLove;
     }
+
+    public static final Parcelable.Creator<Record> CREATOR = new Parcelable.Creator<Record>() {
+
+        @Override
+        public Record createFromParcel(Parcel parcel) {
+            Record record = new Record();
+            record.m_ID = parcel.readString();
+            record.mNumber = parcel.readString();
+            record.mContactID = parcel.readLong();
+            record.mDate = parcel.readLong();
+            record.mSize = parcel.readInt();
+            record.mDuration = parcel.readInt();
+            record.mIsIncoming = parcel.readByte() != 0;
+            record.mIsLove = parcel.readByte() != 0;
+            return record;
+        }
+
+        @Override
+        public Record[] newArray(int i) {
+            return new Record[i];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(m_ID);
+        parcel.writeString(mNumber);
+        parcel.writeLong(mContactID);
+        parcel.writeLong(mDate);
+        parcel.writeInt(mSize);
+        parcel.writeInt(mDuration);
+        parcel.writeByte((byte) (mIsIncoming ? 1 : 0));
+        parcel.writeByte((byte) (mIsLove ? 1 : 0));
+    }
+
 }
