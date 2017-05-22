@@ -35,7 +35,7 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
     }
 
     public Record(Cursor cursor) {
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.getCount() > 0) {
             m_ID = cursor.getString(cursor
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID));
             mContactID = cursor.getLong(cursor
@@ -44,7 +44,7 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
             mDuration = cursor.getInt(cursor
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION));
-            mIsIncoming =  cursor.getInt(cursor
+            mIsIncoming = cursor.getInt(cursor
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_INCOMING)) == 1;
 
         }
