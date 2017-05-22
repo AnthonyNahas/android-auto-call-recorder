@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="anthonynahas.com.autocallrecorder"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="anthonynahas.com.autocallrecorder"
+    android:hardwareAccelerated="false">
 
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -24,9 +25,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <!--
             enable the search dialog to send searches to SearchableActivity
@@ -36,7 +37,7 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!-- DROP BOX API CORE -->
         <activity
@@ -47,12 +48,12 @@
             <intent-filter>
 
                 <!-- Change this to be db- followed by your app key -->
-                <data android:scheme="db-32fcvkt4b7ym4sv"/>
+                <data android:scheme="db-32fcvkt4b7ym4sv" />
 
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -62,46 +63,45 @@
             android:name=".broadcasts.CallReceiver"
             android:exported="false">
             <intent-filter android:priority="1">
-                <action android:name="android.intent.action.PHONE_STATE"/>
-                <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>
-                <action android:name="test"/>
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+                <action android:name="test" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
         <receiver
             android:name=".broadcasts.DoneRecReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="autocallrecorder.intent.action.RECORD_DONE"/>
+                <action android:name="autocallrecorder.intent.action.RECORD_DONE" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 
         <service
             android:name=".services.RecordService"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
         <service
             android:name=".services.FetchIntentService"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
 
         <provider
             android:name=".providers.RecordsContentProvider"
             android:authorities="anthonynahas.com.autocallrecorder.providers.RecordsContentProvider"
-            android:exported="false"/>
+            android:exported="false" />
         <provider
             android:name=".providers.RecentSuggestionProvider"
             android:authorities="anthonynahas.com.autocallrecorder.providers.RecentSuggestionProvider"
-            android:exported="false"/>
+            android:exported="false" />
 
-        <activity android:name=".activities.StatisticActivity"/>
+        <activity android:name=".activities.StatisticActivity" />
         <activity
             android:name=".activities.SingleContactRecordActivity"
-            android:label="@string/title_activity_single_contact_record">
-        </activity>
+            android:label="@string/title_activity_single_contact_record"></activity>
     </application>
 
 </manifest>
