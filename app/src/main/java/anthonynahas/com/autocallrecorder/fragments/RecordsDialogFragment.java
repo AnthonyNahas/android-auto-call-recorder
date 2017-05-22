@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import anthonynahas.com.audio_source_swithcher.AudioSourceSwitcher;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.activities.MainOldActivity;
 import anthonynahas.com.autocallrecorder.classes.Record;
@@ -70,6 +71,7 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
     private FloatingActionButton mFloatingActionButton_play_pause;
 
     private MediaPlayer mMediaPlayer;
+    private AudioSourceSwitcher mAudioSourceSwitcher;
     private AudioManager mAudioManager;
     private Handler mSeekHandler = new Handler();
     private boolean isPaused;
@@ -165,6 +167,7 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         FloatingActionButton floatingActionButton_call = (FloatingActionButton) view.findViewById(R.id.floating_action_button_call);
         getAudioFilePath(String.valueOf(mRecord.get_ID()));
         mMediaPlayer = new MediaPlayer();
+        mAudioSourceSwitcher = new AudioSourceSwitcher(getActivity(), mMediaPlayer);
         mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         // TODO: 17.05.17 with listener
         //PLAY ON EARPIECE
@@ -331,6 +334,7 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
             mSeekHandler.removeCallbacks(run);
             mSeekHandler.removeCallbacksAndMessages(null);
         }
+        mAudioSourceSwitcher.destroy();
     }
 
     private void setAndPrepareMediaPlayer() {
@@ -357,10 +361,6 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         isPaused = true;
         mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
         mMediaPlayer.pause();
-    }
-
-    private void showSnackbar() {
-        //Snackbar snackbar = Snackbar.make()
     }
 
     private void deleteRecord() {

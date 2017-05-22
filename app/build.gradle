@@ -36,6 +36,7 @@ dependencies {
     compile 'com.github.arimorty:floatingsearchview:2.0.3'
     compile 'jp.wasabeef:recyclerview-animators:2.2.6'
     compile 'com.android.support:support-vector-drawable:25.3.1'
+    compile project(':audio-source-swithcher')
     testCompile 'junit:junit:4.12'
 }
 
