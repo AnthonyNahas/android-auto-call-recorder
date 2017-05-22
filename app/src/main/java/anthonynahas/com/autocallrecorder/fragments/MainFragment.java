@@ -41,6 +41,7 @@ import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorAdapter;
+import anthonynahas.com.autocallrecorder.classes.Record;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileAsyncTask;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
@@ -359,13 +360,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             Log.d(TAG, "list-position = " + position);
 
             Bundle args = new Bundle();
-            String contact_number_or_name = ((TextView) view.findViewById(R.id.call_contact_name_number)).getText().toString();
-            args.putString(RecordsDialogFragment.NUMBER_CN_KEY, contact_number_or_name);
-            args.putString(RecordsDialogFragment.NUMBER_KEY, cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER)));
-            args.putString(RecordsDialogFragment.REC_AUDIO_ID_KEY, cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID)));
-            args.putInt(RecordsDialogFragment.REC_DURATION_KEY, cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)));
-            args.putLong(RecordsDialogFragment.REC_CONTACT_ID_KEY, cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
-            args.putInt(RecordsDialogFragment.REC_DURATION_KEY, cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_INCOMING)));
+            Record record = new Record(cursor);
+            record.setName(((TextView) view.findViewById(R.id.call_contact_name_number)).getText().toString());
+            args.putParcelable(anthonynahas.com.autocallrecorder.classes.Resources.REC_PARC_KEY, record);
             RecordsDialogFragment recordsDialogFragment = new RecordsDialogFragment();
             recordsDialogFragment.setArguments(args);
             recordsDialogFragment.show(getFragmentManager(), RecordsDialogFragment.TAG);
