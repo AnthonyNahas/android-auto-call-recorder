@@ -1,12 +1,15 @@
 package anthonynahas.com.autocallrecorder.classes;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
 
+import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
+
 /**
- * Created by A on 25.04.16.
+ * Class that deal the record table location in content provider.
  *
  * @author Anthony Nahas
  * @version 0.1
@@ -29,6 +32,22 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
 
     public Record() {
         super();
+    }
+
+    public Record(Cursor cursor) {
+        if (cursor.moveToFirst()) {
+            m_ID = cursor.getString(cursor
+                    .getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID));
+            mContactID = cursor.getLong(cursor
+                    .getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
+            mNumber = cursor.getString(cursor
+                    .getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
+            mDuration = cursor.getInt(cursor
+                    .getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION));
+            mIsIncoming =  cursor.getInt(cursor
+                    .getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_INCOMING)) == 1;
+
+        }
     }
 
     public Record(String m_ID,
