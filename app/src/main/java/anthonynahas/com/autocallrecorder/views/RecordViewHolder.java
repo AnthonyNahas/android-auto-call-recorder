@@ -17,8 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
@@ -156,7 +156,8 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
     private String getLocalFormatterDate(long l) {
         Log.d(TAG, "Long date = " + l);
-        DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        //DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.FULL, Locale.getDefault());
+        DateFormat dateFormatter = new SimpleDateFormat("HH:mm MMM.dd yyyy");
         String date = dateFormatter.format(new Date(l));
         Log.d(TAG, "Date = " + date);
         return date;
