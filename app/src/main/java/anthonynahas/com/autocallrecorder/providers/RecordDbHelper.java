@@ -86,7 +86,7 @@ public class RecordDbHelper {
             do {
 
                 String number = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
-                int totalCalls = cursor.getInt(cursor.getColumnIndexOrThrow("COUNT (number)"));
+                int totalCalls = cursor.getInt(cursor.getColumnIndexOrThrow(RecordDbContract.Extended.COLUMN_TOTAL_CALLS));
 
                 Record record = new Record();
                 record.setNumber(number);

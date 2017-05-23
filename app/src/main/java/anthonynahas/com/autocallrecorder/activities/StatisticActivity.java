@@ -73,7 +73,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 Bundle bundle = new Bundle();
-                Record record =mAdapter.getItem(position);
+                Record record = mAdapter.getItem(position);
                 bundle.putParcelable(Resources.REC_PARC_KEY, record);
                 startActivity(new Intent(getApplicationContext(),
                         SingleContactRecordActivity.class).putExtras(bundle));
@@ -102,10 +102,10 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "onCreateLoader");
-        String[] projection = new String[]{RecordDbContract.RecordItem.COLUMN_NUMBER
-                + ", COUNT ("
-                + RecordDbContract.RecordItem.COLUMN_NUMBER
-                + ")"};
+        String[] projection = new String[]{RecordDbContract.RecordItem.COLUMN_NUMBER,
+                " COUNT ("
+                        + RecordDbContract.RecordItem.COLUMN_NUMBER
+                        + ") as " + RecordDbContract.Extended.COLUMN_TOTAL_CALLS};
         String selection = null;
 
         String[] selectionArgs = null;

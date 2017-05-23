@@ -45,7 +45,7 @@ public class RecordDbContract {
      * this class implement the structure of a record item in the database
      *
      * @author Anthony Nahas
-     * @version 1.1
+     * @version 1.2
      * @since 29.4.16
      */
     public static abstract class RecordItem extends RecordDbContract {
@@ -73,5 +73,19 @@ public class RecordDbContract {
                         COLUMN_IS_INCOMING,
                         COLUMN_IS_LOVE
                 };
+    }
+
+    /**
+     * Class that extends the properties of a record item which will be stored in the db.
+     *
+     * @author Anthony Nahas
+     * @version 1.0
+     * @since 23.05.2017
+     */
+    public static abstract class Extended {
+        //additional custom columns
+        public static final String COLUMN_TOTAL_CALLS = "totalCalls";
+        public static final String COLUMN_TOTAL_INCOMING_CALLS = "totalIncomingCalls";
+        public static final String COLUMN_TOTAL_OUTGOING_CALLS = "totalOutgoingCalls";
     }
 }
