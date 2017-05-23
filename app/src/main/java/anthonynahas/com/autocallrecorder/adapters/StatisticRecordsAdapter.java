@@ -87,9 +87,8 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
 
         viewHolder.mRankTextView.setText("#" + record.getRank());
         viewHolder.mCallNameOrNumber.setText(record.getNumber());
-        viewHolder.mTotalIncomingCallsTextView.setText(record.getTotalIncomingCalls());
-        viewHolder.mTotalOutgoingCallsTextView.setText(record.getTotalOutgoingCall());
-
+        viewHolder.mTotalIncomingCallsTextView.setText(String.valueOf(record.getTotalIncomingCalls()));
+        viewHolder.mTotalOutgoingCallsTextView.setText(String.valueOf(record.getTotalOutgoingCall()));
     }
 
     // Return the size of your dataset (invoked by the layout manager)

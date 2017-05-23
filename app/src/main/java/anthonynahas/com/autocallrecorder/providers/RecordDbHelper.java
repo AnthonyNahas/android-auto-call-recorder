@@ -18,7 +18,7 @@ import anthonynahas.com.autocallrecorder.classes.Record;
  * activity or fragment
  *
  * @author Anthony Nahas
- * @version 1.0
+ * @version 1.2
  * @since 17.04.17
  */
 
