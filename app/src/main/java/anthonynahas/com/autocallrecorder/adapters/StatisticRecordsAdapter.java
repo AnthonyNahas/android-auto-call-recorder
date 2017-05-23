@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -23,22 +24,29 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
 
     private static final String TAG = StatisticRecordsAdapter.class.getSimpleName();
 
-    private List<Record> mDataset;
+    private List<Record> mRecordsList;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class RecordViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        private TextView mRankTextView;
         private TextView mCallNameOrNumber;
+        private TextView mRankTextView;
+        private TextView mTotalIncomingCallsTextView;
+        private TextView mTotalOutgoingCallsTextView;
+        private ImageView mImageProfile;
 
 
         RecordViewHolder(View view) {
             super(view);
 
-            mRankTextView = (TextView) view.findViewById(R.id.tv_rank);
             mCallNameOrNumber = (TextView) view.findViewById(R.id.tv_call_contact_name_or_number);
+            mRankTextView = (TextView) view.findViewById(R.id.tv_rank);
+            mTotalIncomingCallsTextView = (TextView) view.findViewById(R.id.tv_total_incoming_calls);
+            mTotalOutgoingCallsTextView = (TextView) view.findViewById(R.id.tv_total_outgoing_calls);
+            mImageProfile = (ImageView) view.findViewById(R.id.img_profile);
+
         }
 
     }
@@ -49,8 +57,8 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public StatisticRecordsAdapter(List<Record> mDataset) {
-        this.mDataset = mDataset;
+    public StatisticRecordsAdapter(List<Record> mRecordsList) {
+        this.mRecordsList = mRecordsList;
     }
 
     @Override
@@ -59,7 +67,7 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     }
 
     public Record getItem(int position) {
-        return mDataset.get(position);
+        return mRecordsList.get(position);
     }
 
     // Create new views (invoked by the layout manager)
@@ -75,17 +83,19 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     public void onBindViewHolder(RecordViewHolder viewHolder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+        Record record = mRecordsList.get(position);
 
-        //viewHolder.mRankTextView.setText(mDataset.get(position).getNumber());
-        viewHolder.mRankTextView.setText("#" + (position + 1));
-        viewHolder.mCallNameOrNumber.setText(mDataset.get(position).getNumber());
+        viewHolder.mRankTextView.setText("#" + record.getRank());
+        viewHolder.mCallNameOrNumber.setText(record.getNumber());
+        viewHolder.mTotalIncomingCallsTextView.setText(record.getTotalIncomingCalls());
+        viewHolder.mTotalOutgoingCallsTextView.setText(record.getTotalOutgoingCall());
 
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return mRecordsList.size();
     }
 
 }

@@ -103,9 +103,13 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "onCreateLoader");
         String[] projection = new String[]{RecordDbContract.RecordItem.COLUMN_NUMBER,
-                " COUNT ("
+                "COUNT ("
                         + RecordDbContract.RecordItem.COLUMN_NUMBER
-                        + ") as " + RecordDbContract.Extended.COLUMN_TOTAL_CALLS};
+                        + ") AS " + RecordDbContract.Extended.COLUMN_TOTAL_CALLS,
+                "SUM (CASE WHEN "
+                        + RecordDbContract.RecordItem.COLUMN_IS_INCOMING
+                        + " =  1 THEN 1 ELSE 0 END) AS "
+                        + RecordDbContract.Extended.COLUMN_TOTAL_INCOMING_CALLS};
         String selection = null;
 
         String[] selectionArgs = null;

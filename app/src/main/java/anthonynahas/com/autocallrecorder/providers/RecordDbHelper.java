@@ -87,10 +87,13 @@ public class RecordDbHelper {
 
                 String number = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
                 int totalCalls = cursor.getInt(cursor.getColumnIndexOrThrow(RecordDbContract.Extended.COLUMN_TOTAL_CALLS));
+                int totalIncomingCalls = cursor.getInt(cursor.getColumnIndexOrThrow(RecordDbContract.Extended.COLUMN_TOTAL_INCOMING_CALLS));
 
                 Record record = new Record();
                 record.setNumber(number);
-                record.setRank(totalCalls);
+                record.setRank(cursor.getPosition() + 1);
+                record.setTotalIncomingCalls(totalIncomingCalls);
+                record.setTotalOutgoingCall(totalCalls - totalIncomingCalls);
 
                 contactRecordList.add(record);
 
