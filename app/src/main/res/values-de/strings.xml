@@ -43,4 +43,6 @@
     <string name="pref_title_audio_source">Audio Quelle</string>
     <string name="pref_title_output_format">Ausgabeformat</string>
     <string name="title_activity_statistic">Statistik</string>
+    <string name="incoming">eingehend</string>
+    <string name="outgoing">ausgehende</string>
 </resources>

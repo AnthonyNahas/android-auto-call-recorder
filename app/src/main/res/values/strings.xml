@@ -189,6 +189,8 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="all">all</string>
+    <string name="incoming">incoming</string>
+    <string name="outgoing">outgoing</string>
     <string name="close">close</string>
     <string name="action_share">share</string>
     <string name="action_upload">upload</string>
