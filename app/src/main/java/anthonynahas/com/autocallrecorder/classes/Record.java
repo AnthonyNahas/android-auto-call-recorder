@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import java.io.Serializable;
 
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
+import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 
 /**
  * Class that deal the record table location in content provider.
@@ -58,6 +59,7 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
                   boolean mIsIncoming,
                   boolean mIsLove) {
 
+        super();
         this.m_ID = m_ID;
         this.mNumber = mNumber;
         this.mContactID = mContactID;
@@ -66,7 +68,6 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
         this.mDuration = mDuration;
         this.mIsIncoming = mIsIncoming;
         this.mIsLove = mIsLove;
-
     }
 
     public String get_ID() {

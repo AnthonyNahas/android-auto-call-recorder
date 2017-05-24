@@ -1,4 +1,4 @@
-package anthonynahas.com.autocallrecorder.fragments;
+package anthonynahas.com.autocallrecorder.fragments.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -60,9 +60,9 @@ import anthonynahas.com.autocallrecorder.utilities.helpers.UploadAudioFile;
  * @version 1.5
  * @since 04.05.2016
  */
-public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
+public class RecordsDialog extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
 
-    public static final String TAG = RecordsDialogFragment.class.getSimpleName();
+    public static final String TAG = RecordsDialog.class.getSimpleName();
 
     private ImageView mImageProfile;
     private TextView mTV_Number_CN;
@@ -72,7 +72,6 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
 
     private MediaPlayer mMediaPlayer;
     private AudioSourceSwitcher mAudioSourceSwitcher;
-    private AudioManager mAudioManager;
     private Handler mSeekHandler = new Handler();
     private boolean isPaused;
     private boolean iSDurationTextPressed;
@@ -168,19 +167,6 @@ public class RecordsDialogFragment extends DialogFragment implements SeekBar.OnS
         getAudioFilePath(String.valueOf(mRecord.get_ID()));
         mMediaPlayer = new MediaPlayer();
         mAudioSourceSwitcher = new AudioSourceSwitcher(getActivity(), mMediaPlayer);
-        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-        // TODO: 17.05.17 with listener
-        //PLAY ON EARPIECE
-        //mMediaPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
-        //mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-        //mAudioManager.setSpeakerphoneOn(false);
-
-        //PLAY ON SPEAKER
-        /*
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mAudioManager.setMode(AudioManager.MODE_IN_CALL);
-        mAudioManager.setSpeakerphoneOn(true);
-        */
 
         setAndPrepareMediaPlayer();
         mTV_Duration.setText(getTimeString(mMediaPlayer.getDuration()));

@@ -31,7 +31,7 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.classes.Resources;
-import anthonynahas.com.autocallrecorder.fragments.RecordsRecyclerListFragment;
+import anthonynahas.com.autocallrecorder.fragments.RecordsListFragment;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.support.DemoRecordSupport;
 import anthonynahas.com.autocallrecorder.utilities.helpers.DialogHelper;
@@ -293,17 +293,17 @@ public class MainActivity extends AppCompatActivity implements
      */
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        private RecordsRecyclerListFragment mRecordsRecyclerListFragment;
-        private RecordsRecyclerListFragment mLoveRecordsListFragment;
+        private RecordsListFragment mRecordsListFragment;
+        private RecordsListFragment mLoveRecordsListFragment;
 
         private SectionsPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
-            mRecordsRecyclerListFragment = RecordsRecyclerListFragment.newInstance();
+            mRecordsListFragment = RecordsListFragment.newInstance();
 
             Bundle args = new Bundle();
             String selection = RecordDbContract.RecordItem.COLUMN_IS_LOVE + " =1";
-            args.putString(RecordsRecyclerListFragment.BundleArgs.selection.name(), selection);
-            mLoveRecordsListFragment = RecordsRecyclerListFragment.newInstance(args);
+            args.putString(RecordsListFragment.BundleArgs.selection.name(), selection);
+            mLoveRecordsListFragment = RecordsListFragment.newInstance(args);
         }
 
 
@@ -320,8 +320,8 @@ public class MainActivity extends AppCompatActivity implements
             mCurrentFragmentPosition = position;
             switch (position) {
                 case 0:
-                    mSearchView.setOnQueryChangeListener(mRecordsRecyclerListFragment.getOnQueryChangeListener());
-                    return mRecordsRecyclerListFragment;
+                    mSearchView.setOnQueryChangeListener(mRecordsListFragment.getOnQueryChangeListener());
+                    return mRecordsListFragment;
                 case 1:
                     //mSearchView.setOnQueryChangeListener(mLoveRecordsListFragment.getOnQueryChangeListener());
                     return mLoveRecordsListFragment;

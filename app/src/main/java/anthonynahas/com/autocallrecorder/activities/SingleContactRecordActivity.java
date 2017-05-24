@@ -3,6 +3,7 @@ package anthonynahas.com.autocallrecorder.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -10,10 +11,14 @@ import android.widget.TextView;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.classes.Record;
 import anthonynahas.com.autocallrecorder.classes.Resources;
+import anthonynahas.com.autocallrecorder.fragments.RecordsListFragment;
+import anthonynahas.com.autocallrecorder.utilities.decorators.ActionBarDecorator;
+import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 
 public class SingleContactRecordActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
+    private Record mRecord;
+    private RecordsListFragment mRecordsListFragment;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -21,14 +26,11 @@ public class SingleContactRecordActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                case R.id.navigation_all:
                     return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                case R.id.navigation_only_incoming:
                     return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
+                case R.id.navigation_only_outgoing:
                     return true;
             }
             return false;
@@ -41,12 +43,52 @@ public class SingleContactRecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_contact_record);
 
-        Record contactRecord = getIntent().getParcelableExtra(Resources.REC_PARC_KEY);
+        //Setup material action bar
+        ActionBarDecorator actionBarDecorator = new ActionBarDecorator();
+        actionBarDecorator.setup(this);
+        actionBarDecorator.getActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
+        if (fragment instanceof RecordsListFragment) {
+            mRecordsListFragment = (RecordsListFragment) fragment;
+        }
+
+        mRecord = getIntent().getParcelableExtra(Resources.REC_PARC_KEY);
+
+        if (mRecord != null) {
+            // TODO: 24.05.2017 getContactName should be done asynchronously  - with async ?
+            mRecord.setName(ContactHelper.getContactName(getContentResolver(), mRecord.getNumber()));
+        }
+
+        actionBarDecorator
+                .getActionBar()
+                .setTitle((mRecord.getName() != null ? mRecord.getName() : mRecord.getNumber()));
+
+        if (mRecord.getName() != null) {
+            actionBarDecorator
+                    .getActionBar()
+                    .setSubtitle(mRecord.getNumber());
+        }
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
+    /**
+     * E.G: < button: finishes the current activity
+     *
+     * @param item - item in the toolbar
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

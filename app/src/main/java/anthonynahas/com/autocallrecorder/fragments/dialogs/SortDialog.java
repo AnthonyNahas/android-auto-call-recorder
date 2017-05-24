@@ -1,4 +1,4 @@
-package anthonynahas.com.autocallrecorder.fragments;
+package anthonynahas.com.autocallrecorder.fragments.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -19,9 +19,9 @@ import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
 /**
  * Created by A on 14.06.16.
  */
-public class SortDialogFragment extends DialogFragment {
+public class SortDialog extends DialogFragment {
 
-    public final static String TAG = SortDialogFragment.class.getSimpleName();
+    public final static String TAG = SortDialog.class.getSimpleName();
 
     private String mSelect;
     private String mArrange;

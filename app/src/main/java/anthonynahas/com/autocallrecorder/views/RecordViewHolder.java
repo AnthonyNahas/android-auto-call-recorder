@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
-import anthonynahas.com.autocallrecorder.fragments.RecordsRecyclerListFragment;
+import anthonynahas.com.autocallrecorder.fragments.RecordsListFragment;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordDbHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
@@ -143,7 +143,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         int isLove = mCursor.getInt(mCursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
         call_isLove.setImageResource(isLove == 1 ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
 
-        if (RecordsRecyclerListFragment.sIsInActionMode) {
+        if (RecordsListFragment.sIsInActionMode) {
             call_selected.setVisibility(View.VISIBLE);
             call_selected.setChecked(false);
         } else {
@@ -174,7 +174,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         switch (view.getId()) {
 
             case R.id.call_selected:
-                RecordsRecyclerListFragment.getInstance().prepareSelection(view, this.getAdapterPosition());
+                RecordsListFragment.getInstance().prepareSelection(view, this.getAdapterPosition());
                 break;
 
             case R.id.call_isLove:

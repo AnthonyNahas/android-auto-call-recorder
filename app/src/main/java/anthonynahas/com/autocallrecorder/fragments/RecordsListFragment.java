@@ -36,6 +36,7 @@ import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
 import anthonynahas.com.autocallrecorder.classes.Record;
 import anthonynahas.com.autocallrecorder.classes.Resources;
+import anthonynahas.com.autocallrecorder.fragments.dialogs.RecordsDialog;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
 import anthonynahas.com.autocallrecorder.providers.RecordsQueryHandler;
@@ -73,23 +74,23 @@ import static anthonynahas.com.autocallrecorder.R.id.recycler_view;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RecordsRecyclerListFragment.OnFragmentInteractionListener} interface
+ * {@link RecordsListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RecordsRecyclerListFragment#getInstance} factory method to
+ * Use the {@link RecordsListFragment#getInstance} factory method to
  * create an instance of this fragment.
  *
  * @author Anthony Nahas
  * @version 1.4.0
  * @since 29.03.2017
  */
-public class RecordsRecyclerListFragment extends Fragment implements
+public class RecordsListFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
         FloatingSearchView.OnQueryChangeListener,
         SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String TAG = RecordsRecyclerListFragment.class.getSimpleName();
+    private static final String TAG = RecordsListFragment.class.getSimpleName();
 
-    private static RecordsRecyclerListFragment sFragment;
+    private static RecordsListFragment sFragment;
 
 
     public int sCounter = 0;
@@ -163,31 +164,31 @@ public class RecordsRecyclerListFragment extends Fragment implements
     }
 
 
-    public RecordsRecyclerListFragment() {
-        Log.d(TAG, "on new RecordsRecyclerListFragment Instance");
+    public RecordsListFragment() {
+        Log.d(TAG, "on new RecordsListFragment Instance");
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment RecordsRecyclerListFragment.
+     * @return A new instance of fragment RecordsListFragment.
      */
-    public synchronized static RecordsRecyclerListFragment getInstance() { // TODO: 05.05.2017 : 2 Instance pro app - get or new instance
+    public synchronized static RecordsListFragment getInstance() { // TODO: 05.05.2017 : 2 Instance pro app - get or new instance
         if (sFragment == null) {
-            sFragment = new RecordsRecyclerListFragment();
+            sFragment = new RecordsListFragment();
         }
         return sFragment;
     }
 
-    public static RecordsRecyclerListFragment newInstance() {
-        return new RecordsRecyclerListFragment();
+    public static RecordsListFragment newInstance() {
+        return new RecordsListFragment();
     }
 
-    public static RecordsRecyclerListFragment newInstance(Bundle args) {
-        RecordsRecyclerListFragment recordsRecyclerListFragment = new RecordsRecyclerListFragment();
-        recordsRecyclerListFragment.setArguments(args);
-        return recordsRecyclerListFragment;
+    public static RecordsListFragment newInstance(Bundle args) {
+        RecordsListFragment recordsListFragment = new RecordsListFragment();
+        recordsListFragment.setArguments(args);
+        return recordsListFragment;
     }
 
     @Override
@@ -581,9 +582,9 @@ public class RecordsRecyclerListFragment extends Fragment implements
         record.setName(((TextView) view.findViewById(R.id.call_contact_name_number)).getText().toString());
         args.putParcelable(Resources.REC_PARC_KEY, record);
 
-        RecordsDialogFragment recordsDialogFragment = new RecordsDialogFragment();
-        recordsDialogFragment.setArguments(args);
-        recordsDialogFragment.show(((Activity) mContext).getFragmentManager(), RecordsDialogFragment.TAG);
+        RecordsDialog recordsDialog = new RecordsDialog();
+        recordsDialog.setArguments(args);
+        recordsDialog.show(((Activity) mContext).getFragmentManager(), RecordsDialog.TAG);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -624,7 +625,7 @@ public class RecordsRecyclerListFragment extends Fragment implements
 
     private void notifyOnActionMode(boolean state) {
         Intent intent = new Intent(Resources.BROADCAST_ACTION_ON_ACTION_MODE);
-        intent.putExtra(Resources.ACTION_MODE_SENDER, RecordsRecyclerListFragment.class.getSimpleName());
+        intent.putExtra(Resources.ACTION_MODE_SENDER, RecordsListFragment.class.getSimpleName());
         intent.putExtra(Resources.ACTION_MODE_SATE, state);
         LocalBroadcastManager.getInstance(mContext)
                 .sendBroadcast(intent);

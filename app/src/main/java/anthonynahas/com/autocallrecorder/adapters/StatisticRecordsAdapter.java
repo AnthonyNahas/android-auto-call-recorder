@@ -40,7 +40,6 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
 
         RecordViewHolder(View view) {
             super(view);
-
             mCallNameOrNumber = (TextView) view.findViewById(R.id.tv_call_contact_name_or_number);
             mRankTextView = (TextView) view.findViewById(R.id.tv_rank);
             mTotalIncomingCallsTextView = (TextView) view.findViewById(R.id.tv_total_incoming_calls);

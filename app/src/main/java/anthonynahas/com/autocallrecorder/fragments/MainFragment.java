@@ -42,6 +42,7 @@ import java.util.concurrent.ExecutionException;
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.adapters.RecordsCursorAdapter;
 import anthonynahas.com.autocallrecorder.classes.Record;
+import anthonynahas.com.autocallrecorder.fragments.dialogs.RecordsDialog;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileAsyncTask;
 import anthonynahas.com.autocallrecorder.utilities.helpers.PreferenceHelper;
@@ -243,7 +244,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         switch (item.getItemId()) {
             case R.id.action_sort:
                 Log.d(TAG, "MenuItem = sort");
-                //SortDialogFragment sortDialogFragment = new SortDialogFragment();
+                //SortDialog sortDialogFragment = new SortDialog();
                 //sortDialogFragment.setTargetFragment(MainFragment.this, REQUEST_CODE_FOR_SORT_DIALOG);
                 //sortDialogFragment.show(getFragmentManager(), "sort dialog");
             default:
@@ -363,9 +364,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             Record record = new Record(cursor);
             record.setName(((TextView) view.findViewById(R.id.call_contact_name_number)).getText().toString());
             args.putParcelable(anthonynahas.com.autocallrecorder.classes.Resources.REC_PARC_KEY, record);
-            RecordsDialogFragment recordsDialogFragment = new RecordsDialogFragment();
-            recordsDialogFragment.setArguments(args);
-            recordsDialogFragment.show(getFragmentManager(), RecordsDialogFragment.TAG);
+            RecordsDialog recordsDialog = new RecordsDialog();
+            recordsDialog.setArguments(args);
+            recordsDialog.show(getFragmentManager(), RecordsDialog.TAG);
         }
     };
 
