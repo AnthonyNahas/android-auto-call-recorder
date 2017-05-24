@@ -1,7 +1,11 @@
 package anthonynahas.com.autocallrecorder.utilities.helpers;
 
+import android.content.ContentUris;
+import android.content.Context;
+import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
@@ -24,6 +28,20 @@ public class FileHelper {
 
     private static final String FILENAME = "com.anthonynahas.autocallrecorder";
 
+    /**
+     * Share a record audio file
+     *
+     * @param context - the used context
+     * @param recordID - the id of the record file that will be shared
+     */
+    public static void share(Context context, String recordID) {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("audio/*");
+        share.putExtra(Intent.EXTRA_STREAM,
+                ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        Long.valueOf(recordID)));
+        context.startActivity(Intent.createChooser(share, "Share Sound File"));
+    }
 
     public static File getChildDir(long currentDate) {
         File childFile = new File(getBaseDir().getPath(), getDate(currentDate));
@@ -34,7 +52,7 @@ public class FileHelper {
         return childFile;
     }
 
-    public static File getBaseDir() {
+    private static File getBaseDir() {
         File baseFileDir = new File(Environment.getExternalStorageDirectory(), FILENAME);
         Log.d(TAG, baseFileDir.toString());
         //make dir

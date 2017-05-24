@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -50,6 +48,7 @@ import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.helpers.AudioFileAsyncTask;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.FileDeleterTask;
+import anthonynahas.com.autocallrecorder.utilities.helpers.FileHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ImageHelper;
 import anthonynahas.com.autocallrecorder.utilities.helpers.UploadAudioFile;
 
@@ -255,7 +254,7 @@ public class RecordsDialog extends DialogFragment implements SeekBar.OnSeekBarCh
         //handle item action
         switch (item.getItemId()) {
             case R.id.action_share:
-                shareRecord();
+                FileHelper.share(getActivity(), mRecord.get_ID());
                 return true;
             case R.id.action_upload:
                 uploadRecord();
@@ -424,14 +423,6 @@ public class RecordsDialog extends DialogFragment implements SeekBar.OnSeekBarCh
         );
     }
 
-    private void shareRecord() {
-        Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("audio/*");
-        share.putExtra(Intent.EXTRA_STREAM,
-                ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        Long.valueOf(mRecord.get_ID())));
-        startActivity(Intent.createChooser(share, "Share Sound File"));
-    }
 
     private void uploadRecord() {
         // TODO: 04.05.2017 : dropbox - fdp server - google drive ...
