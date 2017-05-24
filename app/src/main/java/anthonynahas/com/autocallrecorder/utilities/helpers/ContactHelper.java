@@ -3,6 +3,7 @@ package anthonynahas.com.autocallrecorder.utilities.helpers;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -12,12 +13,15 @@ import android.net.Uri;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
+import anthonynahas.com.autocallrecorder.classes.Record;
 
 /**
  * Helper class that deals with contacts, like android's contact api and more
@@ -292,6 +296,21 @@ public class ContactHelper {
         return bitmap;
     }
 
+    private void setContactBitMap(Context context, Record record, ImageView imageView) {
+        InputStream in;
+        BufferedInputStream buf;
+        try {
+            in = ContactHelper.openLargeDisplayPhoto(context.getContentResolver(), record.getContactID());
+            buf = new BufferedInputStream(in);
+            Bitmap bMap = BitmapFactory.decodeStream(buf);
+            imageView.setImageBitmap(bMap);
+            in.close();
+            buf.close();
+        } catch (Exception e) {
+            Log.e("Error reading file", e.toString());
+        }
+    }
+
     private static void logContactCursor(Cursor cursor) {
         if (cursor.moveToFirst()) {
             do {
@@ -309,14 +328,14 @@ public class ContactHelper {
 
                 Log.d(TAG,
                         //"ContactsContract.Contacts._ID "
-                          //      + Contact_contact_id
-                            //    + " Data.CONTACT_ID = "
-                              //  + data_raw_contact_id
-                                 " PhoneLookup._ID = "
-                                         + phone_lookup_id
-                                         + " contact id = "
-                                         + phone_lookup_contact_id
-                                         + " --> display name = "
+                        //      + Contact_contact_id
+                        //    + " Data.CONTACT_ID = "
+                        //  + data_raw_contact_id
+                        " PhoneLookup._ID = "
+                                + phone_lookup_id
+                                + " contact id = "
+                                + phone_lookup_contact_id
+                                + " --> display name = "
                                 + contact_display_name
                                 + " --> number = "
                                 + contact_number);

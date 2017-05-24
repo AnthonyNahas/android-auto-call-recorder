@@ -385,20 +385,6 @@ public class RecordsDialog extends DialogFragment implements SeekBar.OnSeekBarCh
         return mPathFile;
     }
 
-    private void setContactBitMap() {
-        InputStream in;
-        BufferedInputStream buf;
-        try {
-            in = ContactHelper.openLargeDisplayPhoto(getActivity().getContentResolver(), mRecord.getContactID());
-            buf = new BufferedInputStream(in);
-            Bitmap bMap = BitmapFactory.decodeStream(buf);
-            mImageProfile.setImageBitmap(bMap);
-            in.close();
-            buf.close();
-        } catch (Exception e) {
-            Log.e("Error reading file", e.toString());
-        }
-    }
 
     private Bitmap getContactBitMap() {
         InputStream in;
