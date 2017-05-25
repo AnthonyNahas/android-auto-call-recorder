@@ -6,6 +6,7 @@ import android.media.MediaRecorder;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -33,6 +34,7 @@ public class RecordService extends Service {
     private MediaRecorder mMediaRecorder;
     private PreferenceHelper mPreferenceHelper;
 
+    private Handler mRecordHandler;
 
     public static final String FILEPATHKEY = "filepathkey";
     public static File sRecordFile;
@@ -49,24 +51,32 @@ public class RecordService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy() - stop recording...");
-        stopRecord();
-        //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(sRecordFile.getAbsoluteFile())));
-        //this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(sRecordFile.getAbsoluteFile())));
-        //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(getBaseDir().getAbsoluteFile())));
-        //startService(new Intent().putExtras(sCallData));
-        String[] string_rec_path = {sRecordFile.getAbsolutePath()};
 
-        MediaScannerConnection.scanFile(getApplicationContext(), string_rec_path, null, new MediaScannerConnection.OnScanCompletedListener() {
+        mRecordHandler.postDelayed(new Runnable() {
             @Override
-            public void onScanCompleted(String path, Uri uri) {
-                Log.d(TAG, "scan completed");
-                Intent i = new Intent();
-                i.putExtras(sCallData);
-                i.setAction(DoneRecReceiver.ACTION);
-                sendBroadcast(i);
-                Log.d(TAG, "broadcast sent");
+            public void run() {
+                stopRecord();
+                //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(sRecordFile.getAbsoluteFile())));
+                //this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(sRecordFile.getAbsoluteFile())));
+                //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(getBaseDir().getAbsoluteFile())));
+                //startService(new Intent().putExtras(sCallData));
+                String[] string_rec_path = {sRecordFile.getAbsolutePath()};
+
+                MediaScannerConnection.scanFile(getApplicationContext(), string_rec_path, null, new MediaScannerConnection.OnScanCompletedListener() {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.d(TAG, "scan completed");
+                        Intent i = new Intent();
+                        i.putExtras(sCallData);
+                        i.setAction(DoneRecReceiver.ACTION);
+                        sendBroadcast(i);
+                        Log.d(TAG, "broadcast sent");
+                    }
+                });
             }
-        });
+        }, 1000);
+
+
     }
 
     @Nullable
@@ -91,7 +101,14 @@ public class RecordService extends Service {
 
         Log.d(TAG, sRecordFile.getAbsolutePath());
 
-        startAndSaveRecord(sRecordFile);
+        mRecordHandler = new Handler();
+        mRecordHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startAndSaveRecord(sRecordFile);
+            }
+        }, 1000);
+
 
         return super.onStartCommand(intent, flags, startId);
     }
