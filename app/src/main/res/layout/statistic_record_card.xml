@@ -38,7 +38,7 @@
             android:layout_centerInParent="false"
             android:layout_marginLeft="14dp"
             android:layout_marginStart="14dp"
-            android:contentDescription="@string/imageview_profile"
+            android:contentDescription="@string/image_view_profile"
             android:scaleType="fitXY"
             android:src="@drawable/custmtranspprofpic200px" />
 

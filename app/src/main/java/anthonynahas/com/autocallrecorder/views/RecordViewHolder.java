@@ -1,13 +1,16 @@
 package anthonynahas.com.autocallrecorder.views;
 
+import android.app.Activity;
 import android.content.AsyncQueryHandler;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +25,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import anthonynahas.com.autocallrecorder.R;
+import anthonynahas.com.autocallrecorder.activities.ContactFullscreenActivity;
 import anthonynahas.com.autocallrecorder.fragments.RecordsListFragment;
 import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordDbHelper;
@@ -31,6 +35,8 @@ import anthonynahas.com.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 
 /**
  * Created by A on 20.03.17.
+ *
+ * @author Anthony Nahas
  */
 
 public class RecordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -67,6 +73,18 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         call_isLove = (ImageButton) view.findViewById(R.id.call_isLove);
         call_isLove.setOnClickListener(this);
 
+        call_contact_profile.setTag((int) getItemId(), null);
+        call_contact_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mContext.startActivity(new Intent(mContext, ContactFullscreenActivity.class)
+                                .putExtra("as", 2),
+                        ActivityOptionsCompat
+                                .makeSceneTransitionAnimation((Activity) mContext,
+                                        call_contact_profile, "photo").toBundle());
+            }
+        });
+
     }
 
     public void setData(Cursor cursor) {
@@ -74,13 +92,8 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         mItemID = Long.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_ID)));
         Log.d(TAG, "cursor position= " + cursor.getPosition());
         final String phoneNumber = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
-        //if(view != null) {
+
         // Lookup view for data population
-
-        //RecordsCursorAdapter.MyViewHolder viewHolder = (RecordsCursorAdapter.MyViewHolder) view.getTag();
-
-        // Populate the data into the template view using the data object
-        //viewHolder.call_contact_profile.setId(cursor.getPosition());
 
         String contact_number_or_name = "";
 
@@ -101,7 +114,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
 
         if (contact_number_or_name.isEmpty()) {
-            call_contact_number_or_name.setText("Unkown");
+            call_contact_number_or_name.setText("Unknown");
             //call_contact_number_or_name.setText(phoneNumber);
         } else {
             call_contact_number_or_name.setText(contact_number_or_name);

@@ -139,7 +139,7 @@ public class RecordsDialog extends DialogFragment implements SeekBar.OnSeekBarCh
         });
 
         mImageProfile = (ImageView) view.findViewById(R.id.img_profile_recDialog);
-        //setContactBitMap();
+
         //mImageProfile.setImageBitmap(ImageHelper.getRoundedCornerBitmap(getContactBitMap(),100));
         Bitmap contactPhoto = ImageHelper.getRoundedCroppedBitmap(getContactBitMap(), convert_dp_To_px(150));
         if (contactPhoto != null) {
@@ -377,7 +377,6 @@ public class RecordsDialog extends DialogFragment implements SeekBar.OnSeekBarCh
             Log.d(TAG, "id original = " + id);
             Log.d(TAG, " id = " + id2 + " | data = " + mPathFile + " name = " + mFileName);
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
             Log.e(TAG, "Error : ", e);
         } catch (IndexOutOfBoundsException e) {
             Log.e(TAG, "Error: IndexOutOfBound", e);

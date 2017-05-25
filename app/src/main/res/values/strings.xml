@@ -13,7 +13,7 @@
     <string name="action_view_switch_dropbox">Auto upload on DropBox</string>
 
     <!-- Layout -->
-    <string name="imageview_profile" translatable="false">profile picture of (unkown)-contact</string>
+    <string name="image_view_profile" translatable="false">profile picture of (unkown)-contact</string>
 
     <!-- Menu -->
     <string name="action_search">Search</string>
@@ -175,7 +175,7 @@
         <item>3</item>
     </string-array>
 
-    <string-array name="multi_select_list_preference_default_value" />
+    <string-array name="multi_select_list_preference_default_value"/>
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
@@ -208,6 +208,10 @@
 
     <!-- Single Contact Record Activity -->
     <string name="title_activity_single_contact_record">UNKNOWN</string>
+
+    <string name="title_activity_contact_fullscreen">ContactFullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 
 </resources>

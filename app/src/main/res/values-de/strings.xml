@@ -9,7 +9,7 @@
     <string name="action_search">Suchen</string>
     <string name="action_view_switch_auto_rec">Immer aufzeichnen</string>
     <string name="action_view_switch_dropbox">Immer hochladen auf DropBox</string>
-    <string name="imageview_profile" translatable="false"></string>
+    <string name="image_view_profile" translatable="false"></string>
     <string name="item_share">App teilen</string>
     <string name="item_home">Aufzeichnungen</string>
     <string name="radiobtton_asc">Aufsteigend</string>

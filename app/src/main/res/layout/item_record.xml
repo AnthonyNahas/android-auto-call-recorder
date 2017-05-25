@@ -20,7 +20,7 @@
             android:layout_height="60dp"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:contentDescription="@string/imageview_profile"/>
+            android:contentDescription="@string/image_view_profile"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
