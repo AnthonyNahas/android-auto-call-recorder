@@ -260,6 +260,14 @@ public class ContactHelper {
         return null;
     }
 
+    /**
+     * Get the profile pic of a contact by contact id as bitmap
+     *
+     * @param contentResolver - the content resolver of the context
+     * @param mode - whether in large mode (0) or thumbnails (1)
+     * @param contactID - the id of the target contact
+     * @return - the bitmap of the contact if it's available
+     */
     public static Bitmap getBitmapForContactID(ContentResolver contentResolver, int mode, long contactID) {
 
         InputStream in = null;
@@ -269,14 +277,16 @@ public class ContactHelper {
         try {
             switch (mode) {
                 case 0: //large
-                    in = ContactHelper.openLargeDisplayPhoto(contentResolver, contactID);
+                    in = openLargeDisplayPhoto(contentResolver, contactID);
                     break;
                 case 1: //thumbnail
-                    in = ContactHelper.openThumbnailPhoto(contentResolver, contactID);
+                    in = openThumbnailPhoto(contentResolver, contactID);
                     break;
             }
-            buf = new BufferedInputStream(in);
-            bitmap = BitmapFactory.decodeStream(buf);
+            if (in != null) {
+                buf = new BufferedInputStream(in);
+                bitmap = BitmapFactory.decodeStream(buf);
+            }
 
         } catch (Exception e) {
             Log.e(TAG, "Error reading file", e);

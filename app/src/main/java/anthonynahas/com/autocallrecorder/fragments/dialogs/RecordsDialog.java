@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -33,9 +32,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -140,8 +137,9 @@ public class RecordsDialog extends DialogFragment implements SeekBar.OnSeekBarCh
 
         mImageProfile = (ImageView) view.findViewById(R.id.img_profile_recDialog);
 
-        //mImageProfile.setImageBitmap(ImageHelper.getRoundedCornerBitmap(getContactBitMap(),100));
-        Bitmap contactPhoto = ImageHelper.getRoundedCroppedBitmap(getContactBitMap(), convert_dp_To_px(150));
+        Bitmap contactPhoto = ImageHelper.getRoundedCroppedBitmap(ContactHelper
+                        .getBitmapForContactID(getActivity().getContentResolver(), 0, mRecord.getContactID()),
+                convert_dp_To_px(150));
         if (contactPhoto != null) {
             mImageProfile.setImageBitmap(contactPhoto);
         } else {
@@ -382,23 +380,6 @@ public class RecordsDialog extends DialogFragment implements SeekBar.OnSeekBarCh
             Log.e(TAG, "Error: IndexOutOfBound", e);
         }
         return mPathFile;
-    }
-
-
-    private Bitmap getContactBitMap() {
-        InputStream in;
-        BufferedInputStream buf;
-        try {
-            in = ContactHelper.openLargeDisplayPhoto(getActivity().getContentResolver(), mRecord.getContactID());
-            buf = new BufferedInputStream(in);
-            Bitmap bMap = BitmapFactory.decodeStream(buf);
-            in.close();
-            buf.close();
-            return bMap;
-        } catch (Exception e) {
-            Log.e("Error reading file", e.toString());
-        }
-        return null;
     }
 
     private int convert_dp_To_px(int dp) {
