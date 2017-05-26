@@ -22,7 +22,6 @@ import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.providers.RecordDbHelper;
 import anthonynahas.com.autocallrecorder.providers.RecordsContentProvider;
 import anthonynahas.com.autocallrecorder.utilities.decorators.ActionBarDecorator;
-import anthonynahas.com.autocallrecorder.utilities.support.DemoRecordSupport;
 import anthonynahas.com.autocallrecorder.utilities.support.ItemClickSupport;
 
 /**
@@ -66,7 +65,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new StatisticRecordsAdapter(DemoRecordSupport.newInstance().generateRecordsList(2));
+        mAdapter = new StatisticRecordsAdapter(null);
         mRecyclerView.setAdapter(mAdapter);
 
         ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {

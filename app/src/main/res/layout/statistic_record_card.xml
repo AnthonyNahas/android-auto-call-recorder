@@ -39,8 +39,7 @@
             android:layout_marginLeft="14dp"
             android:layout_marginStart="14dp"
             android:contentDescription="@string/image_view_profile"
-            android:scaleType="fitXY"
-            android:src="@drawable/custmtranspprofpic200px" />
+            android:scaleType="fitXY"/>
 
         <TextView
             android:id="@+id/tv_call_contact_name_or_number"

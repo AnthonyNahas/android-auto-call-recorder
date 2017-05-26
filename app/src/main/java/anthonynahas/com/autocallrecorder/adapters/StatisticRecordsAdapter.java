@@ -1,5 +1,6 @@
 package anthonynahas.com.autocallrecorder.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.classes.Record;
+import anthonynahas.com.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 
 /**
  * Created by anahas on 16.05.2017.
@@ -24,6 +26,7 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
 
     private static final String TAG = StatisticRecordsAdapter.class.getSimpleName();
 
+    private Context mContext;
     private List<Record> mRecordsList;
 
     // Provide a reference to the views for each data item
@@ -48,6 +51,9 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
 
         }
 
+        public ImageView getImageProfile() {
+            return mImageProfile;
+        }
     }
 
     @Override
@@ -74,6 +80,7 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     public RecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.statistic_record_card, parent, false);
+        mContext = view.getContext();
         return new RecordViewHolder(view);
     }
 
@@ -88,12 +95,22 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
         viewHolder.mCallNameOrNumber.setText(record.getNumber());
         viewHolder.mTotalIncomingCallsTextView.setText(String.valueOf(record.getTotalIncomingCalls()));
         viewHolder.mTotalOutgoingCallsTextView.setText(String.valueOf(record.getTotalOutgoingCall()));
+        //viewHolder.mImageProfile.setTag(mRecordsList.get(position).getContactID());
+
+        if (viewHolder.mImageProfile.getDrawable() == null) {
+            new ContactPhotosAsyncTask(mContext, this, viewHolder, position).execute(mRecordsList.get(position).getContactID());
+
+        }
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mRecordsList.size();
+        if (mRecordsList != null) {
+            return mRecordsList.size();
+        }
+        return -1;
     }
 
 }
