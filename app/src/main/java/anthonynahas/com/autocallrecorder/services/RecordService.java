@@ -100,12 +100,14 @@ public class RecordService extends Service {
         sCallData.putString(FILEPATHKEY, sRecordFile.getAbsolutePath());
 
         Log.d(TAG, sRecordFile.getAbsolutePath());
+        startAndSaveRecord(sRecordFile);
 
         mRecordHandler = new Handler();
         mRecordHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startAndSaveRecord(sRecordFile);
+                Log.d(TAG, "handler run ...");
+
             }
         }, 1000);
 
@@ -116,6 +118,7 @@ public class RecordService extends Service {
     private void startAndSaveRecord(File recordFile) {
         stopRecord();
         mMediaRecorder = new MediaRecorder();
+        mMediaRecorder.reset();
         // TODO: 16.05.17 not working well
         mMediaRecorder.setAudioSource(mPreferenceHelper.getAudioSource());   //or default mic
         mMediaRecorder.setOutputFormat(mPreferenceHelper.getOutputFormat());
