@@ -6,12 +6,12 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import anthonynahas.com.autocallrecorder.R;
 import anthonynahas.com.autocallrecorder.classes.Record;
 import anthonynahas.com.autocallrecorder.classes.Resources;
 import anthonynahas.com.autocallrecorder.fragments.RecordsListFragment;
+import anthonynahas.com.autocallrecorder.providers.RecordDbContract;
 import anthonynahas.com.autocallrecorder.utilities.decorators.ActionBarDecorator;
 import anthonynahas.com.autocallrecorder.utilities.helpers.ContactHelper;
 
@@ -27,10 +27,19 @@ public class SingleContactRecordActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_all:
+                    mRecordsListFragment.refresh();
                     return true;
                 case R.id.navigation_only_incoming:
+                    mRecordsListFragment
+                            .refresh(createArguments(RecordDbContract.RecordItem.COLUMN_IS_INCOMING
+                                            + " = ?",
+                                    new String[]{"1"}));
                     return true;
                 case R.id.navigation_only_outgoing:
+                    mRecordsListFragment
+                            .refresh(createArguments(RecordDbContract.RecordItem.COLUMN_IS_INCOMING
+                                            + " = ?",
+                                    new String[]{"0"}));
                     return true;
             }
             return false;
@@ -91,4 +100,13 @@ public class SingleContactRecordActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    private Bundle createArguments(String selection, String[] selectionArgs) {
+        Bundle args = new Bundle();
+        args.putString(RecordsListFragment.BundleArgs.selection.name(), selection);
+        args.putStringArray(RecordsListFragment.BundleArgs.selectionArgs.name(), selectionArgs);
+
+        return args;
+    }
+
 }
