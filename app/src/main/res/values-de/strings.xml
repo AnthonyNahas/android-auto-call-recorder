@@ -39,7 +39,7 @@
     <string name="title_activity_settings">Einstellungen</string>
     <string name="pd_deleted">wurde gelöscht</string>
     <string name="pd_msg">Bitte warten Sie...</string>
-    <string name="pref_title_audio_encoder"></string>
+    <string name="pref_title_audio_encoder">Audio Encoder</string>
     <string name="pref_title_audio_source">Audio Quelle</string>
     <string name="pref_title_output_format">Ausgabeformat</string>
     <string name="title_activity_statistic">Statistik</string>

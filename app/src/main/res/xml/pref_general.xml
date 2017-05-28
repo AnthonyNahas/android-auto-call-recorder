@@ -3,8 +3,8 @@
     <SwitchPreference
         android:defaultValue="true"
         android:key="example_switch"
-        android:summary="@string/pref_description_social_recommendations"
-        android:title="@string/pref_title_social_recommendations" />
+        android:summary="@string/pref_description_auto_call_recording"
+        android:title="@string/pref_title_auto_call_recording" />
 
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->

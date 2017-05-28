@@ -78,9 +78,8 @@
 
     <string name="pref_header_general">General</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
+    <string name="pref_title_auto_call_recording">Enable auto record calls</string>
+    <string name="pref_description_auto_call_recording">If you make or receive a call, the app will try to record the call
     </string>
 
     <string name="pref_title_display_name">Display name</string>
@@ -122,7 +121,7 @@
         <item>2</item>
     </string-array>
 
-    <string name="pref_title_audio_encoder" translatable="false">Audio Encoder</string>
+    <string name="pref_title_audio_encoder">Audio Encoder</string>
     <string-array name="pref_general_audio_encoder">
         <item>DEFAULT</item>
         <item>AAC</item>
