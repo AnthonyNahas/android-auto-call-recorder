@@ -395,6 +395,14 @@ public class RecordsListFragment extends Fragment implements
         getLoaderManager().restartLoader(mLoaderManagerID, mArgs, this);
     }
 
+    /**
+     * Refresh the cursor loader
+     */
+    public void refresh(Bundle args) {
+        Log.d(TAG, "onRefresh()");
+        getLoaderManager().restartLoader(mLoaderManagerID, args, this);
+    }
+
 
     public void hardResetLoader() {
         mOffset = 0;
@@ -465,13 +473,18 @@ public class RecordsListFragment extends Fragment implements
                     mOffset = 0; // TODO: 04.05.17 replace mOffset with mLimit
                 }
             }
-            String loveSelection = args.getString(BundleArgs.selection.name());
-            if (loveSelection != null && !loveSelection.isEmpty() && loveSelection.length() > 0) {
+            String newSelection = args.getString(BundleArgs.selection.name());
+            if (newSelection != null && !newSelection.isEmpty() && newSelection.length() > 0) {
                 if (selection != null && !selection.isEmpty()) {
                     //selection += " AND ";
                 } else {
-                    selection = loveSelection;
+                    selection = newSelection;
                 }
+            }
+
+            String[] newSelectionArgs = args.getStringArray(BundleArgs.selectionArgs.name());
+            if(newSelectionArgs != null && newSelectionArgs.length > 0){
+                selectionArgs = newSelectionArgs;
             }
         }
 
