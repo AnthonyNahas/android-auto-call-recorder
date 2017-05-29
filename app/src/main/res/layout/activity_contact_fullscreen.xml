@@ -3,7 +3,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="#001400"
-             tools:context="anthonynahas.com.autocallrecorder.activities.ContactFullscreenActivity">
+             tools:context=".activities.ContactFullscreenActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <anthonynahas.com.autocallrecorder.customs.RoundedImageView
+        <com.anthonynahas.autocallrecorder.customs.RoundedImageView
             android:id="@+id/img_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

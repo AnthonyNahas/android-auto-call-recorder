@@ -12,7 +12,7 @@
         android:layout_centerVertical="true"
         />
 
-        <anthonynahas.com.autocallrecorder.customs.RoundedImageView
+        <com.anthonynahas.autocallrecorder.customs.RoundedImageView
             android:id="@+id/img_profile"
             android:src="@drawable/custmtranspprofpic200px"
             android:scaleType="fitXY"

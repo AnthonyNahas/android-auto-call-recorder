@@ -6,11 +6,11 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="anthonynahas.com.autocallrecorder.activities.SingleContactRecordActivity">
+              tools:context=".activities.SingleContactRecordActivity">
 
     <fragment
         android:id="@+id/fragment"
-        android:name="anthonynahas.com.autocallrecorder.fragments.RecordsListFragment"
+        android:name="com.anthonynahas.autocallrecorder.fragments.RecordsListFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"/>

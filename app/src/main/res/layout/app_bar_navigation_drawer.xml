@@ -9,7 +9,7 @@
                                                  android:fitsSystemWindows="true"
                                                  android:paddingLeft="10dp"
                                                  android:paddingRight="10dp"
-                                                 tools:context="anthonynahas.com.autocallrecorder.activities.MainActivity">
+                                                 tools:context=".activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

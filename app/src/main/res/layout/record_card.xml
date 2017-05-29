@@ -43,7 +43,7 @@
             android:layout_centerVertical="false"
             android:visibility="gone"/>
 
-        <anthonynahas.com.autocallrecorder.customs.RoundedImageView
+        <com.anthonynahas.autocallrecorder.customs.RoundedImageView
             android:id="@+id/img_profile"
             android:layout_width="60dp"
             android:layout_height="60dp"
