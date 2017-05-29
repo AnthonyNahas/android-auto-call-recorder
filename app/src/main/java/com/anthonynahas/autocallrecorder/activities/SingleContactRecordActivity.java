@@ -27,19 +27,25 @@ public class SingleContactRecordActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_all:
-                    mRecordsListFragment.refresh();
+                    mRecordsListFragment.refresh(createArguments(RecordDbContract.RecordItem.COLUMN_NUMBER
+                                    + " = ?",
+                            new String[]{mRecord.getNumber()}));
                     return true;
                 case R.id.navigation_only_incoming:
                     mRecordsListFragment
-                            .refresh(createArguments(RecordDbContract.RecordItem.COLUMN_IS_INCOMING
+                            .refresh(createArguments(RecordDbContract.RecordItem.COLUMN_NUMBER
+                                            + " = ? AND "
+                                            + RecordDbContract.RecordItem.RecordItem.COLUMN_IS_INCOMING
                                             + " = ?",
-                                    new String[]{"1"}));
+                                    new String[]{mRecord.getNumber(), "1"}));
                     return true;
                 case R.id.navigation_only_outgoing:
                     mRecordsListFragment
-                            .refresh(createArguments(RecordDbContract.RecordItem.COLUMN_IS_INCOMING
+                            .refresh(createArguments(RecordDbContract.RecordItem.COLUMN_NUMBER
+                                            + " = ? AND "
+                                            + RecordDbContract.RecordItem.RecordItem.COLUMN_IS_INCOMING
                                             + " = ?",
-                                    new String[]{"0"}));
+                                    new String[]{mRecord.getNumber(), "0"}));
                     return true;
             }
             return false;
@@ -61,9 +67,12 @@ public class SingleContactRecordActivity extends AppCompatActivity {
 
         if (fragment instanceof RecordsListFragment) {
             mRecordsListFragment = (RecordsListFragment) fragment;
-        }
+            mRecord = getIntent().getParcelableExtra(Resources.REC_PARC_KEY);
 
-        mRecord = getIntent().getParcelableExtra(Resources.REC_PARC_KEY);
+            mRecordsListFragment.refresh(createArguments(RecordDbContract.RecordItem.COLUMN_NUMBER
+                            + " = ?",
+                    new String[]{mRecord.getNumber()}));
+        }
 
         if (mRecord != null) {
             // TODO: 24.05.2017 getContactName should be done asynchronously  - with async ?

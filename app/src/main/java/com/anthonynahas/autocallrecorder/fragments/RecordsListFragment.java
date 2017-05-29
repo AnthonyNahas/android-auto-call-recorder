@@ -555,8 +555,11 @@ public class RecordsListFragment extends Fragment implements
     private void reloadCursor(Cursor data) {
         if (data != null && data.moveToFirst()) {
             mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, data);
-            mRecyclerView.setAdapter(mAdapter);
         }
+        else{
+            mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
+        }
+        mRecyclerView.setAdapter(mAdapter);
         mContentLoadingProgressBar.hide();
         mSwipeContainer.setRefreshing(false);
         //mAdapter.notifyItemInserted(0);
