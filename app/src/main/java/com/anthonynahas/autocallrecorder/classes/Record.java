@@ -4,9 +4,9 @@ import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
+
+import java.io.Serializable;
 
 /**
  * Class that deal the record table location in content provider.
@@ -105,7 +105,7 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
         return mSize;
     }
 
-    public void setize(int mSize) {
+    public void setSize(int mSize) {
         this.mSize = mSize;
     }
 
@@ -125,12 +125,20 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
         this.mIsIncoming = mIsIncoming;
     }
 
+    public void setIsIncoming(int mIsIncoming) {
+        this.mIsIncoming = mIsIncoming == 1;
+    }
+
     public boolean isIsLove() {
         return mIsLove;
     }
 
     public void setIsLove(boolean mIsLove) {
         this.mIsLove = mIsLove;
+    }
+
+    public void setIsLove(int mIsLove) {
+        this.mIsLove = mIsLove == 1;
     }
 
     public static final Parcelable.Creator<Record> CREATOR = new Parcelable.Creator<Record>() {
