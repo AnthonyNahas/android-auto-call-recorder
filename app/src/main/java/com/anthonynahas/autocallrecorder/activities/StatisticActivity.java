@@ -24,6 +24,10 @@ import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
 import com.anthonynahas.autocallrecorder.utilities.decorators.ActionBarDecorator;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.Arrays;
+
 /**
  * Class that deals with the content provider (DB) in order to analyse the db and
  * push a statistic as GUI.
@@ -102,7 +106,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "onCreateLoader");
-        String[] projection = new String[]{RecordDbContract.RecordItem.COLUMN_NUMBER,
+        String[] customProjection = new String[]{
                 "COUNT ("
                         + RecordDbContract.RecordItem.COLUMN_NUMBER
                         + ") AS " + RecordDbContract.Extended.COLUMN_TOTAL_CALLS,
@@ -110,6 +114,8 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
                         + RecordDbContract.RecordItem.COLUMN_IS_INCOMING
                         + " =  1 THEN 1 ELSE 0 END) AS "
                         + RecordDbContract.Extended.COLUMN_TOTAL_INCOMING_CALLS};
+
+        String[] projection = ArrayUtils.addAll(RecordDbContract.RecordItem.ALL_COLUMNS, customProjection);
         String selection = null;
 
         String[] selectionArgs = null;
@@ -144,7 +150,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
 
         Log.d(TAG, "onLoadFinished with cursor size --> "
                 + rows + " with columnNames --> "
-                + columnNames.toString()
+                + Arrays.toString(columnNames)
                 + " with columnCount --> "
                 + columnCount);
         mAdapter = new StatisticRecordsAdapter(RecordDbHelper.convertCursorToContactRecordsList(data));

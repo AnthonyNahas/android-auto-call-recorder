@@ -8,15 +8,15 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
+import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
-
-import com.anthonynahas.autocallrecorder.classes.Record;
-import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
-import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
 
 /**
  * This class is responsible to mock and generate demo records for test
@@ -95,12 +95,8 @@ public class DemoRecordSupport {
 
                 cursor.moveToPosition(random);
 
-                long contact_id;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID));
-                } else {
-                    contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
-                }
+                long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
+
                 String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 ContentValues values = new ContentValues();

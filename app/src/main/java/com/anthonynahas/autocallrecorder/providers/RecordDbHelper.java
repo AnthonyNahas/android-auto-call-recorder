@@ -85,11 +85,23 @@ public class RecordDbHelper {
             do {
 
                 String number = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
+                long contact_ID = cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
+                long date = cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));
+                int size = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_SIZE));
+                int duration = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION));
+                int isIncoming = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_INCOMING));
+                int isLove = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
                 int totalCalls = cursor.getInt(cursor.getColumnIndexOrThrow(RecordDbContract.Extended.COLUMN_TOTAL_CALLS));
                 int totalIncomingCalls = cursor.getInt(cursor.getColumnIndexOrThrow(RecordDbContract.Extended.COLUMN_TOTAL_INCOMING_CALLS));
 
                 Record record = new Record();
                 record.setNumber(number);
+                record.setContactID(contact_ID);
+                record.setDate(date);
+                record.setSize(size);
+                record.setDuration(duration);
+                record.setIsIncoming(isIncoming);
+                record.setIsLove(isLove);
                 record.setRank(cursor.getPosition() + 1);
                 record.setTotalIncomingCalls(totalIncomingCalls);
                 record.setTotalOutgoingCall(totalCalls - totalIncomingCalls);
