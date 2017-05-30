@@ -48,4 +48,10 @@
         android:positiveButtonText="@null"
         android:title="@string/pref_title_audio_encoder" />
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="ADD_TO_MUSIC_LIBRARY"
+        android:summary="@string/pref_title_can_add_to_library"
+        android:title="@string/pref_description_can_add_to_library" />
+
 </PreferenceScreen>

@@ -27,7 +27,8 @@ public class PreferenceHelper {
         AUDIO_ENCODER,
         SORT_SELECTION,
         SORT_ARRANGE,
-        DROPBOX_API_UPLOAD
+        DROPBOX_API_UPLOAD,
+        ADD_TO_MUSIC_LIBRARY
     }
 
     private Context mContext;
@@ -79,6 +80,10 @@ public class PreferenceHelper {
 
     public boolean canUploadOnDropBox() {
         return mSharedPreferences.getBoolean(Key.DROPBOX_API_UPLOAD.name(), false);
+    }
+
+    public boolean canAudioFileBeAddedToLibrary(){
+        return mSharedPreferences.getBoolean(Key.ADD_TO_MUSIC_LIBRARY.name(), false);
     }
 
     public int getAudioSource() {

@@ -81,6 +81,9 @@
     <string name="pref_title_auto_call_recording">Enable auto record calls</string>
     <string name="pref_description_auto_call_recording">If you make or receive a call, the app will try to record the call
     </string>
+    <string name="pref_title_can_add_to_library">Music Library</string>
+    <string name="pref_description_can_add_to_library">Add recording to music library
+    </string>
 
     <string name="pref_title_display_name">Display name</string>
     <string name="pref_default_display_name">John Smith</string>
@@ -174,7 +177,7 @@
         <item>3</item>
     </string-array>
 
-    <string-array name="multi_select_list_preference_default_value"/>
+    <string-array name="multi_select_list_preference_default_value" />
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
 

@@ -45,4 +45,6 @@
     <string name="title_activity_statistic">Statistik</string>
     <string name="incoming">eingehend</string>
     <string name="outgoing">ausgehende</string>
+    <string name="pref_title_can_add_to_library">"Musikbibliothek "</string>
+    <string name="pref_description_can_add_to_library">Füge Aufnahme zu Musikbibliothek hinzu</string>
 </resources>
