@@ -9,6 +9,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.classes.Resources;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
 
@@ -74,7 +75,6 @@ public class DemoRecordSupport {
                         ContactsContract.Data.CONTACT_ID,
                         ContactsContract.Data.RAW_CONTACT_ID,
                         ContactsContract.PhoneLookup._ID,
-                        ContactsContract.PhoneLookup.CONTACT_ID,
                         ContactsContract.CommonDataKinds.Phone._ID,
                         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
                         ContactsContract.CommonDataKinds.Phone.NUMBER
@@ -101,6 +101,7 @@ public class DemoRecordSupport {
 
                 ContentValues values = new ContentValues();
                 values.put(RecordDbContract.RecordItem.COLUMN_ID, String.valueOf(generateNumber(10000, 5000)));
+                values.put(RecordDbContract.RecordItem.COLUMN_PATH, Resources.DEMO_PATH);
                 values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
                 values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, contact_number);
                 values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, contact_id);

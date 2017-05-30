@@ -15,6 +15,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.recyclerview.BuildConfig;
 import android.util.Log;
 
+import com.anthonynahas.autocallrecorder.classes.Record;
+
 /**
  * Created by A on 29.04.16.
  *
@@ -97,7 +99,7 @@ public class RecordsContentProvider extends ContentProvider {
                 String limitString = offset + "," + limit;
                 String groupBy = uri.getQueryParameter(QUERY_PARAMETER_GROUP_BY);
                 // TODO: 07.05.17 try and catch --> runtimeException ex: selectionArgs > selection ? or no such column found...
-                cursor = queryBuilder.query(mDB, projection, selection, selectionArgs,groupBy, null, sortOrder, limitString);
+                cursor = queryBuilder.query(mDB, projection, selection, selectionArgs, groupBy, null, sortOrder, limitString);
                 break;
 
             case SINGLE_ROW:
@@ -209,9 +211,11 @@ public class RecordsContentProvider extends ContentProvider {
         return rowUpdated;
     }
 
+    @Deprecated
     public Cursor retrieve(String searchItem) {
 
         String[] columns = {RecordDbContract.RecordItem.COLUMN_ID,
+                RecordDbContract.RecordItem.PATH,
                 RecordDbContract.RecordItem.COLUMN_NUMBER,
                 RecordDbContract.RecordItem.COLUMN_CONTACT_ID,
                 RecordDbContract.RecordItem.COLUMN_DATE,
@@ -222,7 +226,12 @@ public class RecordsContentProvider extends ContentProvider {
         Cursor cursor;
 
         if (searchItem != null && searchItem.length() > 0) {
-            String sql = "SELECT * FROM" + RecordDbContract.RecordItem.TABLE_NAME + " WHERE " + RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE '%" + searchItem + "%'";
+            String sql = "SELECT * FROM" + RecordDbContract.RecordItem.TABLE_NAME
+                    + " WHERE "
+                    + RecordDbContract.RecordItem.COLUMN_NUMBER
+                    + " LIKE '%"
+                    + searchItem
+                    + "%'";
             cursor = mDB.rawQuery(sql, null);
             return cursor;
         }
@@ -239,7 +248,7 @@ public class RecordsContentProvider extends ContentProvider {
                 String _id = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID));
                 long contact_id = cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
                 int isLove = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
-                Log.d(TAG, "_id = " + _id + " " +  "contact id = " + contact_id + " --> isLove = " + isLove);
+                Log.d(TAG, "_id = " + _id + " " + "contact id = " + contact_id + " --> isLove = " + isLove);
                 //String date = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));
                 //Log.d(TAG, "date = " + date);
             } while (cursor.moveToNext());
@@ -257,16 +266,17 @@ public class RecordsContentProvider extends ContentProvider {
      */
     private class RecordsSQLiteOpenHelper extends SQLiteOpenHelper {
 
-        public RecordsSQLiteOpenHelper(Context context) {
+        RecordsSQLiteOpenHelper(Context context) {
             super(context, RecordDbContract.DATABASE_NAME, null, RecordDbContract.DATABASE_VERSION);
             Log.d(TAG, "dbConstructor");
         }
 
 
         //create table query
-        public static final String CREATE_TABLE = "CREATE TABLE " + RecordDbContract.RecordItem.TABLE_NAME
+        static final String CREATE_TABLE = "CREATE TABLE " + RecordDbContract.RecordItem.TABLE_NAME
                 + " ("
                 + RecordDbContract.RecordItem.COLUMN_ID + " TEXT NOT NULL, "
+                + RecordDbContract.RecordItem.COLUMN_PATH + " TEXT NOT NULL, "
                 + RecordDbContract.RecordItem.COLUMN_NUMBER + " TEXT NOT NULL, "
                 + RecordDbContract.RecordItem.COLUMN_CONTACT_ID + " LONG, "
                 + RecordDbContract.RecordItem.COLUMN_DATE + " LONG, "

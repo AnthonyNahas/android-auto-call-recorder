@@ -1,5 +1,6 @@
 package com.anthonynahas.autocallrecorder.classes;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -21,6 +22,7 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
     private static final long serialVersionUID = -5060910544141464421L;
 
     private String m_ID; //like mDate + number
+    private String mPath;
     private String mNumber; //like +49 151 20 55555 2
     private long mContactID;
     private long mDate;
@@ -38,6 +40,8 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
         if (cursor != null && cursor.getCount() > 0) {
             m_ID = cursor.getString(cursor
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID));
+            mPath = cursor.getString(cursor
+                    .getColumnIndex(RecordDbContract.RecordItem.COLUMN_PATH));
             mContactID = cursor.getLong(cursor
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
             mNumber = cursor.getString(cursor
@@ -75,6 +79,14 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
 
     public void set_ID(String m_ID) {
         this.m_ID = m_ID;
+    }
+
+    public String getPath() {
+        return mPath;
+    }
+
+    public void setPath(String mPath) {
+        this.mPath = mPath;
     }
 
     public String getNumber() {
@@ -141,12 +153,28 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
         this.mIsLove = mIsLove == 1;
     }
 
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(RecordDbContract.RecordItem.COLUMN_ID, m_ID);
+        values.put(RecordDbContract.RecordItem.COLUMN_PATH, mPath);
+        values.put(RecordDbContract.RecordItem.COLUMN_DATE, mDate);
+        values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, mNumber);
+        values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, mContactID);
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, mIsIncoming ? 1 : 0);
+        values.put(RecordDbContract.RecordItem.COLUMN_SIZE, mSize);
+        values.put(RecordDbContract.RecordItem.COLUMN_DURATION, mDuration);
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, mIsLove);
+
+        return values;
+    }
+
     public static final Parcelable.Creator<Record> CREATOR = new Parcelable.Creator<Record>() {
 
         @Override
         public Record createFromParcel(Parcel parcel) {
             Record record = new Record();
             record.m_ID = parcel.readString();
+            record.mPath = parcel.readString();
             record.mNumber = parcel.readString();
             record.mContactID = parcel.readLong();
             record.mDate = parcel.readLong();
@@ -170,6 +198,7 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(m_ID);
+        parcel.writeString(mPath);
         parcel.writeString(mNumber);
         parcel.writeLong(mContactID);
         parcel.writeLong(mDate);

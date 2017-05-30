@@ -54,6 +54,7 @@ public class RecordDbContract {
 
         //columns
         public static final String COLUMN_ID = "_id";
+        public static final String COLUMN_PATH = "path";
         public static final String COLUMN_NUMBER = "number";
         public static final String COLUMN_CONTACT_ID = "contactID";
         public static final String COLUMN_DATE = "date";
@@ -64,6 +65,7 @@ public class RecordDbContract {
         public static String[] ALL_COLUMNS = new String[]
                 {
                         COLUMN_ID,
+                        COLUMN_PATH,
                         COLUMN_NUMBER,
                         COLUMN_CONTACT_ID,
                         COLUMN_DATE,

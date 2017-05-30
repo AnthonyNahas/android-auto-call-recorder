@@ -10,6 +10,10 @@ import com.anthonynahas.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapt
 
 /**
  * Created by anahas on 26.04.2017.
+ *
+ * @author Anthony Nahas
+ * @version 1.0
+ * @since 26.04.17
  */
 
 public class RecordsQueryHandler extends AsyncQueryHandler {
@@ -28,6 +32,10 @@ public class RecordsQueryHandler extends AsyncQueryHandler {
 
     private RecordsQueryHandler(ContentResolver contentResolver) {
         super(contentResolver);
+    }
+
+    public RecordsQueryHandler newInstance(ContentResolver contentResolver) {
+        return new RecordsQueryHandler(contentResolver);
     }
 
     public synchronized static RecordsQueryHandler getInstance(ContentResolver contentResolver) {

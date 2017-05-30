@@ -24,4 +24,7 @@ public class Resources {
     //Intent - Bundle KEYS
     public static final String REC_PARC_KEY = "rec_parc_key";
 
+    //others
+    public static String DEMO_PATH = "demo_path";
+
 }

@@ -8,10 +8,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.broadcasts.DoneRecReceiver;
+import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.classes.Resources;
 import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
 
 import java.io.File;
@@ -31,15 +34,12 @@ public class RecordService extends Service {
 
     private static final String TAG = RecordService.class.getSimpleName();
 
-    private static Bundle sCallData;
-    private MediaRecorder mMediaRecorder;
-    private PreferenceHelper mPreferenceHelper;
-
-    private Handler mRecordHandler;
-
-    public static final String FILEPATHKEY = "filepathkey";
     public static File sRecordFile;
 
+    private Record mRecord;
+    private Handler mRecordHandler;
+    private MediaRecorder mMediaRecorder;
+    private PreferenceHelper mPreferenceHelper;
 
     @Override
     public void onCreate() {
@@ -57,27 +57,24 @@ public class RecordService extends Service {
             @Override
             public void run() {
                 stopRecord();
-                //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(sRecordFile.getAbsoluteFile())));
-                //this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(sRecordFile.getAbsoluteFile())));
-                //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(getBaseDir().getAbsoluteFile())));
-                //startService(new Intent().putExtras(sCallData));
+
                 String[] string_rec_path = {sRecordFile.getAbsolutePath()};
 
-                MediaScannerConnection.scanFile(getApplicationContext(), string_rec_path, null, new MediaScannerConnection.OnScanCompletedListener() {
-                    @Override
-                    public void onScanCompleted(String path, Uri uri) {
-                        Log.d(TAG, "scan completed");
-                        Intent i = new Intent();
-                        i.putExtras(sCallData);
-                        i.setAction(DoneRecReceiver.ACTION);
-                        sendBroadcast(i);
-                        Log.d(TAG, "broadcast sent");
-                    }
-                });
+                if (mPreferenceHelper.canAudioFileBeAddedToLibrary()) {
+                    MediaScannerConnection.scanFile(getApplicationContext(), string_rec_path, null, new MediaScannerConnection.OnScanCompletedListener() {
+                        @Override
+                        public void onScanCompleted(String path, Uri uri) {
+                            Log.d(TAG, "scan completed");
+                            sendBroadcast(new Intent(DoneRecReceiver.ACTION)
+                                    .putExtra(Resources.REC_PARC_KEY, (Parcelable) mRecord));
+                        }
+                    });
+                } else {
+                    sendBroadcast(new Intent(DoneRecReceiver.ACTION)
+                            .putExtra(Resources.REC_PARC_KEY, (Parcelable) mRecord));
+                }
             }
         }, 1000);
-
-
     }
 
     @Nullable
@@ -90,20 +87,17 @@ public class RecordService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() - recording...");
 
-        sCallData = intent.getExtras();
-        String id_date = sCallData.getString(CallReceiver.LONGDATEKEY);
-        //String number = callData.getString(CallReceiver.NUMBERKEY);
-        //int isIncomingCall = callData.getInt(CallReceiver.INCOMINGCALLKEY);
+        mRecord = intent.getParcelableExtra(Resources.REC_PARC_KEY);
 
         // TODO: 08.05.17 to check
         String fileSuffix = FileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
-        sRecordFile = new File(FileHelper.getChildDir(Long.valueOf(id_date)), id_date + fileSuffix);
-        sCallData.putString(FILEPATHKEY, sRecordFile.getAbsolutePath());
+        sRecordFile = new File(FileHelper.getChildDir(mRecord.getDate()), mRecord.getDate() + fileSuffix);
+        mRecord.setPath(sRecordFile.getAbsolutePath());
 
         Log.d(TAG, sRecordFile.getAbsolutePath());
         startAndSaveRecord(sRecordFile);
 
-        mRecordHandler = new Handler();
+        mRecordHandler = new Handler(getMainLooper());
         mRecordHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -111,7 +105,6 @@ public class RecordService extends Service {
 
             }
         }, 1000);
-
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -121,9 +114,9 @@ public class RecordService extends Service {
         mMediaRecorder = new MediaRecorder();
         mMediaRecorder.reset();
         // TODO: 16.05.17 not working well
-        mMediaRecorder.setAudioSource(mPreferenceHelper.getAudioSource());   //or default mic
-        mMediaRecorder.setOutputFormat(mPreferenceHelper.getOutputFormat());
-        mMediaRecorder.setAudioEncoder(mPreferenceHelper.getAudioEncoder()); //AMR_NB
+        mMediaRecorder.setAudioSource(mPreferenceHelper.getAudioSource());   //or default voice_communication
+        mMediaRecorder.setOutputFormat(mPreferenceHelper.getOutputFormat()); //MP4
+        mMediaRecorder.setAudioEncoder(mPreferenceHelper.getAudioEncoder()); //AAC
         mMediaRecorder.getMaxAmplitude();
         try {
             if (!recordFile.createNewFile()) {
@@ -140,20 +133,13 @@ public class RecordService extends Service {
 
     private void stopRecord() {
         if (mMediaRecorder != null) {
-            //free record ressource
+            //free record resource
             mMediaRecorder.stop();
             mMediaRecorder.reset();
             mMediaRecorder.release();
             mMediaRecorder = null;
-            Log.d(TAG, "media recoreder has been released");
-            //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(sRecordFile.getAbsoluteFile())));
+            Log.d(TAG, "media recorder has been released");
 
-            /*
-            Intent i = new Intent();
-            i.putExtras(sCallData);
-            i.setAction(DoneRecReceiver.ACTION);
-            sendBroadcast(i);
-            */
         }
     }
 }

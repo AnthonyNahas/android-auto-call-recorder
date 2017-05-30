@@ -4,15 +4,22 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.classes.Resources;
 import com.anthonynahas.autocallrecorder.services.RecordService;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.autocallrecorder.services.FetchIntentService;
 
 /**
  * Created by A on 04.04.16. using telephonymanager API
+ *
+ * @author Anthony Nahas
+ * @version 1.0
+ * @since 04.04.16
  */
 public class CallReceiver extends BroadcastReceiver {
 
@@ -35,8 +42,9 @@ public class CallReceiver extends BroadcastReceiver {
 
     private static Intent sIntent;
     private static Intent sIntentFetching;
-    private static Bundle sConData;
     private static String sNumber;
+
+    private Record mRecord;
 
 
     @Override
@@ -46,12 +54,7 @@ public class CallReceiver extends BroadcastReceiver {
 
         if (preferenceHelper.canAutoRecord()) {
 
-            Log.d(TAG, "onReceive()");
-
             String action = intent.getAction();
-
-            Log.d(TAG, "action = " + action);
-
             String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
 
             if (action.equals(OUTGOING_CALL)) {
@@ -80,17 +83,18 @@ public class CallReceiver extends BroadcastReceiver {
                     }
                     if (state.equals(OFFHOOK)) {
                         ANSWERED = true;
-                        Log.d(TAG, "start recording");
-                        Log.d(TAG, "call is offhook");
-                        sConData = new Bundle();
-                        sConData.putString(LONGDATEKEY, String.valueOf(System.currentTimeMillis()));
+                        Log.d(TAG, "start recording --> offhook");
+                        mRecord = new Record();
+                        mRecord.setDate(System.currentTimeMillis());
+                        mRecord.setIsIncoming(INCOMING);
+                        // TODO: 30.05.2017 if - else should be replaced
                         if (OUTGOING) {
-                            sConData.putInt(INCOMINGCALLKEY, 0);
+//                            sConData.putInt(INCOMINGCALLKEY, 0);
                         } else if (INCOMING) {
-                            sConData.putInt(INCOMINGCALLKEY, 1);
+//                            sConData.putInt(INCOMINGCALLKEY, 1);
                         }
-                        sConData.putString(NUMBERKEY, sNumber);
-                        sIntent.putExtras(sConData);
+                        mRecord.setNumber(sNumber);
+                        sIntent.putExtra(Resources.REC_PARC_KEY, (Parcelable) mRecord);
                         context.startService(sIntent);
                     } else if (state.equals(IDLE)) {
                         OUTGOING = false;
@@ -103,9 +107,8 @@ public class CallReceiver extends BroadcastReceiver {
                             Log.d(TAG, "number = " + sNumber);
                             if (sIntentFetching == null) {
                                 sIntentFetching = new Intent(context, FetchIntentService.class);
-                                sIntentFetching.putExtras(sConData);
+                                sIntent.putExtra(Resources.REC_PARC_KEY, (Parcelable) mRecord);
                             }
-                            //context.startService(sIntentFetching);
                         }
                     }
                 }
