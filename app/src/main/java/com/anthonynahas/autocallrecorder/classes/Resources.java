@@ -23,6 +23,7 @@ public class Resources {
 
     //Intent - Bundle KEYS
     public static final String REC_PARC_KEY = "rec_parc_key";
+    public static final String FAB_PARC_KEY = "fab_parc_key";
 
     //others
     public static String DEMO_PATH = "demo_path";

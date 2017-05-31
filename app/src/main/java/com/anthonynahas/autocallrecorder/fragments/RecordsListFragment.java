@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -30,6 +31,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anthonynahas.autocallrecorder.activities.MainActivity;
 import com.anthonynahas.autocallrecorder.classes.Record;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
@@ -37,6 +39,7 @@ import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
+import com.anthonynahas.recyclerviewfabhandler.FABHandler;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
 import com.anthonynahas.autocallrecorder.R;
@@ -245,6 +248,10 @@ public class RecordsListFragment extends Fragment implements
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
+        // set fab handler for the recycler view
+        if (getActivity() instanceof MainActivity) {
+            FABHandler.newInstance().init(mRecyclerView, ((MainActivity) getActivity()).getFabActionMode());
+        }
 
         RecordsQueryHandler.getInstance(mContext.getContentResolver()).setAdapter(mAdapter);
         mSwipeContainer.setOnRefreshListener(this);
@@ -405,6 +412,10 @@ public class RecordsListFragment extends Fragment implements
     }
 
 
+    /**
+     * Hard refresh the cursor loader by setting a null cursor
+     * to the adapater of the recycler view
+     */
     public void hardResetLoader() {
         mOffset = 0;
         mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
@@ -555,8 +566,7 @@ public class RecordsListFragment extends Fragment implements
     private void reloadCursor(Cursor data) {
         if (data != null && data.moveToFirst()) {
             mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, data);
-        }
-        else{
+        } else {
             mAdapter = new RecordsCursorRecyclerViewAdapter(mContext, null);
         }
         mRecyclerView.setAdapter(mAdapter);

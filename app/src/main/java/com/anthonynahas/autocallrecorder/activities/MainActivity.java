@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -44,19 +45,17 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    public static boolean sIsInActionMode = false;
+
+    private FloatingActionButton fabActionMode;
     private PreferenceHelper mPreferenceHelper;
-    private DrawerLayout mDrawer;
     private FloatingSearchView mSearchView;
     private TabLayout mTabLayout;
     private SwitchCompat mSwitch_auto_rec;
     private int mCurrentFragmentPosition;
     private AppCompatActivity mActivity;
-    private FloatingActionButton fabActionMode;
-    private FloatingSearchView.OnQueryChangeListener mOnQueryChangeListener;
-
     private BroadcastReceiver mActionModeBroadcastReceiver;
-
-    public static boolean sIsInActionMode = false;
+    private FloatingSearchView.OnQueryChangeListener mOnQueryChangeListener;
 
 
     /**
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawer.setDrawerListener(toggle);
@@ -285,6 +284,10 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra(Resources.ACTION_MODE_SATE, state);
         LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(intent);
+    }
+
+    public FloatingActionButton getFabActionMode() {
+        return fabActionMode;
     }
 
     /**
