@@ -30,7 +30,9 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
     private int mDuration;
     private boolean mIsIncoming; //like outgoing, incoming, custom
     private boolean mIsLove; // favorite or not
-
+    private boolean mIsLocked; // if locked --> audio to base64 in DB = safe and will be not deleted
+    private boolean mIsToDelete; // the audio file is in the recycle bin and will be soon deleted
+    //base64 // TODO: 01.06.2017
 
     public Record() {
         super();
@@ -153,17 +155,43 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
         this.mIsLove = mIsLove == 1;
     }
 
+    public boolean isIsLocked() {
+        return mIsLocked;
+    }
+
+    public void setIsLocked(boolean mIsLocked) {
+        this.mIsLocked = mIsLocked;
+    }
+
+    public void setIsLocked(int mIsLocked) {
+        this.mIsLocked = mIsLocked == 1;
+    }
+
+    public boolean isIsToDelete() {
+        return mIsToDelete;
+    }
+
+    public void setIsToDelete(boolean mIsToDelete) {
+        this.mIsToDelete = mIsToDelete;
+    }
+
+    public void setIsToDelete(int mIsToDelete) {
+        this.mIsToDelete = mIsToDelete == 1;
+    }
+
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
-        values.put(RecordDbContract.RecordItem.COLUMN_ID, m_ID);
-        values.put(RecordDbContract.RecordItem.COLUMN_PATH, mPath);
-        values.put(RecordDbContract.RecordItem.COLUMN_DATE, mDate);
-        values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, mNumber);
-        values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, mContactID);
-        values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, mIsIncoming ? 1 : 0);
-        values.put(RecordDbContract.RecordItem.COLUMN_SIZE, mSize);
-        values.put(RecordDbContract.RecordItem.COLUMN_DURATION, mDuration);
-        values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, mIsLove);
+        values.put(RecordDbContract.RecordItem.COLUMN_ID, m_ID); //string
+        values.put(RecordDbContract.RecordItem.COLUMN_PATH, mPath); //String
+        values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, mNumber); //string
+        values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, mContactID); //long
+        values.put(RecordDbContract.RecordItem.COLUMN_DATE, mDate); //long
+        values.put(RecordDbContract.RecordItem.COLUMN_SIZE, mSize); //int
+        values.put(RecordDbContract.RecordItem.COLUMN_DURATION, mDuration); //int
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, mIsIncoming ? 1 : 0); //int
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, mIsLove ? 1 : 0); //int
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_LOCKED, mIsLocked ? 1 : 0); //int
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE, mIsToDelete ? 1 : 0); //int
 
         return values;
     }
@@ -182,6 +210,8 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
             record.mDuration = parcel.readInt();
             record.mIsIncoming = parcel.readByte() != 0;
             record.mIsLove = parcel.readByte() != 0;
+            record.mIsLocked = parcel.readByte() != 0;
+            record.mIsToDelete = parcel.readByte() != 0;
             return record;
         }
 
@@ -206,6 +236,8 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
         parcel.writeInt(mDuration);
         parcel.writeByte((byte) (mIsIncoming ? 1 : 0));
         parcel.writeByte((byte) (mIsLove ? 1 : 0));
+        parcel.writeByte((byte) (mIsLocked ? 1 : 0));
+        parcel.writeByte((byte) (mIsToDelete ? 1 : 0));
     }
 
 }

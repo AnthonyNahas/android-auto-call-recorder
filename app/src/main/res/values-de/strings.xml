@@ -47,4 +47,7 @@
     <string name="outgoing">ausgehende</string>
     <string name="pref_title_can_add_to_library">"Musikbibliothek "</string>
     <string name="pref_description_can_add_to_library">Füge Aufnahme zu Musikbibliothek hinzu</string>
+    <string name="title_activity_locked_records">Gesperrte Anrufe</string>
+    <string name="title_activity_rubbished_records">Gelöschte Anrufe</string>
+    <string name="title_home"></string>
 </resources>

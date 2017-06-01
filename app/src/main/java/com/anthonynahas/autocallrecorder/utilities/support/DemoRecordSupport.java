@@ -96,7 +96,6 @@ public class DemoRecordSupport {
                 cursor.moveToPosition(random);
 
                 long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
-
                 String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 ContentValues values = new ContentValues();
@@ -105,9 +104,9 @@ public class DemoRecordSupport {
                 values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
                 values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, contact_number);
                 values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, contact_id);
-                values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, generateNumber(1, 0));
                 values.put(RecordDbContract.RecordItem.COLUMN_SIZE, generateNumber(100, 1));
                 values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(600, 0));
+                values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, generateNumber(1, 0));
                 values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, generateNumber(1, 0));
 
                 RecordsQueryHandler.getInstance(context.getContentResolver())

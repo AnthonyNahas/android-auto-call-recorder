@@ -20,6 +20,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait"
@@ -34,11 +35,17 @@
             a issue took here place: value has not be given as full package! Attention!
             -->
         </activity>
+
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.RecordsActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".activities.StatisticActivity" />
+
         <activity
             android:name=".activities.SingleContactRecordActivity"
             android:label="@string/title_activity_single_contact_record" />
@@ -58,12 +65,12 @@
 
                 <!-- Change this to be db- followed by your app key -->
                 <data android:scheme="db-32fcvkt4b7ym4sv" />
-
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
+
             </intent-filter>
+
         </activity>
 
         <!-- DROP BOX API CORE -->
@@ -78,7 +85,9 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
         </receiver>
+
         <receiver
             android:name=".broadcasts.DoneRecReceiver"
             android:exported="false">
@@ -87,12 +96,14 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
         </receiver>
 
         <service
             android:name=".services.RecordService"
             android:enabled="true"
             android:exported="false" />
+
         <service
             android:name=".services.FetchIntentService"
             android:enabled="true"
@@ -102,11 +113,11 @@
             android:name="com.anthonynahas.autocallrecorder.providers.RecordsContentProvider"
             android:authorities="com.anthonynahas.autocallrecorder"
             android:exported="false" />
+
         <provider
             android:name=".providers.RecentSuggestionProvider"
             android:authorities="com.anthonynahas.autocallrecorder.providers.RecentSuggestionProvider"
             android:exported="false" />
-
 
     </application>
 

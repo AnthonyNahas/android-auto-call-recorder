@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -43,12 +44,9 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
 
     private RecyclerView mRecyclerView;
     private StatisticRecordsAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-
-    private final int mLoaderManagerID = 0;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
 
@@ -65,7 +63,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
@@ -83,6 +81,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
             }
         });
 
+        int mLoaderManagerID = 0;
         getSupportLoaderManager().initLoader(mLoaderManagerID, null, this);
     }
 

@@ -208,6 +208,12 @@
     <!-- Statistic Activity -->
     <string name="title_activity_statistic">Statistic</string>
 
+    <!-- Locked Records Activity -->
+    <string name="title_activity_locked_records">Locked Records</string>
+
+    <!--Rubbished Records Activity -->
+    <string name="title_activity_rubbished_records">Rubbished Records</string>
+
     <!-- Single Contact Record Activity -->
     <string name="title_activity_single_contact_record">UNKNOWN</string>
 

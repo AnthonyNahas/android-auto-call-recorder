@@ -235,6 +235,16 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.nav_locked_records:
+                startActivity(new Intent(this, RecordsActivity.class)
+                        .putExtra(RecordsActivity.args.title.name(),
+                                getResources().getString(R.string.title_activity_locked_records)));
+                break;
+            case R.id.nav_rubbished_records:
+                startActivity(new Intent(this, RecordsActivity.class)
+                        .putExtra(RecordsActivity.args.title.name(),
+                                getResources().getString(R.string.title_activity_rubbished_records)));
+                break;
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;

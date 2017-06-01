@@ -62,6 +62,10 @@ public class RecordDbContract {
         public static final String COLUMN_DURATION = "duration";
         public static final String COLUMN_IS_INCOMING = "isIncoming";
         public static final String COLUMN_IS_LOVE = "isLove";
+        public static final String COLUMN_IS_LOCKED = "isLocked";
+        public static final String COLUMN_IS_TO_DELETE = "isToDelete";
+        public static final String COLUMN_AUDIO_BASE64 = "audioBase64";
+
         public static String[] ALL_COLUMNS = new String[]
                 {
                         COLUMN_ID,
@@ -72,7 +76,10 @@ public class RecordDbContract {
                         COLUMN_SIZE,
                         COLUMN_DURATION,
                         COLUMN_IS_INCOMING,
-                        COLUMN_IS_LOVE
+                        COLUMN_IS_LOVE,
+                        COLUMN_IS_LOCKED,
+                        COLUMN_IS_TO_DELETE,
+                        COLUMN_AUDIO_BASE64
                 };
     }
 

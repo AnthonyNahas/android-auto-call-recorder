@@ -283,7 +283,10 @@ public class RecordsContentProvider extends ContentProvider {
                 + RecordDbContract.RecordItem.COLUMN_SIZE + " INTEGER, "
                 + RecordDbContract.RecordItem.COLUMN_DURATION + " INTEGER, "
                 + RecordDbContract.RecordItem.COLUMN_IS_INCOMING + " INTEGER, "
-                + RecordDbContract.RecordItem.COLUMN_IS_LOVE + " INTEGER DEFAULT 0"
+                + RecordDbContract.RecordItem.COLUMN_IS_LOVE + " INTEGER DEFAULT 0, "
+                + RecordDbContract.RecordItem.COLUMN_IS_LOCKED + " INTEGER DEFAULT 0, "
+                + RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE + " INTEGER DEFAULT 0, "
+                + RecordDbContract.RecordItem.COLUMN_AUDIO_BASE64 + " TEXT "
                 + ")";
 
         //drop table query
