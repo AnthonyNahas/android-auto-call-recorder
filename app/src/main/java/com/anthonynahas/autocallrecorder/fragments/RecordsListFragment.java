@@ -250,7 +250,9 @@ public class RecordsListFragment extends Fragment implements
         mRecyclerView.setAdapter(mAdapter);
         // set fab handler for the recycler view
         if (getActivity() instanceof MainActivity) {
-            FABHandler.newInstance().init(mRecyclerView, ((MainActivity) getActivity()).getFabActionMode());
+            FABHandler.newInstance().init(mRecyclerView,
+                    ((MainActivity) getActivity()).getFabActionMode(),
+                    (FloatingActionButton) mView.findViewById(R.id.fab_scroll_to_top));
         }
 
         RecordsQueryHandler.getInstance(mContext.getContentResolver()).setAdapter(mAdapter);
