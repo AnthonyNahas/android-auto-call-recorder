@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -49,6 +50,7 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.AudioFileAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.UploadAudioFile;
+import com.anthonynahas.ui_animator.AnimationLoader;
 
 /**
  * Created by A on 04.05.16.
@@ -78,6 +80,8 @@ public class RecordsDialog extends DialogFragment implements SeekBar.OnSeekBarCh
     private String mPathFile;
     private String mFileName;
 
+    private Context mContext;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         //-----** extracting sent arguments **------------
@@ -92,12 +96,26 @@ public class RecordsDialog extends DialogFragment implements SeekBar.OnSeekBarCh
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         View view = inflater.inflate(R.layout.record_dialog_layout, null);
+        mContext = view.getContext();
         builder.setView(view);
 
         init(view);
         updateSeekBar();
 
-        mTV_Number_CN.setText(mRecord.getName());
+        if (mRecord.getName() != null) {
+            mTV_Number_CN.setText(mRecord.getName());
+            mTV_Number_CN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mTV_Number_CN.startAnimation(AnimationLoader.get(mContext, R.anim.sample_animation));
+                    mTV_Number_CN.setText(mTV_Number_CN.getText().equals(mRecord.getNumber())
+                            ? mRecord.getName() : mRecord.getNumber());
+                }
+            });
+        } else {
+            mTV_Number_CN.setText(mRecord.getNumber());
+        }
+
         Log.d(TAG, "id = " + mRecord.get_ID());
 
         return builder.create();

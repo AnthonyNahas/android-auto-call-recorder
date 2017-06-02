@@ -36,7 +36,7 @@ public class ContactPhotosAsyncTask extends AsyncTask<Long, Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(Long... longs) {
-        return ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 0, longs[0]);
+        return ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1, longs[0]);
     }
 
     @Override

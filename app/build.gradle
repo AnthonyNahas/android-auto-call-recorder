@@ -27,6 +27,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':audio-source-swithcher')
     compile project(':recyclerview-fab-handler')
+    compile project(':ui-animator')
     compile files('libs/dropbox-android-sdk-1.6.3.jar')
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
@@ -39,6 +40,7 @@ dependencies {
     compile 'jp.wasabeef:recyclerview-animators:2.2.6'
     compile 'com.android.support:support-vector-drawable:25.3.1'
     compile 'org.apache.commons:commons-lang3:3.5'
+    compile 'org.chalup.microorm:microorm:0.8.0'
     testCompile 'junit:junit:4.12'
 }
 

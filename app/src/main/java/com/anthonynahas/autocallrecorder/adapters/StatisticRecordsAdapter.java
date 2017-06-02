@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.classes.RecordExtended;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     private static final String TAG = StatisticRecordsAdapter.class.getSimpleName();
 
     private Context mContext;
-    private List<Record> mRecordsList;
+    private List<RecordExtended> mRecordsList;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -62,7 +63,7 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public StatisticRecordsAdapter(List<Record> mRecordsList) {
+    public StatisticRecordsAdapter(List<RecordExtended> mRecordsList) {
         this.mRecordsList = mRecordsList;
     }
 
@@ -90,6 +91,7 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         Record record = mRecordsList.get(position);
+        record.setRank(position + 1);
 
         viewHolder.mRankTextView.setText("#" + record.getRank());
         viewHolder.mCallNameOrNumber.setText(record.getNumber());
@@ -99,7 +101,6 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
 
         if (viewHolder.mImageProfile.getDrawable() == null) {
             new ContactPhotosAsyncTask(mContext, this, viewHolder, position).execute(mRecordsList.get(position).getContactID());
-
         }
 
     }

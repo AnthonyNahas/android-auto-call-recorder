@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
 import com.anthonynahas.autocallrecorder.R;
@@ -130,6 +131,9 @@ public class MainActivity extends AppCompatActivity implements
                 switch (id) {
                     case R.id.action_add_demo_record:
                         DemoRecordSupport.newInstance().createDemoRecord(getApplicationContext());
+                        break;
+                    case R.id.action_start_sample_animations:
+                        startActivity(new Intent(mActivity, SampleMainActivity.class));
                         break;
                     case R.id.action_sort:
                         Log.d(TAG, "MenuItem = sort");

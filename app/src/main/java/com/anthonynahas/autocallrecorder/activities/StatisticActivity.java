@@ -18,6 +18,7 @@ import android.view.View;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.StatisticRecordsAdapter;
 import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.classes.RecordExtended;
 import com.anthonynahas.autocallrecorder.classes.Resources;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
@@ -26,6 +27,7 @@ import com.anthonynahas.autocallrecorder.utilities.decorators.ActionBarDecorator
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.chalup.microorm.MicroOrm;
 
 import java.util.Arrays;
 
@@ -112,11 +114,14 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
                 "SUM (CASE WHEN "
                         + RecordDbContract.RecordItem.COLUMN_IS_INCOMING
                         + " =  1 THEN 1 ELSE 0 END) AS "
-                        + RecordDbContract.Extended.COLUMN_TOTAL_INCOMING_CALLS};
+                        + RecordDbContract.Extended.COLUMN_TOTAL_INCOMING_CALLS,
+                "SUM (CASE WHEN "
+                        + RecordDbContract.RecordItem.COLUMN_IS_INCOMING
+                        + " =  0 THEN 1 ELSE 0 END) AS "
+                        + RecordDbContract.Extended.COLUMN_TOTAL_OUTGOING_CALLS};
 
         String[] projection = ArrayUtils.addAll(RecordDbContract.RecordItem.ALL_COLUMNS, customProjection);
         String selection = null;
-
         String[] selectionArgs = null;
         String sort = "COUNT ( " + RecordDbContract.RecordItem.COLUMN_NUMBER + ") DESC";
 
@@ -152,7 +157,10 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
                 + Arrays.toString(columnNames)
                 + " with columnCount --> "
                 + columnCount);
-        mAdapter = new StatisticRecordsAdapter(RecordDbHelper.convertCursorToContactRecordsList(data));
+
+        // if you need to dump the whole cursor to list
+//        mAdapter = new StatisticRecordsAdapter(RecordDbHelper.convertCursorToContactRecordsList(data));
+        mAdapter = new StatisticRecordsAdapter((new MicroOrm().listFromCursor(data, RecordExtended.class)));
         mRecyclerView.setAdapter(mAdapter);
 
     }

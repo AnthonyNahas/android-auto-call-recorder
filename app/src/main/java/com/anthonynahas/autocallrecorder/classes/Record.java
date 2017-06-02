@@ -7,6 +7,9 @@ import android.os.Parcelable;
 
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 
+import org.chalup.microorm.MicroOrm;
+import org.chalup.microorm.annotations.Column;
+
 import java.io.Serializable;
 
 /**
@@ -14,31 +17,66 @@ import java.io.Serializable;
  *
  * @author Anthony Nahas
  * @version 0.1
+ * @see <https://github.com/chalup/microorm
  * @since 25.04.2016
  */
-public class Record extends ContactRecord implements Serializable, Parcelable {
+public class Record implements Serializable, Parcelable {
 
     //implements Serializable
     private static final long serialVersionUID = -5060910544141464421L;
 
+    @Column(RecordDbContract.RecordItem.COLUMN_ID)
     private String m_ID; //like mDate + number
+
+    @Column(RecordDbContract.RecordItem.COLUMN_PATH)
     private String mPath;
+
+    @Column(RecordDbContract.RecordItem.COLUMN_NUMBER)
     private String mNumber; //like +49 151 20 55555 2
+
+    @Column(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)
     private long mContactID;
+
+    @Column(RecordDbContract.RecordItem.COLUMN_DATE)
     private long mDate;
+
+    @Column(RecordDbContract.RecordItem.COLUMN_SIZE)
     private int mSize;
+
+    @Column(RecordDbContract.RecordItem.COLUMN_DURATION)
     private int mDuration;
+
+    @Column(RecordDbContract.RecordItem.COLUMN_IS_INCOMING)
     private boolean mIsIncoming; //like outgoing, incoming, custom
+
+    @Column(RecordDbContract.RecordItem.COLUMN_IS_LOVE)
     private boolean mIsLove; // favorite or not
+
+    @Column(RecordDbContract.RecordItem.COLUMN_IS_LOCKED)
     private boolean mIsLocked; // if locked --> audio to base64 in DB = safe and will be not deleted
+
+    @Column(RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE)
     private boolean mIsToDelete; // the audio file is in the recycle bin and will be soon deleted
+
+//    @Column(RecordDbContract.Extended.COLUMN_TOTAL_INCOMING_CALLS)
+    private int mTotalIncomingCalls;
+
+//    @Column(RecordDbContract.Extended.COLUMN_TOTAL_OUTGOING_CALLS)
+    private int mTotalOutgoingCall;
+
+//    @Column(RecordDbContract.Extended.COLUMN_TOTAL_CALLS)
+    private int mTotalCalls;
+
+    private String mName;
+    private int mRank;
+
     //base64 // TODO: 01.06.2017
 
     public Record() {
         super();
     }
 
-    public Record(Cursor cursor) {
+    public Record(Cursor cursor, Object object) {
         if (cursor != null && cursor.getCount() > 0) {
             m_ID = cursor.getString(cursor
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID));
@@ -179,6 +217,38 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
         this.mIsToDelete = mIsToDelete == 1;
     }
 
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String mName) {
+        this.mName = mName;
+    }
+
+    public int getTotalIncomingCalls() {
+        return mTotalIncomingCalls;
+    }
+
+    public void setTotalIncomingCalls(int mTotalIncomingCalls) {
+        this.mTotalIncomingCalls = mTotalIncomingCalls;
+    }
+
+    public int getTotalOutgoingCall() {
+        return mTotalOutgoingCall;
+    }
+
+    public void setTotalOutgoingCall(int mTotalOutgoingCall) {
+        this.mTotalOutgoingCall = mTotalOutgoingCall;
+    }
+
+    public int getRank() {
+        return mRank;
+    }
+
+    public void setRank(int mRank) {
+        this.mRank = mRank;
+    }
+
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(RecordDbContract.RecordItem.COLUMN_ID, m_ID); //string
@@ -194,6 +264,11 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
         values.put(RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE, mIsToDelete ? 1 : 0); //int
 
         return values;
+    }
+
+    public static Record newInstance(Cursor cursor) {
+        MicroOrm uOrm = new MicroOrm();
+        return uOrm.fromCursor(cursor, Record.class);
     }
 
     public static final Parcelable.Creator<Record> CREATOR = new Parcelable.Creator<Record>() {
@@ -212,6 +287,12 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
             record.mIsLove = parcel.readByte() != 0;
             record.mIsLocked = parcel.readByte() != 0;
             record.mIsToDelete = parcel.readByte() != 0;
+            record.mName = parcel.readString();
+            record.mRank = parcel.readInt();
+            record.mTotalIncomingCalls = parcel.readInt();
+            record.mTotalOutgoingCall = parcel.readInt();
+            record.mTotalCalls = parcel.readInt();
+
             return record;
         }
 
@@ -238,6 +319,11 @@ public class Record extends ContactRecord implements Serializable, Parcelable {
         parcel.writeByte((byte) (mIsLove ? 1 : 0));
         parcel.writeByte((byte) (mIsLocked ? 1 : 0));
         parcel.writeByte((byte) (mIsToDelete ? 1 : 0));
+        parcel.writeString(mName);
+        parcel.writeInt(mRank);
+        parcel.writeInt(mTotalIncomingCalls);
+        parcel.writeInt(mTotalOutgoingCall);
+        parcel.writeInt(mTotalCalls);
     }
 
 }

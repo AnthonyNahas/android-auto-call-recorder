@@ -361,7 +361,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             Log.d(TAG, "list-position = " + position);
 
             Bundle args = new Bundle();
-            Record record = new Record(cursor);
+            Record record = Record.newInstance(cursor);
             record.setName(((TextView) view.findViewById(R.id.call_contact_name_number)).getText().toString());
             args.putParcelable(com.anthonynahas.autocallrecorder.classes.Resources.REC_PARC_KEY, record);
             RecordsDialog recordsDialog = new RecordsDialog();

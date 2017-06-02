@@ -3,11 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.MainActivity">
 
+    <!-- Only for debug mode -->
 
     <item
         android:id="@+id/action_add_demo_record"
         android:title="add demo"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_start_sample_animations"
+        android:title="start sample animations activity"
+        app:showAsAction="never" />
+
+    <!-- Only for debug mode -->
 
     <item
         android:id="@+id/action_settings"

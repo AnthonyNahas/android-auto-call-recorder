@@ -1,1 +1,1 @@
-include ':app', ':audio-source-swithcher', ':recyclerview-fab-handler'
+include ':app', ':audio-source-swithcher', ':recyclerview-fab-handler', ':ui-animator'
