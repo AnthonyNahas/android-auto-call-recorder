@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements
     private TabLayout mTabLayout;
     private SwitchCompat mSwitch_auto_rec;
     private int mCurrentFragmentPosition;
-    private AppCompatActivity mActivity;
     private BroadcastReceiver mActionModeBroadcastReceiver;
     private FloatingSearchView.OnQueryChangeListener mOnQueryChangeListener;
 
@@ -78,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_navigation_drawer_tabs);
-        mActivity = this;
 
         mPreferenceHelper = new PreferenceHelper(this);
 
@@ -133,14 +131,13 @@ public class MainActivity extends AppCompatActivity implements
                         DemoRecordSupport.newInstance().createDemoRecord(getApplicationContext());
                         break;
                     case R.id.action_start_sample_animations:
-                        startActivity(new Intent(mActivity, SampleMainActivity.class));
+                        startActivity(new Intent(getApplicationContext(), SampleMainActivity.class));
                         break;
                     case R.id.action_sort:
-                        Log.d(TAG, "MenuItem = sort");
-                        DialogHelper.openSortDialog(mActivity, mSectionsPagerAdapter.getItem(0));
+                        DialogHelper.openSortDialog((AppCompatActivity) getApplicationContext(), mSectionsPagerAdapter.getItem(0));
                         break;
                     case R.id.action_settings:
-                        startActivity(new Intent(mActivity, SettingsActivity.class));
+                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                         break;
                     default:
                         break;

@@ -19,14 +19,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.ContactFullscreenActivity;
 import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
+import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
 import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
@@ -45,33 +43,35 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
     private Context mContext;
     private Cursor mCursor;
+    private DateTimeHelper mDateTimeHelper;
 
     private ImageView call_contact_profile;
     private TextView call_contact_number_or_name;
     private TextView call_date;
     private ImageView call_icon_isIncoming;
     private TextView call_duration;
-    private ImageButton call_isLove;
+    private ImageButton mImageCallIsLove;
     public static AppCompatCheckBox call_selected;
 
 
     private long mItemID;
 
 
-    public RecordViewHolder(Context context, View view) {
+    public RecordViewHolder(View view) {
         super(view);
-        mContext = context;
-        call_contact_profile = (ImageView) view.findViewById(R.id.img_profile);
-        call_contact_number_or_name = (TextView) view.findViewById(R.id.call_contact_name_number);
-        call_date = (TextView) view.findViewById(R.id.call_date);
-        call_icon_isIncoming = (ImageView) view.findViewById(R.id.call_icon_isIncoming);
-        call_duration = (TextView) view.findViewById(R.id.call_duration);
+        mContext = view.getContext();
+        mDateTimeHelper = DateTimeHelper.newInstance();
+        call_contact_profile = (ImageView) view.findViewById(R.id.iv_profile);
+        call_contact_number_or_name = (TextView) view.findViewById(R.id.tv_call_contact_name_or_number);
+        call_date = (TextView) view.findViewById(R.id.tv_call_date);
+        call_icon_isIncoming = (ImageView) view.findViewById(R.id.iv_call_is_incoming);
+        call_duration = (TextView) view.findViewById(R.id.tv_call_duration);
 
         call_selected = (AppCompatCheckBox) view.findViewById(R.id.call_selected);
         call_selected.setOnClickListener(this);
 
-        call_isLove = (ImageButton) view.findViewById(R.id.call_isLove);
-        call_isLove.setOnClickListener(this);
+        mImageCallIsLove = (ImageButton) view.findViewById(R.id.iv_call_isLove);
+        mImageCallIsLove.setOnClickListener(this);
 
         call_contact_profile.setTag((int) getItemId(), null);
         call_contact_profile.setOnClickListener(new View.OnClickListener() {
@@ -120,10 +120,11 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
             call_contact_number_or_name.setText(contact_number_or_name);
         }
 
-        call_date.setText(getLocalFormatterDate(cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE))));
-        //call_date.setText(cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE)));
+        long date = cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));
+        call_date.setText(mDateTimeHelper.getLocalFormatterDate(date));
 
-        call_duration.setText(String.valueOf(getTimeString(cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION)))));
+        int duration = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION));
+        call_duration.setText(mDateTimeHelper.getTimeString(duration));
 
         Bitmap bitmap = MemoryCacheHelper.getBitmapFromMemoryCache(phoneNumber);
 
@@ -154,7 +155,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         call_icon_isIncoming.setColorFilter(isIncomingCall == 1 ? Color.RED : Color.GREEN);
 
         int isLove = mCursor.getInt(mCursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
-        call_isLove.setImageResource(isLove == 1 ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
+        mImageCallIsLove.setImageResource(isLove == 1 ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
 
         if (RecordsListFragment.sIsInActionMode) {
             call_selected.setVisibility(View.VISIBLE);
@@ -167,21 +168,6 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
     }
 
-    private String getLocalFormatterDate(long l) {
-        Log.d(TAG, "Long date = " + l);
-        //DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.FULL, Locale.getDefault());
-        DateFormat dateFormatter = new SimpleDateFormat("HH:mm MMM.dd yyyy");
-        String date = dateFormatter.format(new Date(l));
-        Log.d(TAG, "Date = " + date);
-        return date;
-    }
-
-    private static String getTimeString(int duration) {
-        int minutes = (int) Math.floor(duration / 1000 / 60);
-        int seconds = (duration / 1000) - (minutes * 60);
-        return minutes + ":" + String.format("%02d", seconds);
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -190,7 +176,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                 RecordsListFragment.getInstance().prepareSelection(view, this.getAdapterPosition());
                 break;
 
-            case R.id.call_isLove:
+            case R.id.iv_call_isLove:
                 AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(mContext.getContentResolver()) {
                     @Override
                     protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
@@ -201,12 +187,12 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                             String id = cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_ID));
                             int isLove = cursor.getInt(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
 
-                            Log.d(TAG, "call_isLove = " + isLove);
+                            Log.d(TAG, "mImageCallIsLove = " + isLove);
                             int isLoveNew = isLove == 1 ? 0 : 1;
                             if (isLoveNew == 1) {
-                                call_isLove.setImageResource(R.drawable.ic_favorite);
+                                mImageCallIsLove.setImageResource(R.drawable.ic_favorite);
                             } else {
-                                call_isLove.setImageResource(R.drawable.ic_favorite_border_black);
+                                mImageCallIsLove.setImageResource(R.drawable.ic_favorite_border_black);
                             }
 
                             RecordDbHelper.updateIsLoveColumn(mContext, id, isLoveNew);

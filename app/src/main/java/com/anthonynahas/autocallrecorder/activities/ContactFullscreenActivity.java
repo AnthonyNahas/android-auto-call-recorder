@@ -110,7 +110,7 @@ public class ContactFullscreenActivity extends AppCompatActivity {
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
-        ImageView imageView = (ImageView) findViewById(R.id.img_profile);
+        ImageView imageView = (ImageView) findViewById(R.id.iv_profile);
     }
 
     @Override

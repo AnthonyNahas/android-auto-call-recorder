@@ -13,7 +13,7 @@
         />
 
         <com.anthonynahas.autocallrecorder.customs.RoundedImageView
-            android:id="@+id/img_profile"
+            android:id="@+id/iv_profile"
             android:src="@drawable/custmtranspprofpic200px"
             android:scaleType="fitXY"
             android:layout_width="60dp"
@@ -28,8 +28,8 @@
             android:orientation="vertical"
             android:layout_marginStart="10dp"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/img_profile"
-            android:layout_toEndOf="@+id/img_profile"
+            android:layout_toRightOf="@+id/iv_profile"
+            android:layout_toEndOf="@+id/iv_profile"
             android:gravity="center_vertical">
 
             <RelativeLayout
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/call_contact_name_number"
+                    android:id="@+id/tv_call_contact_name_or_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
@@ -46,17 +46,17 @@
                     android:textColor="@android:color/black"/>
 
                 <ImageView
-                    android:id="@+id/call_icon_isIncoming"
+                    android:id="@+id/iv_call_is_incoming"
                     android:layout_width="5dp"
                     android:layout_height="5dp"
                     android:background="@android:color/background_light"
-                    android:layout_toEndOf="@+id/call_contact_name_number"
+                    android:layout_toEndOf="@+id/tv_call_contact_name_or_number"
                     android:contentDescription="for incoming or outgoing call"/>
             </RelativeLayout>
 
 
             <TextView
-                android:id="@+id/call_date"
+                android:id="@+id/tv_call_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -75,7 +75,7 @@
 
 
         <TextView
-            android:id="@+id/call_duration"
+            android:id="@+id/tv_call_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"

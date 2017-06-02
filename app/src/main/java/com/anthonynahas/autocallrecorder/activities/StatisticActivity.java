@@ -83,8 +83,8 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
             }
         });
 
-        int mLoaderManagerID = 0;
-        getSupportLoaderManager().initLoader(mLoaderManagerID, null, this);
+        int loaderManagerID = 0;
+        getSupportLoaderManager().initLoader(loaderManagerID, null, this);
     }
 
     /**

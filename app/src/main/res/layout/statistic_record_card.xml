@@ -31,7 +31,7 @@
             android:textStyle="bold|italic" />
 
         <com.anthonynahas.autocallrecorder.customs.RoundedImageView
-            android:id="@+id/img_profile"
+            android:id="@+id/iv_profile"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_centerHorizontal="true"
@@ -45,7 +45,7 @@
             android:id="@+id/tv_call_contact_name_or_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/img_profile"
+            android:layout_below="@+id/iv_profile"
             android:layout_centerInParent="true"
             android:layout_marginTop="10dp"
             android:maxLines="1"

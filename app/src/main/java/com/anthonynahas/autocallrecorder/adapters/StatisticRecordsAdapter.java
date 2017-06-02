@@ -48,7 +48,7 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
             mRankTextView = (TextView) view.findViewById(R.id.tv_rank);
             mTotalIncomingCallsTextView = (TextView) view.findViewById(R.id.tv_total_incoming_calls);
             mTotalOutgoingCallsTextView = (TextView) view.findViewById(R.id.tv_total_outgoing_calls);
-            mImageProfile = (ImageView) view.findViewById(R.id.img_profile);
+            mImageProfile = (ImageView) view.findViewById(R.id.iv_profile);
 
         }
 

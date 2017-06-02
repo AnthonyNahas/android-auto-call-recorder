@@ -609,7 +609,7 @@ public class RecordsListFragment extends Fragment implements
 
         Bundle args = new Bundle();
         Record record = Record.newInstance(cursor);
-        record.setName(((TextView) view.findViewById(R.id.call_contact_name_number)).getText().toString());
+        record.setName(((TextView) view.findViewById(R.id.tv_call_contact_name_or_number)).getText().toString());
         args.putParcelable(Resources.REC_PARC_KEY, record);
 
         RecordsDialog recordsDialog = new RecordsDialog();

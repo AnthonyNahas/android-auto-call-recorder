@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp"
-                android:layout_marginTop="7dp"
-                android:background="?android:attr/selectableItemBackground">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="7dp"
+    android:layout_marginTop="7dp"
+    android:background="?android:attr/selectableItemBackground">
 
     <!--
     <android.support.v7.widget.CardView
@@ -41,10 +41,10 @@
             android:layout_centerHorizontal="true"
             android:layout_centerInParent="true"
             android:layout_centerVertical="false"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <com.anthonynahas.autocallrecorder.customs.RoundedImageView
-            android:id="@+id/img_profile"
+            android:id="@+id/iv_profile"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignTop="@+id/linearLayout"
@@ -56,7 +56,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/custmtranspprofpic200px"
             android:tag="contact_profile_pic"
-            android:transitionName="photo"/>
+            android:transitionName="photo" />
 
 
         <LinearLayout
@@ -72,8 +72,8 @@
             android:layout_centerInParent="true"
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/img_profile"
-            android:layout_toRightOf="@+id/img_profile"
+            android:layout_toEndOf="@+id/iv_profile"
+            android:layout_toRightOf="@+id/iv_profile"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -82,34 +82,35 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/call_contact_name_number"
+                    android:id="@+id/tv_call_contact_name_or_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:text="@string/call_number_std"
                     android:textColor="@android:color/black"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
 
                 <ImageView
-                    android:id="@+id/call_icon_isIncoming"
+                    android:id="@+id/iv_call_is_incoming"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:layout_toEndOf="@+id/call_contact_name_number"
-                    android:contentDescription="for incoming or outgoing call"/>
+                    android:layout_toEndOf="@+id/tv_call_contact_name_or_number"
+                    android:contentDescription="for incoming or outgoing call"
+                    android:layout_toRightOf="@+id/tv_call_contact_name_or_number" />
             </RelativeLayout>
 
 
             <TextView
-                android:id="@+id/call_date"
+                android:id="@+id/tv_call_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="@string/call_date_std"
                 android:textColor="@android:color/black"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/call_duration"
+                android:id="@+id/tv_call_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -117,14 +118,16 @@
                 android:maxLines="1"
                 android:text="@string/call_duration_std"
                 android:textColor="@android:color/black"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                android:layout_marginRight="10dp" />
 
         </LinearLayout>
 
         <ImageButton
-            android:id="@+id/call_isLove"
+            android:id="@+id/iv_call_isLove"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_alignParentLeft="false"
             android:layout_alignParentRight="true"
             android:layout_alignParentStart="false"
             android:layout_centerHorizontal="false"
@@ -135,7 +138,7 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:baselineAlignBottom="true"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_favorite_border_black"/>
+            app:srcCompat="@drawable/ic_favorite_border_black" />
 
     </RelativeLayout>
 

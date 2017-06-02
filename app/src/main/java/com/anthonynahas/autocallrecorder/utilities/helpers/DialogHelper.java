@@ -16,10 +16,16 @@ public class DialogHelper {
 
     public static final int REQUEST_CODE_FOR_SORT_DIALOG = 1;
 
-    public static void openSortDialog(AppCompatActivity activity, Fragment fragment){
-        Log.d(TAG, "MenuItem = sort");
+    public static void openSortDialog(AppCompatActivity activity) {
+        SortDialog sortDialog = new SortDialog();
+//        sortDialog.setTargetFragment(fragment, REQUEST_CODE_FOR_SORT_DIALOG);
+        sortDialog.show(activity.getSupportFragmentManager(), "sort dialog");
+    }
+
+    public static void openSortDialog(AppCompatActivity activity, Fragment fragment) {
         SortDialog sortDialog = new SortDialog();
         sortDialog.setTargetFragment(fragment, REQUEST_CODE_FOR_SORT_DIALOG);
         sortDialog.show(activity.getSupportFragmentManager(), "sort dialog");
     }
 }
+

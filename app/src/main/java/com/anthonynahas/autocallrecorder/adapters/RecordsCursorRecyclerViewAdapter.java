@@ -41,7 +41,7 @@ public class RecordsCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.record_card, parent, false);
-        return new RecordViewHolder(mContext, view);
+        return new RecordViewHolder(view);
     }
 
     @Override

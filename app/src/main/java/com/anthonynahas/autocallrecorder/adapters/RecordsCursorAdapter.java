@@ -64,11 +64,11 @@ public class RecordsCursorAdapter extends CursorAdapter {
             //viewHolder.position = cursor.getPosition();
             //viewHolder.id = cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_ID));
             //Log.d(TAG,"holderpos = " + viewHolder.position + "  curspos = " + cursor.getPosition());
-            viewHolder.call_contact_profile = (ImageView) view.findViewById(R.id.img_profile);
-            viewHolder.call_contact_number_or_name = (TextView) view.findViewById(R.id.call_contact_name_number);
-            viewHolder.call_date = (TextView) view.findViewById(R.id.call_date);
-            viewHolder.call_icon_isIncoming = (ImageView) view.findViewById(R.id.call_icon_isIncoming);
-            viewHolder.call_durcation = (TextView) view.findViewById(R.id.call_duration);
+            viewHolder.call_contact_profile = (ImageView) view.findViewById(R.id.iv_profile);
+            viewHolder.call_contact_number_or_name = (TextView) view.findViewById(R.id.tv_call_contact_name_or_number);
+            viewHolder.call_date = (TextView) view.findViewById(R.id.tv_call_date);
+            viewHolder.call_icon_isIncoming = (ImageView) view.findViewById(R.id.iv_call_is_incoming);
+            viewHolder.call_durcation = (TextView) view.findViewById(R.id.tv_call_duration);
             view.setTag(viewHolder);
         }
         return view;

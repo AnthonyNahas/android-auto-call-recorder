@@ -58,13 +58,13 @@ public class Record implements Serializable, Parcelable {
     @Column(RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE)
     private boolean mIsToDelete; // the audio file is in the recycle bin and will be soon deleted
 
-//    @Column(RecordDbContract.Extended.COLUMN_TOTAL_INCOMING_CALLS)
+    //    @Column(RecordDbContract.Extended.COLUMN_TOTAL_INCOMING_CALLS)
     private int mTotalIncomingCalls;
 
-//    @Column(RecordDbContract.Extended.COLUMN_TOTAL_OUTGOING_CALLS)
+    //    @Column(RecordDbContract.Extended.COLUMN_TOTAL_OUTGOING_CALLS)
     private int mTotalOutgoingCall;
 
-//    @Column(RecordDbContract.Extended.COLUMN_TOTAL_CALLS)
+    //    @Column(RecordDbContract.Extended.COLUMN_TOTAL_CALLS)
     private int mTotalCalls;
 
     private String mName;
@@ -247,6 +247,62 @@ public class Record implements Serializable, Parcelable {
 
     public void setRank(int mRank) {
         this.mRank = mRank;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 3;
+        hashCode = 12 * hashCode + (m_ID != null ? m_ID.hashCode() : 0);
+        hashCode = 12 * hashCode + (mNumber != null ? mNumber.hashCode() : 0);
+        hashCode = 12 * hashCode + (mContactID != 0 ? (int) mContactID : 0);
+        hashCode = 12 * hashCode + (mDate != 0 ? (int) mDate : 0);
+        hashCode = 12 * hashCode + (mIsIncoming ? 1 : 0);
+        hashCode = 12 * hashCode + (mIsLove ? 1 : 0);
+        hashCode = 12 * hashCode + (mIsLocked ? 1 : 0);
+        hashCode = 12 * hashCode + (mIsToDelete ? 1 : 0);
+        return hashCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Record) {
+            Record recordToCompare = (Record) obj;
+            return
+                    m_ID.equals(recordToCompare.m_ID)
+                            &&
+                            mPath.equals(recordToCompare.mPath)
+                            &&
+                            mNumber.equals(recordToCompare.mNumber)
+                            &&
+                            mContactID == recordToCompare.mContactID
+                            &&
+                            mDate == recordToCompare.mDate
+                            &&
+                            mIsIncoming == recordToCompare.mIsIncoming
+                            &&
+                            mIsLove == recordToCompare.mIsLove
+                            &&
+                            mIsLocked == recordToCompare.mIsLocked
+                            &&
+                            mIsToDelete == recordToCompare.mIsToDelete;
+        }
+        return false;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        // TODO: 02.06.2017
+        return super.clone();
+    }
+
+    @Override
+    public String toString() {
+        return "_id: "
+                + m_ID
+                + " number: "
+                + mNumber
+                + " contactID: "
+                + mContactID;
     }
 
     public ContentValues toContentValues() {
