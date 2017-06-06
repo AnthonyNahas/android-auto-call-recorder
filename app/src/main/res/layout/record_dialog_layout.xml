@@ -17,7 +17,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:fitsSystemWindows="true"
         android:minHeight="?attr/actionBarSize"
-        android:theme="@style/MyToolbarStyle"
+        android:theme="@style/ToolbarTheme2"
         app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
         app:contentInsetEnd="0dp"
         app:contentInsetLeft="0dp"

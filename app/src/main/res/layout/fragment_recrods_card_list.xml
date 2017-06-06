@@ -48,7 +48,7 @@
         app:backgroundTint="@color/dark_gray"
         app:elevation="7dp"
         app:fabSize="mini"
-        app:rippleColor="@android:color/holo_red_light"
+        app:rippleColor="@android:color/white"
         app:srcCompat="@drawable/ic_vertical_align_top" />
 
 </RelativeLayout>

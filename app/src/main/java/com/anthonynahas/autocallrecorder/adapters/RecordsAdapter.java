@@ -1,7 +1,5 @@
 package com.anthonynahas.autocallrecorder.adapters;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -58,6 +56,14 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
         this.actionMode = actionMode;
         closeActionMode = !this.actionMode;
         notifyDataSetChanged();
+    }
+
+    public List<Record> getRecordsList() {
+        return mRecordsList;
+    }
+
+    public void setRecordsList(List<Record> recordsList) {
+        mRecordsList = recordsList;
     }
 
     public void swapData(List<Record> mRecordsList) {
@@ -178,6 +184,10 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
         viewHolder
                 .mIVCallIsLove
                 .setImageResource(record.isLove() ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
+
+        if (viewHolder.mCheckBoxCallSelected.isShown()) {
+            viewHolder.mCheckBoxCallSelected.setChecked(record.isSelected());
+        }
 
     }
 

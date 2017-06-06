@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -266,7 +267,7 @@ public class RecordsListFragment extends Fragment implements
                         if (sIsInActionMode) {
                             //Cursor cursor = mAdapter.getCursor();
                             //cursor.moveToPosition(position);
-                            AppCompatCheckBox call_selected = ((AppCompatCheckBox) v.findViewById(R.id.call_selected));
+                            CheckBox call_selected = ((CheckBox) v.findViewById(R.id.call_selected));
                             boolean isChecked = call_selected.isChecked();
                             if (isChecked) {
                                 sCounter--;

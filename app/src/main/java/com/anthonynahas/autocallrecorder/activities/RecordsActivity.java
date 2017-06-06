@@ -15,8 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
@@ -44,6 +47,7 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 public class RecordsActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
+        ItemClickSupport.OnItemClickListener,
         ItemClickSupport.OnItemLongClickListener {
 
     private static final String TAG = RecordsActivity.class.getSimpleName();
@@ -52,9 +56,12 @@ public class RecordsActivity extends AppCompatActivity implements
     private RecyclerView mRecyclerView;
     private RecordsAdapter mAdapter;
     private FloatingSearchView mSearchView;
+    private Toolbar mToolbar;
 
     private int mLoaderManagerID;
     private Bundle mArguments;
+
+    private int mCounter;
 
     public enum args {
         title,
@@ -73,11 +80,12 @@ public class RecordsActivity extends AppCompatActivity implements
         String activityTitle = getIntent().getStringExtra(args.title.name());
         mArguments = prepareArguments(activityTitle);
         mLoaderManagerID = 0;
+        mCounter = 0;
 
         setContentView(R.layout.activity_records);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(activityTitle);
         }
@@ -98,6 +106,7 @@ public class RecordsActivity extends AppCompatActivity implements
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
 
         // TODO: 06.06.2017 on resume ?
+        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(this);
         ItemClickSupport.addTo(mRecyclerView).setOnItemLongClickListener(this);
 
         // TODO: 02.06.17 refresh on scrolling the recyclerview
@@ -139,9 +148,47 @@ public class RecordsActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+        if (mAdapter.isActionMode()) {
+            CheckBox call_selected = ((CheckBox) v.findViewById(R.id.call_selected));
+            boolean isChecked = call_selected.isChecked();
+            call_selected.setChecked(!isChecked);
+            mAdapter.getRecordsList().get(position).setSelected(!isChecked);
+            if (isChecked) {
+                mCounter--;
+            } else {
+                mCounter++;
+            }
+            updateToolbar();
+        } else {
+            // TODO: 06.06.17 open dialog
+        }
+    }
+
+    @Override
     public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
-        mAdapter.setActionMode(!mAdapter.isActionMode());
+        if (!mAdapter.isActionMode()) {
+            mAdapter.setActionMode(!mAdapter.isActionMode());
+            CheckBox call_selected = ((CheckBox) v.findViewById(R.id.call_selected));
+            boolean isChecked = call_selected.isChecked();
+            call_selected.setChecked(!isChecked);
+            updateToolbar();
+            updateToolbarMenu();
+        }
+        else{
+            cancelActionMode();
+        }
         return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (mAdapter.isActionMode()) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.action_mode_menu, menu);
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -149,11 +196,53 @@ public class RecordsActivity extends AppCompatActivity implements
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                if (mAdapter.isActionMode()) {
+                    cancelActionMode();
+                } else {
+                    finish();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mAdapter.isActionMode()) {
+            cancelActionMode();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void updateToolbar() {
+        if (mAdapter.isActionMode()) {
+            if (mCounter == 0) {
+                getSupportActionBar().setTitle(getResources().getString(R.string.toolbar_action_mode_text));
+            } else {
+                getSupportActionBar().setTitle(String.valueOf(mCounter));
+            }
+        } else {
+            getSupportActionBar().setTitle(getIntent().getStringExtra(args.title.name()));
+        }
+    }
+
+    private void updateToolbarMenu() {
+        if (mAdapter.isActionMode()) {
+            mToolbar.inflateMenu(R.menu.action_mode_menu);
+        } else {
+            mToolbar.getMenu().clear();
+        }
+    }
+
+    private void cancelActionMode() {
+        mAdapter.setActionMode(false);
+        mCounter = 0;
+        updateToolbar();
+        updateToolbarMenu();
+        mAdapter.notifyDataSetChanged();
+        getSupportLoaderManager().restartLoader(mLoaderManagerID, mArguments, this);
     }
 
     @Override
@@ -206,7 +295,7 @@ public class RecordsActivity extends AppCompatActivity implements
             selection = RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE + " = 1";
         } else if (getResources().getString(R.string.title_activity_locked_records).equals(activityTitle)) {
             projection = new String[]{"*"};
-            selection = RecordDbContract.RecordItem.COLUMN_IS_LOCKED + " = 1";
+            //selection = RecordDbContract.RecordItem.COLUMN_IS_LOCKED + " = 1";
         }
 
         args.putStringArray(RecordsActivity.args.projection.name(), projection);
