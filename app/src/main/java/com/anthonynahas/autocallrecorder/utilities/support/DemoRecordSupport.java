@@ -194,8 +194,8 @@ public class DemoRecordSupport {
             record.set_ID(String.valueOf(generateNumber(1000, 0)));
             record.setNumber(generatePhoneNumber());
             record.setContactID(generateNumber(1000, 500));
-            record.setIsIncoming(generateNumber(1000, 0) >= 500);
-            record.setIsLove(generateNumber(200, 0) >= 100);
+            record.setIncoming(generateNumber(1000, 0) >= 500);
+            record.setLove(generateNumber(200, 0) >= 100);
             record.setDate(generateDate());
 
             recordsList.add(record);

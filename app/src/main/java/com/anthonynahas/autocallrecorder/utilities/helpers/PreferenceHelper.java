@@ -12,8 +12,8 @@ import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
  * Created by A on 08.05.17.
  *
  * @author Anthony Nahas
- * @since 09.05.2017
  * @version 1.0
+ * @since 09.05.2017
  */
 
 public class PreferenceHelper {
@@ -28,7 +28,8 @@ public class PreferenceHelper {
         SORT_SELECTION,
         SORT_ARRANGE,
         DROPBOX_API_UPLOAD,
-        ADD_TO_MUSIC_LIBRARY
+        ADD_TO_MUSIC_LIBRARY,
+        TO_MOVE_IN_RECYCLE_BIN
     }
 
     private Context mContext;
@@ -82,7 +83,7 @@ public class PreferenceHelper {
         return mSharedPreferences.getBoolean(Key.DROPBOX_API_UPLOAD.name(), false);
     }
 
-    public boolean canAudioFileBeAddedToLibrary(){
+    public boolean canAudioFileBeAddedToLibrary() {
         return mSharedPreferences.getBoolean(Key.ADD_TO_MUSIC_LIBRARY.name(), false);
     }
 
@@ -112,4 +113,7 @@ public class PreferenceHelper {
         return mSharedPreferences.getString(Key.SORT_ARRANGE.name(), " DESC");
     }
 
+    public boolean toMoveInRecycleBin() {
+        return mSharedPreferences.getBoolean(Key.TO_MOVE_IN_RECYCLE_BIN.name(), true);
+    }
 }

@@ -50,4 +50,9 @@
     <string name="title_activity_locked_records">Gesperrte Anrufe</string>
     <string name="title_activity_rubbished_records">Gelöschte Anrufe</string>
     <string name="title_home"></string>
+    <string name="action_lock">Aufzeichnung Sperren</string>
+    <string name="action_unlock">Aufzeichnung Entsperren</string>
+    <string name="pref_title_move_first_to_recycle_bin">Papierkorb</string>
+    <string name="pref_description_auto_call_recording">Wenn Sie einen Anruf tätigen oder empfangen, wird die App versuchen, den Anruf aufzunehmen</string>
+    <string name="pref_description_move_first_to_recycle_bin">Bevor Sie die Aufzeichnungen löschen, verschieben Sie sie zuerst in den Papierkorb</string>
 </resources>

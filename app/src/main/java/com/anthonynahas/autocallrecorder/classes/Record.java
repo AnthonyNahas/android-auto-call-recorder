@@ -1,9 +1,15 @@
 package com.anthonynahas.autocallrecorder.classes;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.MediaStore;
+import android.widget.Toast;
 
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 
@@ -47,16 +53,16 @@ public class Record implements Serializable, Parcelable {
     private int mDuration;
 
     @Column(RecordDbContract.RecordItem.COLUMN_IS_INCOMING)
-    private boolean mIsIncoming; //like outgoing, incoming, custom
+    private boolean mIncoming; //like outgoing, incoming, custom
 
     @Column(RecordDbContract.RecordItem.COLUMN_IS_LOVE)
-    private boolean mIsLove; // favorite or not
+    private boolean mLove; // favorite or not
 
     @Column(RecordDbContract.RecordItem.COLUMN_IS_LOCKED)
-    private boolean mIsLocked; // if locked --> audio to base64 in DB = safe and will be not deleted
+    private boolean mLocked; // if locked --> audio to base64 in DB = safe and will be not deleted
 
     @Column(RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE)
-    private boolean mIsToDelete; // the audio file is in the recycle bin and will be soon deleted
+    private boolean mToDelete; // the audio file is in the recycle bin and will be soon deleted
 
     //    @Column(RecordDbContract.Extended.COLUMN_TOTAL_INCOMING_CALLS)
     private int mTotalIncomingCalls;
@@ -88,7 +94,7 @@ public class Record implements Serializable, Parcelable {
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
             mDuration = cursor.getInt(cursor
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION));
-            mIsIncoming = cursor.getInt(cursor
+            mIncoming = cursor.getInt(cursor
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_INCOMING)) == 1;
 
         }
@@ -99,8 +105,8 @@ public class Record implements Serializable, Parcelable {
                   long mContactID,
                   long mDate, int mSize,
                   int mDuration,
-                  boolean mIsIncoming,
-                  boolean mIsLove) {
+                  boolean mIncoming,
+                  boolean mLove) {
 
         super();
         this.m_ID = m_ID;
@@ -109,8 +115,8 @@ public class Record implements Serializable, Parcelable {
         this.mDate = mDate;
         this.mSize = mSize;
         this.mDuration = mDuration;
-        this.mIsIncoming = mIsIncoming;
-        this.mIsLove = mIsLove;
+        this.mIncoming = mIncoming;
+        this.mLove = mLove;
     }
 
     public String get_ID() {
@@ -169,52 +175,56 @@ public class Record implements Serializable, Parcelable {
         this.mDuration = mDuration;
     }
 
-    public boolean isIsIncoming() {
-        return mIsIncoming;
+    public boolean isIncoming() {
+        return mIncoming;
     }
 
-    public void setIsIncoming(boolean mIsIncoming) {
-        this.mIsIncoming = mIsIncoming;
+    public void setIncoming(boolean mIsIncoming) {
+        this.mIncoming = mIsIncoming;
     }
 
-    public void setIsIncoming(int mIsIncoming) {
-        this.mIsIncoming = mIsIncoming == 1;
+    public void setIncoming(int mIsIncoming) {
+        this.mIncoming = mIsIncoming == 1;
     }
 
-    public boolean isIsLove() {
-        return mIsLove;
+    public boolean isLove() {
+        return mLove;
     }
 
-    public void setIsLove(boolean mIsLove) {
-        this.mIsLove = mIsLove;
+    public void setLove(boolean mIsLove) {
+        this.mLove = mIsLove;
     }
 
-    public void setIsLove(int mIsLove) {
-        this.mIsLove = mIsLove == 1;
+    public void setLove(int mIsLove) {
+        this.mLove = mIsLove == 1;
     }
 
-    public boolean isIsLocked() {
-        return mIsLocked;
+    public boolean isLocked() {
+        return mLocked;
+    }
+
+    public int isLockedAsInt() {
+        return mLocked ? 1 : 0;
     }
 
     public void setIsLocked(boolean mIsLocked) {
-        this.mIsLocked = mIsLocked;
+        this.mLocked = mIsLocked;
     }
 
     public void setIsLocked(int mIsLocked) {
-        this.mIsLocked = mIsLocked == 1;
+        this.mLocked = mIsLocked == 1;
     }
 
-    public boolean isIsToDelete() {
-        return mIsToDelete;
+    public boolean isToDelete() {
+        return mToDelete;
     }
 
-    public void setIsToDelete(boolean mIsToDelete) {
-        this.mIsToDelete = mIsToDelete;
+    public void setToDelete(boolean mIsToDelete) {
+        this.mToDelete = mIsToDelete;
     }
 
-    public void setIsToDelete(int mIsToDelete) {
-        this.mIsToDelete = mIsToDelete == 1;
+    public void setToDelete(int mIsToDelete) {
+        this.mToDelete = mIsToDelete == 1;
     }
 
     public String getName() {
@@ -256,10 +266,10 @@ public class Record implements Serializable, Parcelable {
         hashCode = 12 * hashCode + (mNumber != null ? mNumber.hashCode() : 0);
         hashCode = 12 * hashCode + (mContactID != 0 ? (int) mContactID : 0);
         hashCode = 12 * hashCode + (mDate != 0 ? (int) mDate : 0);
-        hashCode = 12 * hashCode + (mIsIncoming ? 1 : 0);
-        hashCode = 12 * hashCode + (mIsLove ? 1 : 0);
-        hashCode = 12 * hashCode + (mIsLocked ? 1 : 0);
-        hashCode = 12 * hashCode + (mIsToDelete ? 1 : 0);
+        hashCode = 12 * hashCode + (mIncoming ? 1 : 0);
+        hashCode = 12 * hashCode + (mLove ? 1 : 0);
+        hashCode = 12 * hashCode + (mLocked ? 1 : 0);
+        hashCode = 12 * hashCode + (mToDelete ? 1 : 0);
         return hashCode;
     }
 
@@ -278,13 +288,13 @@ public class Record implements Serializable, Parcelable {
                             &&
                             mDate == recordToCompare.mDate
                             &&
-                            mIsIncoming == recordToCompare.mIsIncoming
+                            mIncoming == recordToCompare.mIncoming
                             &&
-                            mIsLove == recordToCompare.mIsLove
+                            mLove == recordToCompare.mLove
                             &&
-                            mIsLocked == recordToCompare.mIsLocked
+                            mLocked == recordToCompare.mLocked
                             &&
-                            mIsToDelete == recordToCompare.mIsToDelete;
+                            mToDelete == recordToCompare.mToDelete;
         }
         return false;
     }
@@ -305,6 +315,37 @@ public class Record implements Serializable, Parcelable {
                 + mContactID;
     }
 
+    public void updateIsLocked() {
+        mLocked = !mLocked;
+    }
+
+    public void call(Context context) {
+        Intent in = new Intent(Intent.ACTION_DIAL, Uri.parse("tel: " + mNumber)); //"tel: " + "+46 (999) 44 55 66"
+        try {
+            context.startActivity(in);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void share(Context context) {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("audio/*");
+        share.putExtra(Intent.EXTRA_STREAM,
+                ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        Long.valueOf(m_ID)));
+        context.startActivity(Intent.createChooser(share, "Share Audio Record File"));
+    }
+
+    public static void share(Context context, String id) {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("audio/*");
+        share.putExtra(Intent.EXTRA_STREAM,
+                ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        Long.valueOf(id)));
+        context.startActivity(Intent.createChooser(share, "Share Audio Record File"));
+    }
+
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(RecordDbContract.RecordItem.COLUMN_ID, m_ID); //string
@@ -314,10 +355,10 @@ public class Record implements Serializable, Parcelable {
         values.put(RecordDbContract.RecordItem.COLUMN_DATE, mDate); //long
         values.put(RecordDbContract.RecordItem.COLUMN_SIZE, mSize); //int
         values.put(RecordDbContract.RecordItem.COLUMN_DURATION, mDuration); //int
-        values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, mIsIncoming ? 1 : 0); //int
-        values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, mIsLove ? 1 : 0); //int
-        values.put(RecordDbContract.RecordItem.COLUMN_IS_LOCKED, mIsLocked ? 1 : 0); //int
-        values.put(RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE, mIsToDelete ? 1 : 0); //int
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, mIncoming ? 1 : 0); //int
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, mLove ? 1 : 0); //int
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_LOCKED, mLocked ? 1 : 0); //int
+        values.put(RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE, mToDelete ? 1 : 0); //int
 
         return values;
     }
@@ -339,10 +380,10 @@ public class Record implements Serializable, Parcelable {
             record.mDate = parcel.readLong();
             record.mSize = parcel.readInt();
             record.mDuration = parcel.readInt();
-            record.mIsIncoming = parcel.readByte() != 0;
-            record.mIsLove = parcel.readByte() != 0;
-            record.mIsLocked = parcel.readByte() != 0;
-            record.mIsToDelete = parcel.readByte() != 0;
+            record.mIncoming = parcel.readByte() != 0;
+            record.mLove = parcel.readByte() != 0;
+            record.mLocked = parcel.readByte() != 0;
+            record.mToDelete = parcel.readByte() != 0;
             record.mName = parcel.readString();
             record.mRank = parcel.readInt();
             record.mTotalIncomingCalls = parcel.readInt();
@@ -371,10 +412,10 @@ public class Record implements Serializable, Parcelable {
         parcel.writeLong(mDate);
         parcel.writeInt(mSize);
         parcel.writeInt(mDuration);
-        parcel.writeByte((byte) (mIsIncoming ? 1 : 0));
-        parcel.writeByte((byte) (mIsLove ? 1 : 0));
-        parcel.writeByte((byte) (mIsLocked ? 1 : 0));
-        parcel.writeByte((byte) (mIsToDelete ? 1 : 0));
+        parcel.writeByte((byte) (mIncoming ? 1 : 0));
+        parcel.writeByte((byte) (mLove ? 1 : 0));
+        parcel.writeByte((byte) (mLocked ? 1 : 0));
+        parcel.writeByte((byte) (mToDelete ? 1 : 0));
         parcel.writeString(mName);
         parcel.writeInt(mRank);
         parcel.writeInt(mTotalIncomingCalls);

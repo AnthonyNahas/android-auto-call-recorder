@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.classes.Record;
 
@@ -36,11 +35,20 @@ public class RecordDbHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, isLove);
         Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, Long.valueOf(id));
-        Log.d(TAG, "onUpdate --> uri = " + uri);
         String selection = RecordDbContract.RecordItem.COLUMN_ID + "=?";
         String[] selectionArgs = {id};
         RecordsQueryHandler.getInstance(context.getContentResolver())
-                .startUpdate(RecordsQueryHandler.UPDATE_IS_LOVE, null, uri, contentValues, selection, selectionArgs);
+                .startUpdate(RecordsQueryHandler.update.UPDATE_IS_LOVE.ordinal(), null, uri, contentValues, selection, selectionArgs);
+    }
+
+    public static void updateIsLockedColumn(Context context, String id,int isLocked){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(RecordDbContract.RecordItem.COLUMN_IS_LOCKED, isLocked);
+        Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, Long.valueOf(id));
+        String selection = RecordDbContract.RecordItem.COLUMN_ID + "=?";
+        String[] selectionArgs = {id};
+        RecordsQueryHandler.getInstance(context.getContentResolver())
+                .startUpdate(RecordsQueryHandler.update.UPDATE_IS_LOCKED.ordinal(), null, uri, contentValues, selection, selectionArgs);
     }
 
 
@@ -100,8 +108,8 @@ public class RecordDbHelper {
                 record.setDate(date);
                 record.setSize(size);
                 record.setDuration(duration);
-                record.setIsIncoming(isIncoming);
-                record.setIsLove(isLove);
+                record.setIncoming(isIncoming);
+                record.setLove(isLove);
                 record.setRank(cursor.getPosition() + 1);
                 record.setTotalIncomingCalls(totalIncomingCalls);
                 record.setTotalOutgoingCall(totalCalls - totalIncomingCalls);

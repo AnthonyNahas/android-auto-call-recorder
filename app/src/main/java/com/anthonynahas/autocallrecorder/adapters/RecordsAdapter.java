@@ -1,18 +1,21 @@
 package com.anthonynahas.autocallrecorder.adapters;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.classes.Record;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
+import com.anthonynahas.ui_animator.CheckboxAnimator;
 
 import org.apache.commons.collections4.ListUtils;
 
@@ -31,17 +34,30 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     private static final String TAG = RecordsAdapter.class.getSimpleName();
 
     private Context mContext;
+    private boolean actionMode;
+    private boolean closeActionMode;
+    private List<Record> mRecordsList;
     private DateTimeHelper mDateTimeHelper;
 
-    private List<Record> mRecordsList;
-
     public RecordsAdapter() {
+        actionMode = false;
+        closeActionMode = false;
         mDateTimeHelper = DateTimeHelper.newInstance();
     }
 
     public RecordsAdapter(List<Record> mRecordsList) {
         this.mRecordsList = mRecordsList;
         mDateTimeHelper = DateTimeHelper.newInstance();
+    }
+
+    public boolean isActionMode() {
+        return actionMode;
+    }
+
+    public void setActionMode(boolean actionMode) {
+        this.actionMode = actionMode;
+        closeActionMode = !this.actionMode;
+        notifyDataSetChanged();
     }
 
     public void swapData(List<Record> mRecordsList) {
@@ -83,7 +99,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     static class RecordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // each data item is just a string in this case
-        private AppCompatCheckBox mCheckBoxCallSelected;
+        private CheckBox mCheckBoxCallSelected;
         private TextView mTVCallNameOrNumber;
         private TextView mTVDate;
         private TextView mTVDuration;
@@ -93,7 +109,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
 
         RecordViewHolder(View view) {
             super(view);
-            mCheckBoxCallSelected = (AppCompatCheckBox) view.findViewById(R.id.call_selected);
+            mCheckBoxCallSelected = (CheckBox) view.findViewById(R.id.call_selected);
             mTVCallNameOrNumber = (TextView) view.findViewById(R.id.tv_call_contact_name_or_number);
             mTVDate = (TextView) view.findViewById(R.id.tv_call_date);
             mTVDuration = (TextView) view.findViewById(R.id.tv_call_duration);
@@ -110,7 +126,6 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-
                 case R.id.tv_call_contact_name_or_number:
                     break;
                 case R.id.call_selected:
@@ -131,8 +146,14 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     }
 
     @Override
-    public void onBindViewHolder(RecordViewHolder viewHolder, int position) {
+    public void onBindViewHolder(final RecordViewHolder viewHolder, int position) {
         Record record = mRecordsList.get(position);
+
+        if (isActionMode()) {
+            CheckboxAnimator.newInstance(viewHolder.mCheckBoxCallSelected).toRight();
+        } else if (!actionMode && closeActionMode) {
+            CheckboxAnimator.newInstance(viewHolder.mCheckBoxCallSelected).toLeft();
+        }
 
         viewHolder
                 .mTVCallNameOrNumber
@@ -148,15 +169,15 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
 
         viewHolder
                 .mIVCallIsIncoming
-                .setImageResource(record.isIsIncoming() ? R.drawable.ic_call_received : R.drawable.ic_call_made);
+                .setImageResource(record.isIncoming() ? R.drawable.ic_call_received : R.drawable.ic_call_made);
 
         viewHolder
                 .mIVCallIsIncoming
-                .setColorFilter(record.isIsIncoming() ? Color.RED : Color.GREEN);
+                .setColorFilter(record.isIncoming() ? Color.RED : Color.GREEN);
 
         viewHolder
                 .mIVCallIsLove
-                .setImageResource(record.isIsLove() ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
+                .setImageResource(record.isLove() ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
 
     }
 

@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:animateLayoutChanges="true"
         />
 
         <com.anthonynahas.autocallrecorder.customs.RoundedImageView
@@ -30,11 +31,14 @@
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/iv_profile"
             android:layout_toEndOf="@+id/iv_profile"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:animateLayoutChanges="true">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true">
 
                 <TextView
                     android:id="@+id/tv_call_contact_name_or_number"
@@ -51,7 +55,8 @@
                     android:layout_height="5dp"
                     android:background="@android:color/background_light"
                     android:layout_toEndOf="@+id/tv_call_contact_name_or_number"
-                    android:contentDescription="for incoming or outgoing call"/>
+                    android:contentDescription="for incoming or outgoing call"
+                    android:layout_toRightOf="@+id/tv_call_contact_name_or_number" />
             </RelativeLayout>
 
 

@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
@@ -24,6 +25,7 @@ import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.support.DemoRecordSupport;
+import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
@@ -40,7 +42,9 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
  * @since 01.06.17
  */
 
-public class RecordsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class RecordsActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>,
+        ItemClickSupport.OnItemLongClickListener {
 
     private static final String TAG = RecordsActivity.class.getSimpleName();
 
@@ -93,6 +97,9 @@ public class RecordsActivity extends AppCompatActivity implements LoaderManager.
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
 
+        // TODO: 06.06.2017 on resume ?
+        ItemClickSupport.addTo(mRecyclerView).setOnItemLongClickListener(this);
+
         // TODO: 02.06.17 refresh on scrolling the recyclerview
 
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
@@ -129,6 +136,12 @@ public class RecordsActivity extends AppCompatActivity implements LoaderManager.
         });
 
         getSupportLoaderManager().initLoader(mLoaderManagerID, mArguments, this);
+    }
+
+    @Override
+    public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
+        mAdapter.setActionMode(!mAdapter.isActionMode());
+        return false;
     }
 
     @Override

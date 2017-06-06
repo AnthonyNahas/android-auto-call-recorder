@@ -3,7 +3,6 @@ package com.anthonynahas.autocallrecorder.broadcasts;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -86,7 +85,7 @@ public class CallReceiver extends BroadcastReceiver {
                         Log.d(TAG, "start recording --> offhook");
                         mRecord = new Record();
                         mRecord.setDate(System.currentTimeMillis());
-                        mRecord.setIsIncoming(INCOMING);
+                        mRecord.setIncoming(INCOMING);
                         // TODO: 30.05.2017 if - else should be replaced
                         if (OUTGOING) {
 //                            sConData.putInt(INCOMINGCALLKEY, 0);

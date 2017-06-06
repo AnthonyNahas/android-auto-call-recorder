@@ -26,6 +26,10 @@ public class RecordsQueryHandler extends AsyncQueryHandler {
     public static final int INSERT_DEMO = 1;
 
     //UPDATE
+    public enum update{
+        UPDATE_IS_LOVE,
+        UPDATE_IS_LOCKED
+    }
     public static final int UPDATE_IS_LOVE = 0;
 
     private RecordsCursorRecyclerViewAdapter mAdapter;

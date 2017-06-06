@@ -44,7 +44,7 @@ import com.anthonynahas.autocallrecorder.adapters.RecordsCursorAdapter;
 import com.anthonynahas.autocallrecorder.classes.Record;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
-import com.anthonynahas.autocallrecorder.utilities.helpers.AudioFileAsyncTask;
+import com.anthonynahas.autocallrecorder.utilities.asyncTasks.AudioFileAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**

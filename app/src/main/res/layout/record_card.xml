@@ -6,144 +6,147 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="7dp"
     android:layout_marginTop="7dp"
+    android:animateLayoutChanges="true"
     android:background="?android:attr/selectableItemBackground">
 
-    <!--
-    <android.support.v7.widget.CardView
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:animateLayoutChanges="true"
         android:background="@color/cardview_light_background"
-        android:nestedScrollingEnabled="false"
         android:paddingEnd="20dp"
         android:paddingStart="20dp"
         card_view:cardBackgroundColor="@color/cardview_light_background"
-        card_view:cardCornerRadius="4dp">
-        -->
+        card_view:cardCornerRadius="2dp">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="false">
 
-        <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/call_selected"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="false"
-            android:layout_alignParentEnd="false"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="false"
-            android:layout_alignParentStart="false"
             android:layout_alignParentTop="false"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="false"
-            android:visibility="gone" />
+            android:animateLayoutChanges="true">
 
-        <com.anthonynahas.autocallrecorder.customs.RoundedImageView
-            android:id="@+id/iv_profile"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignTop="@+id/linearLayout"
-            android:layout_marginLeft="14dp"
-            android:layout_marginStart="14dp"
-            android:layout_toEndOf="@+id/call_selected"
-            android:layout_toRightOf="@+id/call_selected"
-            android:contentDescription="@string/image_view_profile"
-            android:scaleType="fitXY"
-            android:src="@drawable/custmtranspprofpic200px"
-            android:tag="contact_profile_pic"
-            android:transitionName="photo" />
-
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="false"
-            android:layout_alignParentEnd="false"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentRight="false"
-            android:layout_alignParentStart="false"
-            android:layout_centerHorizontal="false"
-            android:layout_centerInParent="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/iv_profile"
-            android:layout_toRightOf="@+id/iv_profile"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <RelativeLayout
+            <CheckBox
+                android:id="@+id/call_selected"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentTop="false"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="false"
+                android:visibility="gone" />
+
+            <com.anthonynahas.autocallrecorder.customs.RoundedImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignTop="@+id/linearLayout"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:layout_toEndOf="@+id/call_selected"
+                android:layout_toRightOf="@+id/call_selected"
+                android:contentDescription="@string/image_view_profile"
+                android:scaleType="fitXY"
+                android:src="@drawable/custmtranspprofpic200px"
+                android:tag="contact_profile_pic"
+                android:transitionName="photo" />
+
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentStart="false"
+                android:layout_centerHorizontal="false"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/iv_profile"
+                android:layout_toRightOf="@+id/iv_profile"
+                android:animateLayoutChanges="true"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true">
+
+                    <TextView
+                        android:id="@+id/tv_call_contact_name_or_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="@string/call_number_std"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/iv_call_is_incoming"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_toEndOf="@+id/tv_call_contact_name_or_number"
+                        android:layout_toRightOf="@+id/tv_call_contact_name_or_number"
+                        android:contentDescription="for incoming or outgoing call" />
+                </RelativeLayout>
+
 
                 <TextView
-                    android:id="@+id/tv_call_contact_name_or_number"
+                    android:id="@+id/tv_call_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:text="@string/call_number_std"
+                    android:text="@string/call_date_std"
                     android:textColor="@android:color/black"
-                    android:textSize="18sp" />
+                    android:textSize="14sp" />
 
-                <ImageView
-                    android:id="@+id/iv_call_is_incoming"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:layout_toEndOf="@+id/tv_call_contact_name_or_number"
-                    android:contentDescription="for incoming or outgoing call"
-                    android:layout_toRightOf="@+id/tv_call_contact_name_or_number" />
-            </RelativeLayout>
+                <TextView
+                    android:id="@+id/tv_call_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:maxLines="1"
+                    android:text="@string/call_duration_std"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
 
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_call_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="@string/call_date_std"
-                android:textColor="@android:color/black"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tv_call_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageButton
+                android:id="@+id/iv_call_isLove"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentStart="false"
+                android:layout_centerHorizontal="false"
+                android:layout_centerInParent="false"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:maxLines="1"
-                android:text="@string/call_duration_std"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                android:layout_marginRight="10dp" />
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:baselineAlignBottom="true"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_favorite_border_black" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <ImageButton
-            android:id="@+id/iv_call_isLove"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="false"
-            android:layout_centerHorizontal="false"
-            android:layout_centerInParent="false"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="14dp"
-            android:layout_marginRight="14dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:baselineAlignBottom="true"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_favorite_border_black" />
 
-    </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
-    <!--
-        </android.support.v7.widget.CardView>
-        -->
 
 </RelativeLayout>

@@ -2,9 +2,15 @@
 
     <SwitchPreference
         android:defaultValue="true"
-        android:key="example_switch"
+        android:key="AUTO_RECORD"
         android:summary="@string/pref_description_auto_call_recording"
         android:title="@string/pref_title_auto_call_recording" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="TO_MOVE_IN_RECYCLE_BIN"
+        android:summary="@string/pref_description_move_first_to_recycle_bin"
+        android:title="@string/pref_title_move_first_to_recycle_bin" />
 
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->

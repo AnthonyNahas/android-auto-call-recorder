@@ -78,9 +78,18 @@
 
     <string name="pref_header_general">General</string>
 
+    <!--switch pref general auto call record-->
     <string name="pref_title_auto_call_recording">Enable auto record calls</string>
-    <string name="pref_description_auto_call_recording">If you make or receive a call, the app will try to record the call
+    <string name="pref_description_auto_call_recording">If you make or receive a call,
+        the app will try to record the call
     </string>
+
+    <!--switch pref general move record to recycle bin-->
+    <string name="pref_title_move_first_to_recycle_bin">Recycle bin</string>
+    <string name="pref_description_move_first_to_recycle_bin">Before deleting the records,
+        move them first to the recycle bin
+    </string>
+
     <string name="pref_title_can_add_to_library">Music Library</string>
     <string name="pref_description_can_add_to_library">Add recording to music library
     </string>
@@ -195,7 +204,8 @@
     <string name="outgoing">outgoing</string>
     <string name="close">close</string>
     <string name="action_share">share</string>
-    <string name="action_upload">upload</string>
+    <string name="action_lock">Lock record</string>
+    <string name="action_unlock">Unlock recordtring</string>
     <string name="page_title_records">Records</string>
     <string name="page_title_favorite">Favorites</string>
     <string name="radiobutton_time">Time</string>

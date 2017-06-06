@@ -1,4 +1,4 @@
-package com.anthonynahas.autocallrecorder.utilities.helpers;
+package com.anthonynahas.autocallrecorder.utilities.asyncTasks;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -11,6 +11,7 @@ import java.lang.ref.WeakReference;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.MainOldActivity;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
+import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 
 /**
  * Created by A on 18.06.16.
