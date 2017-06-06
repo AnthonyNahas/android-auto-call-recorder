@@ -29,8 +29,6 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 
 import org.chalup.microorm.MicroOrm;
 
-import java.util.List;
-
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 /**
@@ -51,10 +49,16 @@ public class RecordsActivity extends AppCompatActivity implements LoaderManager.
     private RecordsAdapter mAdapter;
     private FloatingSearchView mSearchView;
 
+    private int mLoaderManagerID;
+    private Bundle mArguments;
+
     public enum args {
         title,
+        projection,
         selection,
-        selectionArguments
+        selectionArguments,
+        limit,
+        offset
     }
 
     @Override
@@ -62,15 +66,16 @@ public class RecordsActivity extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
 
         mContext = this;
-
-        int loaderManagerID = 0;
+        String activityTitle = getIntent().getStringExtra(args.title.name());
+        mArguments = prepareArguments(activityTitle);
+        mLoaderManagerID = 0;
 
         setContentView(R.layout.activity_records);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(getIntent().getStringExtra(args.title.name()));
+            getSupportActionBar().setTitle(activityTitle);
         }
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -87,6 +92,8 @@ public class RecordsActivity extends AppCompatActivity implements LoaderManager.
         mAdapter = new RecordsAdapter();
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
+
+        // TODO: 02.06.17 refresh on scrolling the recyclerview
 
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
 //        mSearchView.attachNavigationDrawerToMenuButton(mDrawer);
@@ -121,7 +128,7 @@ public class RecordsActivity extends AppCompatActivity implements LoaderManager.
             }
         });
 
-        getSupportLoaderManager().initLoader(loaderManagerID, null, this);
+        getSupportLoaderManager().initLoader(mLoaderManagerID, mArguments, this);
     }
 
     @Override
@@ -138,20 +145,21 @@ public class RecordsActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {"*"};
-        String selection = null;
-        String[] selectionArgs = null;
+        String[] projection = args.getStringArray(RecordsActivity.args.projection.name());
+        String selection = args.getString(RecordsActivity.args.selection.name());
+        String[] selectionArgs = args.getStringArray(RecordsActivity.args.selectionArguments.name());
         String sort = null;
+        int limit = args.getInt(RecordsActivity.args.limit.name());
+        int offset = args.getInt(RecordsActivity.args.offset.name());
 
         switch (id) {
             case 0:
-                // TODO: 17.05.2017 offset and limit control
                 Uri uri = RecordDbContract.CONTENT_URL
                         .buildUpon()
                         .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_LIMIT,
-                                String.valueOf(15))
+                                String.valueOf(limit))
                         .appendQueryParameter(RecordsContentProvider.QUERY_PARAMETER_OFFSET,
-                                String.valueOf(0))
+                                String.valueOf(offset))
                         .build();
                 return new CursorLoader(this, uri, projection, selection, selectionArgs, sort);
 
@@ -169,6 +177,38 @@ public class RecordsActivity extends AppCompatActivity implements LoaderManager.
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         // TODO: 02.06.2017
+    }
+
+    private Bundle prepareArguments(String activityTitle) {
+        String[] projection = null;
+        String selection = null;
+        String[] selectionArgs = null;
+        int limit = 15; //default
+        int offset = 0; //default
+
+        Bundle args = new Bundle();
+
+        if (getResources().getString(R.string.title_activity_rubbished_records).equals(activityTitle)) {
+            projection = new String[]{"*"};
+            selection = RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE + " = 1";
+        } else if (getResources().getString(R.string.title_activity_locked_records).equals(activityTitle)) {
+            projection = new String[]{"*"};
+            selection = RecordDbContract.RecordItem.COLUMN_IS_LOCKED + " = 1";
+        }
+
+        args.putStringArray(RecordsActivity.args.projection.name(), projection);
+        args.putString(RecordsActivity.args.selection.name(), selection);
+        args.putStringArray(RecordsActivity.args.selectionArguments.name(), selectionArgs);
+        args.putInt(RecordsActivity.args.limit.name(), limit);
+        args.putInt(RecordsActivity.args.offset.name(), offset);
+
+        return args;
+
+    }
+
+    public void refreshCursorLoader(int newOffset) {
+        mArguments.putInt(RecordsActivity.args.offset.name(), newOffset);
+        getSupportLoaderManager().restartLoader(mLoaderManagerID, mArguments, this);
     }
 
 }
