@@ -73,8 +73,13 @@ public class Record implements Serializable, Parcelable {
     //    @Column(RecordDbContract.Extended.COLUMN_TOTAL_CALLS)
     private int mTotalCalls;
 
+    //The name of the contact if it's available
     private String mName;
+
+    //The Rank of the contact if it's available
     private int mRank;
+
+    private boolean mSelected;
 
     //base64 // TODO: 01.06.2017
 
@@ -259,6 +264,14 @@ public class Record implements Serializable, Parcelable {
         this.mRank = mRank;
     }
 
+    public boolean isSelected() {
+        return mSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        mSelected = selected;
+    }
+
     @Override
     public int hashCode() {
         int hashCode = 3;
@@ -384,6 +397,7 @@ public class Record implements Serializable, Parcelable {
             record.mLove = parcel.readByte() != 0;
             record.mLocked = parcel.readByte() != 0;
             record.mToDelete = parcel.readByte() != 0;
+            record.mSelected = parcel.readByte() != 0;
             record.mName = parcel.readString();
             record.mRank = parcel.readInt();
             record.mTotalIncomingCalls = parcel.readInt();
@@ -416,6 +430,7 @@ public class Record implements Serializable, Parcelable {
         parcel.writeByte((byte) (mLove ? 1 : 0));
         parcel.writeByte((byte) (mLocked ? 1 : 0));
         parcel.writeByte((byte) (mToDelete ? 1 : 0));
+        parcel.writeByte((byte) (mSelected ? 1 : 0));
         parcel.writeString(mName);
         parcel.writeInt(mRank);
         parcel.writeInt(mTotalIncomingCalls);
