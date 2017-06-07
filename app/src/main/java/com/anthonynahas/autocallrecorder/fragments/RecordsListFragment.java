@@ -37,6 +37,7 @@ import com.anthonynahas.autocallrecorder.classes.Record;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
 import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
+import com.anthonynahas.autocallrecorder.providers.cursors.CursorLogger;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
@@ -527,6 +528,7 @@ public class RecordsListFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d(TAG, "onLoadingFinished");
+        CursorLogger.newInstance().log(data);
         switch (loader.getId()) {
             case 0:
                 Log.d(TAG, "onLoadFinished: loading MORE");

@@ -15,6 +15,7 @@ import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.utilities.decorators.ActionBarDecorator;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 
+// TODO: 07.06.2017 pull refresh --> get all contacts <=> error
 public class SingleContactRecordActivity extends AppCompatActivity {
 
     private Record mRecord;

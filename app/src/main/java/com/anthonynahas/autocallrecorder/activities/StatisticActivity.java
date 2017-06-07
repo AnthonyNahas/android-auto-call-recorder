@@ -147,16 +147,6 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        int rows = data.getCount();
-        String[] columnNames = data.getColumnNames();
-        int columnCount = data.getColumnCount();
-
-
-        Log.d(TAG, "onLoadFinished with cursor size --> "
-                + rows + " with columnNames --> "
-                + Arrays.toString(columnNames)
-                + " with columnCount --> "
-                + columnCount);
 
         // if you need to dump the whole cursor to list
 //        mAdapter = new StatisticRecordsAdapter(RecordDbHelper.convertCursorToContactRecordsList(data));

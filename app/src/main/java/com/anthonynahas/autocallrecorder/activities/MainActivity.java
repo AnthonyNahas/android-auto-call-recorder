@@ -1,5 +1,6 @@
 package com.anthonynahas.autocallrecorder.activities;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -28,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static boolean sIsInActionMode = false;
 
+    private Activity mAppCompatActivity;
     private FloatingActionButton fabActionMode;
     private PreferenceHelper mPreferenceHelper;
     private FloatingSearchView mSearchView;
@@ -78,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_navigation_drawer_tabs);
 
+        mAppCompatActivity = this;
+
         mPreferenceHelper = new PreferenceHelper(this);
 
         MemoryCacheHelper.init();
@@ -88,14 +94,12 @@ public class MainActivity extends AppCompatActivity implements
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
-
 
         fabActionMode = (FloatingActionButton) findViewById(R.id.fab_go_in_action_mode);
         fabActionMode.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements
                 //noinspection SimplifiableIfStatement
                 switch (id) {
                     case R.id.action_add_demo_record:
-                        DemoRecordSupport.newInstance().createDemoRecord(getApplicationContext());
+                        InputDialog.newInstance().show(mAppCompatActivity, "Contact ID");
                         break;
                     case R.id.action_start_sample_animations:
                         startActivity(new Intent(getApplicationContext(), SampleMainActivity.class));
@@ -144,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
-
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -162,7 +165,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             });
         }
-
 
         mActionModeBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -215,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements
             super.onBackPressed();
         }
     }
-
 
     /**
      * @param requestCode
@@ -319,7 +320,6 @@ public class MainActivity extends AppCompatActivity implements
             args.putString(RecordsListFragment.BundleArgs.selection.name(), selection);
             mLoveRecordsListFragment = RecordsListFragment.newInstance(args);
         }
-
 
         /**
          * Get the correct tab by position

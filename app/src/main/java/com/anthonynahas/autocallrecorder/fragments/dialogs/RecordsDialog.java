@@ -61,7 +61,10 @@ import com.anthonynahas.ui_animator.AnimationLoader;
  * @version 1.5
  * @since 04.05.2016
  */
-public class RecordsDialog extends DialogFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class RecordsDialog extends DialogFragment implements
+        View.OnClickListener,
+        MediaPlayer.OnCompletionListener,
+        SeekBar.OnSeekBarChangeListener {
 
     public static final String TAG = RecordsDialog.class.getSimpleName();
 
@@ -72,6 +75,7 @@ public class RecordsDialog extends DialogFragment implements View.OnClickListene
     private FloatingActionButton mFloatingActionButton_play_pause;
 
     private MediaPlayer mMediaPlayer;
+
     private AudioSourceSwitcher mAudioSourceSwitcher;
     private Handler mSeekHandler = new Handler();
     private boolean isPaused;
@@ -173,26 +177,8 @@ public class RecordsDialog extends DialogFragment implements View.OnClickListene
         /**
          * The mediaplayer will be released, when the mediaplayer is done with playing the audio file
          */
-        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                if (!isPaused) {
-                    isPaused = true;
-                    mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
-                }
-                if (mMediaPlayer != null) {
-                    mMediaPlayer.reset();
-                    mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
-                    isPaused = true;
-                    setAndPrepareMediaPlayer();
-                    mSeekbarRec.setProgress(0);
-                    //mMediaPlayer.release();
-                    //isReleased = true;
-                    //mSeekHandler.removeCallbacks(run);
 
-                }
-            }
-        });
+        mMediaPlayer.setOnCompletionListener(null);
 
         FloatingActionButton floatingActionButton_share = (FloatingActionButton) view.findViewById(R.id.floating_action_button_share);
         FloatingActionButton floatingActionButton_delete = (FloatingActionButton) view.findViewById(R.id.floating_action_button_delete);
@@ -361,15 +347,36 @@ public class RecordsDialog extends DialogFragment implements View.OnClickListene
     }
 
     private void playMediaPlayer() {
+        mMediaPlayer.setOnCompletionListener(this);
         isPaused = false;
         mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_pause);
         mMediaPlayer.start();
     }
 
     private void stopMediaPlayer() {
+        mMediaPlayer.setOnCompletionListener(null);
         isPaused = true;
         mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
         mMediaPlayer.pause();
+    }
+
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        if (!isPaused) {
+            isPaused = true;
+            mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
+        }
+        if (mMediaPlayer != null) {
+            mMediaPlayer.reset();
+            mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
+            isPaused = true;
+            setAndPrepareMediaPlayer();
+            mSeekbarRec.setProgress(0);
+            //mMediaPlayer.release();
+            //isReleased = true;
+            //mSeekHandler.removeCallbacks(run);
+        }
     }
 
     private void deleteRecord() {

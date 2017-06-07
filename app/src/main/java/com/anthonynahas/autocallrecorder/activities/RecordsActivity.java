@@ -1,9 +1,11 @@
 package com.anthonynahas.autocallrecorder.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,9 +27,12 @@ import android.widget.CheckBox;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
+import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
+import com.anthonynahas.autocallrecorder.utilities.helpers.SQLiteHelper;
 import com.anthonynahas.autocallrecorder.utilities.support.DemoRecordSupport;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
@@ -48,11 +54,13 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 public class RecordsActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         ItemClickSupport.OnItemClickListener,
-        ItemClickSupport.OnItemLongClickListener {
+        ItemClickSupport.OnItemLongClickListener,
+        FloatingSearchView.OnQueryChangeListener {
 
     private static final String TAG = RecordsActivity.class.getSimpleName();
 
     private Context mContext;
+    private Activity mAppCompatActivity;
     private RecyclerView mRecyclerView;
     private RecordsAdapter mAdapter;
     private FloatingSearchView mSearchView;
@@ -77,6 +85,7 @@ public class RecordsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
 
         mContext = this;
+        mAppCompatActivity = this;
         String activityTitle = getIntent().getStringExtra(args.title.name());
         mArguments = prepareArguments(activityTitle);
         mLoaderManagerID = 0;
@@ -113,6 +122,7 @@ public class RecordsActivity extends AppCompatActivity implements
 
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
 //        mSearchView.attachNavigationDrawerToMenuButton(mDrawer);
+        mSearchView.setOnQueryChangeListener(this);
         mSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
             /**
              * Perform an action when a menu item is selected
@@ -126,8 +136,7 @@ public class RecordsActivity extends AppCompatActivity implements
                 //noinspection SimplifiableIfStatement
                 switch (id) {
                     case R.id.action_add_demo_record:
-                        DemoRecordSupport.newInstance().createDemoRecord(getApplicationContext());
-                        mAdapter.notifyItemChanged(0);
+                        InputDialog.newInstance().show(mAppCompatActivity, "Contact ID");
                         break;
                     case R.id.action_start_sample_animations:
                         startActivity(new Intent(getApplicationContext(), SampleMainActivity.class));
@@ -174,8 +183,7 @@ public class RecordsActivity extends AppCompatActivity implements
             call_selected.setChecked(!isChecked);
             updateToolbar();
             updateToolbarMenu();
-        }
-        else{
+        } else {
             cancelActionMode();
         }
         return false;
@@ -281,6 +289,32 @@ public class RecordsActivity extends AppCompatActivity implements
         // TODO: 02.06.2017
     }
 
+    @Override
+    public void onSearchTextChanged(String oldQuery, String newQuery) {
+        Log.d(TAG, "oldQuery = " + oldQuery + " | newQuery = " + newQuery);
+
+        String contactIDsArguments = SQLiteHelper
+                .convertArrayToInOperatorArguments(ContactHelper
+                        .getContactIDsByName(ContactHelper
+                                .getContactCursorByName(mContext
+                                        .getContentResolver(), newQuery)));
+
+        String selection = RecordDbContract.RecordItem.COLUMN_NUMBER
+                + " LIKE ?"
+                + " OR "
+                + RecordDbContract.RecordItem.COLUMN_CONTACT_ID
+                + " IN "
+                + contactIDsArguments;
+        //+ "= 682";
+        String[] selectionArgs = new String[]{"%" + newQuery + "%"};
+
+        Bundle args = (Bundle) mArguments.clone();
+        args.putString(RecordsActivity.args.selection.name(), selection);
+        args.putStringArray(RecordsActivity.args.selectionArguments.name(), selectionArgs);
+
+        refreshCursorLoader(args);
+    }
+
     private Bundle prepareArguments(String activityTitle) {
         String[] projection = null;
         String selection = null;
@@ -306,6 +340,10 @@ public class RecordsActivity extends AppCompatActivity implements
 
         return args;
 
+    }
+
+    private void refreshCursorLoader(Bundle args) {
+        getSupportLoaderManager().restartLoader(mLoaderManagerID, args, this);
     }
 
     public void refreshCursorLoader(int newOffset) {

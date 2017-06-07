@@ -16,6 +16,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.providers.cursors.CursorLogger;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -72,7 +73,7 @@ public class ContactHelper {
 
             if (cursor != null) {
                 cursor.moveToFirst();
-                logContactCursor(cursor);
+                CursorLogger.newInstance().log(cursor);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error: ", e);
@@ -159,6 +160,7 @@ public class ContactHelper {
         try {
             cursor = contactHelper.query(contactUri, projection, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
+                CursorLogger.newInstance().log(cursor);
                 int contactNameRow = cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME);
                 return cursor.getString(contactNameRow);
             }
@@ -264,8 +266,8 @@ public class ContactHelper {
      * Get the profile pic of a contact by contact id as bitmap
      *
      * @param contentResolver - the content resolver of the context
-     * @param mode - whether in large mode (0) or thumbnails (1)
-     * @param contactID - the id of the target contact
+     * @param mode            - whether in large mode (0) or thumbnails (1)
+     * @param contactID       - the id of the target contact
      * @return - the bitmap of the contact if it's available
      */
     public static Bitmap getBitmapForContactID(ContentResolver contentResolver, int mode, long contactID) {
@@ -318,40 +320,6 @@ public class ContactHelper {
             buf.close();
         } catch (Exception e) {
             Log.e("Error reading file", e.toString());
-        }
-    }
-
-    private static void logContactCursor(Cursor cursor) {
-        if (cursor.moveToFirst()) {
-            do {
-                long Contact_contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                long data_raw_contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID));
-
-                long phone_lookup_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
-                long phone_lookup_contact_id = 0; //this is the right one
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    phone_lookup_contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID));
-                }
-
-                String contact_display_name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-                Log.d(TAG,
-                        //"ContactsContract.Contacts._ID "
-                        //      + Contact_contact_id
-                        //    + " Data.CONTACT_ID = "
-                        //  + data_raw_contact_id
-                        " PhoneLookup._ID = "
-                                + phone_lookup_id
-                                + " contact id = "
-                                + phone_lookup_contact_id
-                                + " --> display name = "
-                                + contact_display_name
-                                + " --> number = "
-                                + contact_number);
-            } while (cursor.moveToNext());
-
-            cursor.moveToFirst();
         }
     }
 }

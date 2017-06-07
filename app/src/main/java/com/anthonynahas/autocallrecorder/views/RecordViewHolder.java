@@ -15,6 +15,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -51,7 +52,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
     private ImageView call_icon_isIncoming;
     private TextView call_duration;
     private ImageButton mImageCallIsLove;
-    public static AppCompatCheckBox call_selected;
+    public static CheckBox call_selected;
 
 
     private long mItemID;
@@ -67,7 +68,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         call_icon_isIncoming = (ImageView) view.findViewById(R.id.iv_call_is_incoming);
         call_duration = (TextView) view.findViewById(R.id.tv_call_duration);
 
-        call_selected = (AppCompatCheckBox) view.findViewById(R.id.call_selected);
+        call_selected = (CheckBox) view.findViewById(R.id.call_selected);
         call_selected.setOnClickListener(this);
 
         mImageCallIsLove = (ImageButton) view.findViewById(R.id.iv_call_isLove);

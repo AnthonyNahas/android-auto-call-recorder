@@ -12,6 +12,7 @@ import com.anthonynahas.autocallrecorder.classes.Record;
 import com.anthonynahas.autocallrecorder.classes.Resources;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
+import com.anthonynahas.autocallrecorder.providers.cursors.CursorLogger;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,26 +60,27 @@ public class DemoRecordSupport {
         Log.d(TAG, "contentResolver inserted dummy record");
     }
 
-
     /**
      * create and insert db record using a real contact information.
      *
-     * @param context - the used context
+     * @param context   - the used context
+     * @param contactID - the target contact id. If id = -1 then get a random one
      */
-    public void createDemoRecord(final Context context) {
+    public void createDemoRecord(final Context context, long contactID) {
 
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         // TODO: 17.05.2017 @contact_ID
         String[] projection =
                 {
-                        ContactsContract.Contacts._ID,
-                        ContactsContract.Data.CONTACT_ID,
-                        ContactsContract.Data.RAW_CONTACT_ID,
-                        ContactsContract.PhoneLookup._ID,
-                        ContactsContract.CommonDataKinds.Phone._ID,
+                        ContactsContract.PhoneLookup.CONTACT_ID,
+//                        ContactsContract.CommonDataKinds.Phone._ID, //the same as phonelookup_ID
                         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
                         ContactsContract.CommonDataKinds.Phone.NUMBER
                 };
+
+        String selection = contactID != 0 ? ContactsContract.PhoneLookup.CONTACT_ID + " = ?" : null;
+        String[] selectionArguments = contactID != 0
+                ? new String[]{String.valueOf(contactID)} : null;
 
         String orderBy = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
 
@@ -87,15 +89,20 @@ public class DemoRecordSupport {
             protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
 
                 if (cursor.getCount() == 0) {
-                    createDummyRecord(context);
+//                    createDummyRecord(context);
                     return;
                 }
 
-                int random = generateNumber(cursor.getCount() - 1, 0);
+                CursorLogger.newInstance().log(cursor);
 
-                cursor.moveToPosition(random);
+                if (cursor.getCount() == 1) {
+                    cursor.moveToFirst();
+                } else {
+                    int random = generateNumber(cursor.getCount() - 1, 0);
+                    cursor.moveToPosition(random);
+                }
 
-                long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
+                long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID));
                 String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 ContentValues values = new ContentValues();
@@ -115,7 +122,7 @@ public class DemoRecordSupport {
         };
 
         // retrieve all contacts
-        asyncQueryHandler.startQuery(0, null, uri, projection, null, null, orderBy);
+        asyncQueryHandler.startQuery(0, null, uri, projection, selection, selectionArguments, orderBy);
 
     }
 
