@@ -1,6 +1,7 @@
 package com.anthonynahas.autocallrecorder.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +13,9 @@ import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
+import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import com.anthonynahas.ui_animator.CheckboxAnimator;
 
 import org.apache.commons.collections4.ListUtils;
@@ -124,11 +127,6 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             mIVCallIsLove = (ImageView) view.findViewById(R.id.iv_call_isLove);
         }
 
-
-        public ImageView getImageProfile() {
-            return mIVProfile;
-        }
-
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
@@ -140,7 +138,6 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
                     break;
             }
         }
-
     }
 
     @Override
@@ -184,6 +181,13 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
         viewHolder
                 .mIVCallIsLove
                 .setImageResource(record.isLove() ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
+
+        Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
+        if (cachedBitmap != null) {
+            viewHolder.mIVProfile.setImageBitmap(cachedBitmap);
+        } else {
+            new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(mRecordsList.get(position).getContactID());
+        }
 
         if (viewHolder.mCheckBoxCallSelected.isShown()) {
             viewHolder.mCheckBoxCallSelected.setChecked(record.isSelected());

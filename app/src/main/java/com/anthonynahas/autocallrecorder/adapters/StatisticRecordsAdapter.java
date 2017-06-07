@@ -37,25 +37,21 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     // you provide access to all the views for a data item in a view holder
     public static class RecordViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        private TextView mCallNameOrNumber;
-        private TextView mRankTextView;
-        private TextView mTotalIncomingCallsTextView;
-        private TextView mTotalOutgoingCallsTextView;
-        private ImageView mImageProfile;
+        private TextView mTVCallNameOrNumber;
+        private TextView mTVRank;
+        private TextView mTVTotalIncomingCalls;
+        private TextView mTVTotalOutgoingCalls;
+        private ImageView mIVProfile;
 
 
         RecordViewHolder(View view) {
             super(view);
-            mCallNameOrNumber = (TextView) view.findViewById(R.id.tv_call_contact_name_or_number);
-            mRankTextView = (TextView) view.findViewById(R.id.tv_rank);
-            mTotalIncomingCallsTextView = (TextView) view.findViewById(R.id.tv_total_incoming_calls);
-            mTotalOutgoingCallsTextView = (TextView) view.findViewById(R.id.tv_total_outgoing_calls);
-            mImageProfile = (ImageView) view.findViewById(R.id.iv_profile);
+            mTVCallNameOrNumber = (TextView) view.findViewById(R.id.tv_call_contact_name_or_number);
+            mTVRank = (TextView) view.findViewById(R.id.tv_rank);
+            mTVTotalIncomingCalls = (TextView) view.findViewById(R.id.tv_total_incoming_calls);
+            mTVTotalOutgoingCalls = (TextView) view.findViewById(R.id.tv_total_outgoing_calls);
+            mIVProfile = (ImageView) view.findViewById(R.id.iv_profile);
 
-        }
-
-        public ImageView getImageProfile() {
-            return mImageProfile;
         }
     }
 
@@ -95,16 +91,16 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
         Record record = mRecordsList.get(position);
         record.setRank(position + 1);
 
-        viewHolder.mRankTextView.setText("#" + record.getRank());
-        viewHolder.mCallNameOrNumber.setText(record.getNumber());
-        viewHolder.mTotalIncomingCallsTextView.setText(String.valueOf(record.getTotalIncomingCalls()));
-        viewHolder.mTotalOutgoingCallsTextView.setText(String.valueOf(record.getTotalOutgoingCall()));
+        viewHolder.mTVRank.setText("#" + record.getRank());
+        viewHolder.mTVCallNameOrNumber.setText(record.getNumber());
+        viewHolder.mTVTotalIncomingCalls.setText(String.valueOf(record.getTotalIncomingCalls()));
+        viewHolder.mTVTotalOutgoingCalls.setText(String.valueOf(record.getTotalOutgoingCall()));
 
         Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
         if (cachedBitmap != null) {
-            viewHolder.mImageProfile.setImageBitmap(cachedBitmap);
+            viewHolder.mIVProfile.setImageBitmap(cachedBitmap);
         } else {
-            new ContactPhotosAsyncTask(mContext, record, viewHolder.mImageProfile).execute(mRecordsList.get(position).getContactID());
+            new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(mRecordsList.get(position).getContactID());
         }
 
     }
