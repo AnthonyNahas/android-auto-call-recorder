@@ -99,17 +99,13 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
         viewHolder.mCallNameOrNumber.setText(record.getNumber());
         viewHolder.mTotalIncomingCallsTextView.setText(String.valueOf(record.getTotalIncomingCalls()));
         viewHolder.mTotalOutgoingCallsTextView.setText(String.valueOf(record.getTotalOutgoingCall()));
-        //viewHolder.mImageProfile.setTag(mRecordsList.get(position).getContactID());
 
         Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
         if (cachedBitmap != null) {
             viewHolder.mImageProfile.setImageBitmap(cachedBitmap);
         } else {
-            new ContactPhotosAsyncTask(mContext, record, viewHolder).execute(mRecordsList.get(position).getContactID());
+            new ContactPhotosAsyncTask(mContext, record, viewHolder.mImageProfile).execute(mRecordsList.get(position).getContactID());
         }
-
-//        if (viewHolder.mImageProfile.getDrawable() == null) {
-//        }
 
     }
 

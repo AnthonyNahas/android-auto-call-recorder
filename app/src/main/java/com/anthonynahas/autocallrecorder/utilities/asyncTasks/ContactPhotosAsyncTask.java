@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.StatisticRecordsAdapter;
@@ -34,12 +35,13 @@ public class ContactPhotosAsyncTask extends AsyncTask<Long, Void, Bitmap> {
 
     private Context mContext;
     private Record mRecord;
+    private ImageView mImageView;
     private StatisticRecordsAdapter.RecordViewHolder mViewHolder;
 
-    public ContactPhotosAsyncTask(Context context, Record record, StatisticRecordsAdapter.RecordViewHolder viewHolder) {
+    public ContactPhotosAsyncTask(Context context, Record record, ImageView imageView) {
         mContext = context;
         mRecord = record;
-        mViewHolder = viewHolder;
+        mImageView = imageView;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class ContactPhotosAsyncTask extends AsyncTask<Long, Void, Bitmap> {
         }.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mViewHolder.getImageProfile().setImageBitmap(bitmap != null ?
+                mImageView.setImageBitmap(bitmap != null ?
                         bitmap : ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(),
                         R.drawable.custmtranspprofpic60px, 60, 60));
                 Log.d(TAG, "done " + sCounter);
