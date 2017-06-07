@@ -10,9 +10,10 @@ import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.StatisticRecordsAdapter;
+import com.anthonynahas.autocallrecorder.classes.Record;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
-import com.anthonynahas.autocallrecorder.utilities.simulators.DelaySimulator;
+import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 
 /**
  * Created by A on 25.05.17.
@@ -32,15 +33,13 @@ public class ContactPhotosAsyncTask extends AsyncTask<Long, Void, Bitmap> {
     private static int sCounter = 1;
 
     private Context mContext;
-    private StatisticRecordsAdapter mStatisticRecordsAdapter;
+    private Record mRecord;
     private StatisticRecordsAdapter.RecordViewHolder mViewHolder;
-    private int mPosition;
 
-    public ContactPhotosAsyncTask(Context context, StatisticRecordsAdapter statisticRecordsAdapter, StatisticRecordsAdapter.RecordViewHolder viewHolder, int position) {
+    public ContactPhotosAsyncTask(Context context, Record record, StatisticRecordsAdapter.RecordViewHolder viewHolder) {
         mContext = context;
-        mStatisticRecordsAdapter = statisticRecordsAdapter;
+        mRecord = record;
         mViewHolder = viewHolder;
-        mPosition = position;
     }
 
     @Override
@@ -50,7 +49,15 @@ public class ContactPhotosAsyncTask extends AsyncTask<Long, Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(Long... longs) {
-        return ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1, longs[0]);
+        Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(mRecord.getNumber());
+        Bitmap contactsBitmap = cachedBitmap != null ?
+                cachedBitmap
+                :
+                ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1, longs[0]);
+        if (cachedBitmap == null && contactsBitmap != null) {
+            MemoryCacheHelper.setBitmapToMemoryCache(mRecord.getNumber(), contactsBitmap);
+        }
+        return contactsBitmap;
     }
 
     @Override
@@ -68,7 +75,6 @@ public class ContactPhotosAsyncTask extends AsyncTask<Long, Void, Bitmap> {
                 mViewHolder.getImageProfile().setImageBitmap(bitmap != null ?
                         bitmap : ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(),
                         R.drawable.custmtranspprofpic60px, 60, 60));
-                mStatisticRecordsAdapter.bindViewHolder(mViewHolder, mPosition);
                 Log.d(TAG, "done " + sCounter);
             }
         }, 1000 * sCounter++);

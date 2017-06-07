@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -20,17 +19,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.concurrent.ExecutionException;
-
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.ContactFullscreenActivity;
-import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
-import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
-import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
 import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
+import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
+import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
+import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by A on 20.03.17.
@@ -143,7 +142,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
             if (img != null) {
                 call_contact_profile.setImageBitmap(img);
-                MemoryCacheHelper.setBitmapToMemoryCache(phoneNumber, img);
+//                MemoryCacheHelper.setBitmapToMemoryCache(phoneNumber, img);
             } else {
                 //viewHolder.call_contact_profile.setImageResource(R.drawable.custmtranspprofpic);
                 call_contact_profile.setImageBitmap(ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(), R.drawable.custmtranspprofpic60px, 60, 60));

@@ -1,6 +1,7 @@
 package com.anthonynahas.autocallrecorder.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.classes.Record;
 import com.anthonynahas.autocallrecorder.classes.RecordExtended;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
+import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 
 import java.util.List;
 
@@ -99,9 +101,15 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
         viewHolder.mTotalOutgoingCallsTextView.setText(String.valueOf(record.getTotalOutgoingCall()));
         //viewHolder.mImageProfile.setTag(mRecordsList.get(position).getContactID());
 
-        if (viewHolder.mImageProfile.getDrawable() == null) {
-            new ContactPhotosAsyncTask(mContext, this, viewHolder, position).execute(mRecordsList.get(position).getContactID());
+        Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
+        if (cachedBitmap != null) {
+            viewHolder.mImageProfile.setImageBitmap(cachedBitmap);
+        } else {
+            new ContactPhotosAsyncTask(mContext, record, viewHolder).execute(mRecordsList.get(position).getContactID());
         }
+
+//        if (viewHolder.mImageProfile.getDrawable() == null) {
+//        }
 
     }
 
