@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -36,7 +37,9 @@ public class ContactPhotosAsyncTask extends AsyncTask<Long, Void, Bitmap> {
     private Record mRecord;
     private ImageView mImageView;
 
-    public ContactPhotosAsyncTask(Context context, Record record, ImageView imageView) {
+    public ContactPhotosAsyncTask(@NonNull Context context,
+                                  @NonNull Record record,
+                                  @NonNull ImageView imageView) {
         mContext = context;
         mRecord = record;
         mImageView = imageView;
@@ -56,13 +59,15 @@ public class ContactPhotosAsyncTask extends AsyncTask<Long, Void, Bitmap> {
                 ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1, longs[0]);
         if (cachedBitmap == null && contactsBitmap != null) {
             MemoryCacheHelper.setBitmapToMemoryCache(mRecord.getNumber(), contactsBitmap);
+            return contactsBitmap;
         }
-        return contactsBitmap;
+
+        return ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(),
+                R.drawable.custmtranspprofpic60px, 60, 60);
     }
 
     @Override
-    protected void onPostExecute(final Bitmap bitmap) {
-
+    protected void onPostExecute(@NonNull final Bitmap bitmap) {
         new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
@@ -72,9 +77,7 @@ public class ContactPhotosAsyncTask extends AsyncTask<Long, Void, Bitmap> {
         }.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mImageView.setImageBitmap(bitmap != null ?
-                        bitmap : ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(),
-                        R.drawable.custmtranspprofpic60px, 60, 60));
+                mImageView.setImageBitmap(bitmap);
                 Log.d(TAG, "done " + sCounter);
             }
         }, 1000 * sCounter++);

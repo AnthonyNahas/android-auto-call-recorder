@@ -3,6 +3,7 @@ package com.anthonynahas.autocallrecorder.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactNameAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
@@ -105,7 +107,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    static class RecordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class RecordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // each data item is just a string in this case
         private CheckBox mCheckBoxCallSelected;
@@ -125,6 +127,29 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             mIVProfile = (ImageView) view.findViewById(R.id.iv_profile);
             mIVCallIsIncoming = (ImageView) view.findViewById(R.id.iv_call_is_incoming);
             mIVCallIsLove = (ImageView) view.findViewById(R.id.iv_call_isLove);
+        }
+
+        private void handleTVCallNameOrNumber(@NonNull RecordViewHolder viewHolder, int position) {
+            Record record = mRecordsList.get(position);
+            record.setName(record.getName() != null && !record.getName().isEmpty() ?
+                    record.getName()
+                    :
+                    MemoryCacheHelper.getMemoryCacheForContactsName(record.getNumber()));
+            if (record.getName() != null && !record.getName().isEmpty()) {
+                viewHolder.mTVCallNameOrNumber.setText(record.getName());
+            } else {
+                new ContactNameAsyncTask(mContext, record, viewHolder.mTVCallNameOrNumber).execute();
+            }
+        }
+
+        private void handleIVProfile(@NonNull RecordViewHolder viewHolder, int position) {
+            Record record = mRecordsList.get(position);
+            Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
+            if (cachedBitmap != null) {
+                viewHolder.mIVProfile.setImageBitmap(cachedBitmap);
+            } else {
+                new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(mRecordsList.get(position).getContactID());
+            }
         }
 
         @Override
@@ -182,12 +207,8 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
                 .mIVCallIsLove
                 .setImageResource(record.isLove() ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
 
-        Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
-        if (cachedBitmap != null) {
-            viewHolder.mIVProfile.setImageBitmap(cachedBitmap);
-        } else {
-            new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(mRecordsList.get(position).getContactID());
-        }
+        viewHolder.handleTVCallNameOrNumber(viewHolder, position);
+        viewHolder.handleIVProfile(viewHolder, position);
 
         if (viewHolder.mCheckBoxCallSelected.isShown()) {
             viewHolder.mCheckBoxCallSelected.setChecked(record.isSelected());
