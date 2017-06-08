@@ -1,9 +1,11 @@
 package com.anthonynahas.autocallrecorder.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.classes.Resources;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactNameAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
@@ -122,19 +125,22 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
         RecordViewHolder(View view) {
             super(view);
             mCheckBoxCallSelected = (CheckBox) view.findViewById(R.id.call_selected);
+            mCheckBoxCallSelected.setOnClickListener(this);
+
             mTVCallNameOrNumber = (TextView) view.findViewById(R.id.tv_call_contact_name_or_number);
             mTVDate = (TextView) view.findViewById(R.id.tv_call_date);
             mTVDuration = (TextView) view.findViewById(R.id.tv_call_duration);
+
             mIVProfile = (ImageView) view.findViewById(R.id.iv_profile);
             mIVCallIsIncoming = (ImageView) view.findViewById(R.id.iv_call_is_incoming);
-            mIVCallIsLove = (ImageView) view.findViewById(R.id.iv_call_isLove);
 
+            mIVCallIsLove = (ImageView) view.findViewById(R.id.iv_call_isLove);
             mIVCallIsLove.setOnClickListener(this);
         }
 
         private void handleTVCallNameOrNumber(@NonNull RecordViewHolder viewHolder, int position) {
             Record record = mRecordsList.get(position);
-            if(position == RecyclerView.NO_POSITION){
+            if (position == RecyclerView.NO_POSITION) {
                 Log.d(TAG, "no position");
             }
             record.setName(record.getName() != null && !record.getName().isEmpty() ?
@@ -150,7 +156,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
 
         private void handleIVProfile(@NonNull RecordViewHolder viewHolder, int position) {
             Record record = mRecordsList.get(position);
-            if(position == RecyclerView.NO_POSITION){
+            if (position == RecyclerView.NO_POSITION) {
                 Log.d(TAG, "no position");
             }
             Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
@@ -169,15 +175,24 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             }
         }
 
+        private void handleCheckBoxCallSelected(Boolean isChecked, int position) {
+            mRecordsList.get(position).setSelected(isChecked);
+            LocalBroadcastManager.getInstance(mContext)
+                    .sendBroadcast(new Intent(Resources.ACTION_MODE_COUNTER)
+                            .putExtra(Resources.IS_CHECKED_KEY, !isChecked));
+            notifyItemChanged(position); //very important -> otherwise the view holder will not update and rebind
+        }
+
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.tv_call_contact_name_or_number:
                     break;
                 case R.id.call_selected:
+                    handleCheckBoxCallSelected(mCheckBoxCallSelected.isChecked(), getAdapterPosition());
                     break;
                 case R.id.iv_call_isLove:
-                    handleIVCallIsLove(this.getAdapterPosition());
+                    handleIVCallIsLove(getAdapterPosition());
                     break;
             }
         }

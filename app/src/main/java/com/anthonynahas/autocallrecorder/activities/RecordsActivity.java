@@ -1,8 +1,10 @@
 package com.anthonynahas.autocallrecorder.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +14,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +29,7 @@ import android.widget.CheckBox;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.classes.Resources;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
@@ -65,12 +69,13 @@ public class RecordsActivity extends AppCompatActivity implements
     private RecordsAdapter mAdapter;
     private FloatingSearchView mSearchView;
     private Toolbar mToolbar;
+    private BroadcastReceiver mBroadcastReceiver;
 
     private int mLoaderManagerID;
     private Bundle mArguments;
     private PreferenceHelper mPreferenceHelper;
 
-    private int mCounter;
+    public static int COUNTER;
 
     public enum args {
         title,
@@ -91,7 +96,7 @@ public class RecordsActivity extends AppCompatActivity implements
         mArguments = prepareArguments(activityTitle);
         mPreferenceHelper = new PreferenceHelper(this);
         mLoaderManagerID = 0;
-        mCounter = 0;
+        COUNTER = 0;
 
         setContentView(R.layout.activity_records);
 
@@ -100,6 +105,19 @@ public class RecordsActivity extends AppCompatActivity implements
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(activityTitle);
         }
+
+        mBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction()) {
+                    case Resources.ACTION_MODE_COUNTER:
+                        updateToolbarCounter(intent.getBooleanExtra(Resources.IS_CHECKED_KEY, false));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
@@ -159,18 +177,22 @@ public class RecordsActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(mBroadcastReceiver, new IntentFilter(Resources.ACTION_MODE_COUNTER));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
     public void onItemClicked(RecyclerView recyclerView, int position, final View v) {
         if (mAdapter.isActionMode()) {
-            CheckBox call_selected = ((CheckBox) v.findViewById(R.id.call_selected));
-            boolean isChecked = call_selected.isChecked();
-            call_selected.setChecked(!isChecked);
-            mAdapter.getRecordsList().get(position).setSelected(!isChecked);
-            if (isChecked) {
-                mCounter--;
-            } else {
-                mCounter++;
-            }
-            updateToolbar();
+            handleCheckBoxSelectionInActionMode(position, v);
         } else {
             RecordsDialog.show(mContext, mAdapter.getRecordsList().get(position));
         }
@@ -180,13 +202,22 @@ public class RecordsActivity extends AppCompatActivity implements
     public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
         if (!mAdapter.isActionMode()) {
             mAdapter.setActionMode(!mAdapter.isActionMode());
-            CheckBox call_selected = ((CheckBox) v.findViewById(R.id.call_selected));
-            boolean isChecked = call_selected.isChecked();
-            call_selected.setChecked(!isChecked);
-            updateToolbar();
+            handleCheckBoxSelectionInActionMode(position, v);
             updateToolbarMenu();
         }
         return false;
+    }
+
+    private CheckBox getTargetCheckBox(View view) {
+        return ((CheckBox) view.findViewById(R.id.call_selected));
+    }
+
+    private void handleCheckBoxSelectionInActionMode(int position, View v) {
+        CheckBox call_selected = getTargetCheckBox(v);
+        boolean isChecked = call_selected.isChecked();
+        call_selected.setChecked(!isChecked);
+        mAdapter.getRecordsList().get(position).setSelected(!isChecked);
+        updateToolbarCounter(isChecked);
     }
 
     @Override
@@ -224,12 +255,21 @@ public class RecordsActivity extends AppCompatActivity implements
         }
     }
 
+    private void updateToolbarCounter(boolean isChecked) {
+        if (isChecked) {
+            COUNTER--;
+        } else {
+            COUNTER++;
+        }
+        updateToolbar();
+    }
+
     private void updateToolbar() {
         if (mAdapter.isActionMode()) {
-            if (mCounter == 0) {
+            if (COUNTER == 0) {
                 getSupportActionBar().setTitle(getResources().getString(R.string.toolbar_action_mode_text));
             } else {
-                getSupportActionBar().setTitle(String.valueOf(mCounter));
+                getSupportActionBar().setTitle(String.valueOf(COUNTER));
             }
         } else {
             getSupportActionBar().setTitle(getIntent().getStringExtra(args.title.name()));
@@ -246,7 +286,7 @@ public class RecordsActivity extends AppCompatActivity implements
 
     private void cancelActionMode() {
         mAdapter.setActionMode(false);
-        mCounter = 0;
+        COUNTER = 0;
         updateToolbar();
         updateToolbarMenu();
         mAdapter.notifyDataSetChanged();

@@ -19,11 +19,13 @@ public class Resources {
     //Local Broadcast actions key for intent
     public static final String ACTION_MODE_SATE = "action_mode_state";
     public static final String ACTION_MODE_SENDER = "action_mode_sender";
+    public static final String ACTION_MODE_COUNTER = "action_mode_counter";
 
 
     //Intent - Bundle KEYS
     public static final String REC_PARC_KEY = "rec_parc_key";
     public static final String FAB_PARC_KEY = "fab_parc_key";
+    public static final String IS_CHECKED_KEY = "is_checked_key";
 
     //others
     public static String DEMO_PATH = "demo_path";
