@@ -35,7 +35,7 @@ public class RecordDbHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, isLove);
         Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, Long.valueOf(id));
-        String selection = RecordDbContract.RecordItem.COLUMN_ID + "=?";
+        String selection = RecordDbContract.RecordItem.COLUMN_ID + " = ?";
         String[] selectionArgs = {id};
         RecordsQueryHandler.getInstance(context.getContentResolver())
                 .startUpdate(RecordsQueryHandler.update.UPDATE_IS_LOVE.ordinal(), null, uri, contentValues, selection, selectionArgs);

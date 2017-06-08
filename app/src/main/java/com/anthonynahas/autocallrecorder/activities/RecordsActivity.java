@@ -27,10 +27,12 @@ import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.classes.Record;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
+import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
+import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.SQLiteHelper;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
@@ -66,6 +68,7 @@ public class RecordsActivity extends AppCompatActivity implements
 
     private int mLoaderManagerID;
     private Bundle mArguments;
+    private PreferenceHelper mPreferenceHelper;
 
     private int mCounter;
 
@@ -86,6 +89,7 @@ public class RecordsActivity extends AppCompatActivity implements
         mAppCompatActivity = this;
         String activityTitle = getIntent().getStringExtra(args.title.name());
         mArguments = prepareArguments(activityTitle);
+        mPreferenceHelper = new PreferenceHelper(this);
         mLoaderManagerID = 0;
         mCounter = 0;
 
@@ -155,9 +159,23 @@ public class RecordsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+    public void onItemClicked(RecyclerView recyclerView, final int position, final View v) {
         if (mAdapter.isActionMode()) {
-            CheckBox call_selected = ((CheckBox) v.findViewById(R.id.call_selected));
+            final CheckBox call_selected = ((CheckBox) v.findViewById(R.id.call_selected));
+            call_selected.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    boolean isChecked = call_selected.isChecked();
+                    call_selected.setChecked(!isChecked);
+                    mAdapter.getRecordsList().get(position).setSelected(!isChecked);
+                    if (isChecked) {
+                        mCounter--;
+                    } else {
+                        mCounter++;
+                    }
+                    updateToolbar();
+                }
+            });
             boolean isChecked = call_selected.isChecked();
             call_selected.setChecked(!isChecked);
             mAdapter.getRecordsList().get(position).setSelected(!isChecked);
@@ -168,7 +186,7 @@ public class RecordsActivity extends AppCompatActivity implements
             }
             updateToolbar();
         } else {
-            // TODO: 06.06.17 open dialog
+            RecordsDialog.show(mContext, mAdapter.getRecordsList().get(position));
         }
     }
 
@@ -181,8 +199,6 @@ public class RecordsActivity extends AppCompatActivity implements
             call_selected.setChecked(!isChecked);
             updateToolbar();
             updateToolbarMenu();
-        } else {
-            cancelActionMode();
         }
         return false;
     }
@@ -256,7 +272,8 @@ public class RecordsActivity extends AppCompatActivity implements
         String[] projection = args.getStringArray(RecordsActivity.args.projection.name());
         String selection = args.getString(RecordsActivity.args.selection.name());
         String[] selectionArgs = args.getStringArray(RecordsActivity.args.selectionArguments.name());
-        String sort = null;
+        String sort = mPreferenceHelper.getSortSelection()
+                + mPreferenceHelper.getSortArrange();
         int limit = args.getInt(RecordsActivity.args.limit.name());
         int offset = args.getInt(RecordsActivity.args.offset.name());
 

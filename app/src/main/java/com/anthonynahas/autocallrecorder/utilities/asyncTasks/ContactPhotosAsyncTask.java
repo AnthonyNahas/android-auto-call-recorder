@@ -27,7 +27,7 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 /**
  * Class that tries to load a bitmap of contact by id asynchronously
  */
-public class ContactPhotosAsyncTask extends AsyncTask<Long, Void, Bitmap> {
+public class ContactPhotosAsyncTask extends AsyncTask<Integer, Void, Bitmap> {
 
     private static final String TAG = ContactPhotosAsyncTask.class.getSimpleName();
 
@@ -50,22 +50,51 @@ public class ContactPhotosAsyncTask extends AsyncTask<Long, Void, Bitmap> {
         Log.d(TAG, "started with " + sCounter);
     }
 
+    /**
+     * Try to load a bitmap for a specific contact by id,
+     * supporting loading large and thumbnails bitmap
+     *
+     * @param integers - whether in large mode (0) or thumbnails (1)
+     * @return - the bitmap of the contact if it's available
+     */
     @Override
-    protected Bitmap doInBackground(Long... longs) {
-        Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(mRecord.getNumber());
-        Bitmap contactsBitmap = cachedBitmap != null ?
-                cachedBitmap
-                :
-                ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1, longs[0]);
-        if (cachedBitmap == null && contactsBitmap != null) {
-            MemoryCacheHelper.setBitmapToMemoryCache(mRecord.getNumber(), contactsBitmap);
-            return contactsBitmap;
+    protected Bitmap doInBackground(Integer... integers) {
+        Bitmap contactBitmap;
+        switch (integers[0]) {
+            case 0:
+                contactBitmap = ContactHelper.getBitmapForContactID(mContext.getContentResolver(),
+                        integers[0], mRecord.getContactID());
+                return contactBitmap != null ?
+                        contactBitmap
+                        :
+                        ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(),
+                                R.drawable.custmtranspprofpic, 150, 150);
+
+            case 1:
+                Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(mRecord.getNumber());
+                contactBitmap = cachedBitmap != null ?
+                        cachedBitmap
+                        :
+                        ContactHelper.getBitmapForContactID(mContext.getContentResolver(),
+                                integers[0], mRecord.getContactID());
+                if (cachedBitmap == null && contactBitmap != null) {
+                    MemoryCacheHelper.setBitmapToMemoryCache(mRecord.getNumber(), contactBitmap);
+                    return contactBitmap;
+                }
+
+                return ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(),
+                        R.drawable.custmtranspprofpic60px, 60, 60);
+            default:
+                return null;
         }
 
-        return ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(),
-                R.drawable.custmtranspprofpic60px, 60, 60);
     }
 
+    /**
+     * When done with background works, set th
+     *
+     * @param bitmap
+     */
     @Override
     protected void onPostExecute(@NonNull final Bitmap bitmap) {
         new Handler(Looper.getMainLooper()) {

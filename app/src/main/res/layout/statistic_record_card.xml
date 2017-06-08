@@ -30,7 +30,7 @@
             android:textSize="36sp"
             android:textStyle="bold|italic" />
 
-        <com.anthonynahas.autocallrecorder.customs.RoundedImageView
+        <com.anthonynahas.autocallrecorder.views.RoundedImageView
             android:id="@+id/iv_profile"
             android:layout_width="60dp"
             android:layout_height="60dp"

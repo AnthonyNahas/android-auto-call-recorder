@@ -13,7 +13,7 @@
         android:animateLayoutChanges="true"
         />
 
-        <com.anthonynahas.autocallrecorder.customs.RoundedImageView
+        <com.anthonynahas.autocallrecorder.views.RoundedImageView
             android:id="@+id/iv_profile"
             android:src="@drawable/custmtranspprofpic200px"
             android:scaleType="fitXY"

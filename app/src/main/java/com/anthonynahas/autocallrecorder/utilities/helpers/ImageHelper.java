@@ -1,5 +1,6 @@
 package com.anthonynahas.autocallrecorder.utilities.helpers;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.TypedValue;
 
 /**
  * This class helps to render a imageview with circle corners
@@ -42,7 +44,7 @@ public class ImageHelper {
 
     public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
         //if contact don't have a photo
-        if(bitmap == null){
+        if (bitmap == null) {
             return null;
         }
         Bitmap finalBitmap;
@@ -110,5 +112,12 @@ public class ImageHelper {
         }
 
         return inSampleSize;
+    }
+
+    public static int convert_dp_To_px(Context context, int dp) {
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, dp,
+                context.getResources().getDisplayMetrics()
+        );
     }
 }

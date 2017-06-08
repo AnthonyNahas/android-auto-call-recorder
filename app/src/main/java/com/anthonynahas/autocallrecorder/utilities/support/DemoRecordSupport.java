@@ -8,11 +8,14 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.anthonynahas.autocallrecorder.classes.Contact;
 import com.anthonynahas.autocallrecorder.classes.Record;
 import com.anthonynahas.autocallrecorder.classes.Resources;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
 import com.anthonynahas.autocallrecorder.providers.cursors.CursorLogger;
+
+import org.chalup.microorm.MicroOrm;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -102,19 +105,23 @@ public class DemoRecordSupport {
                     cursor.moveToPosition(random);
                 }
 
-                long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID));
-                String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                Contact contact = new MicroOrm().fromCursor(cursor, Contact.class);
+
+//                long contact_id = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID));
+//                String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 ContentValues values = new ContentValues();
                 values.put(RecordDbContract.RecordItem.COLUMN_ID, String.valueOf(generateNumber(10000, 5000)));
                 values.put(RecordDbContract.RecordItem.COLUMN_PATH, Resources.DEMO_PATH);
                 values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
-                values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, contact_number);
-                values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, contact_id);
+                values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, contact.getNumber());
+                values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, contact.get_ID());
                 values.put(RecordDbContract.RecordItem.COLUMN_SIZE, generateNumber(100, 1));
-                values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(600, 0));
-                values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, generateNumber(1, 0));
-                values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, generateNumber(1, 0));
+                values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(100, 1));
+                values.put(RecordDbContract.RecordItem.COLUMN_IS_INCOMING, generateBoolean());
+                values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, generateBoolean());
+                values.put(RecordDbContract.RecordItem.COLUMN_IS_LOCKED, generateBoolean());
+                values.put(RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE, generateBoolean());
 
                 RecordsQueryHandler.getInstance(context.getContentResolver())
                         .startInsert(RecordsQueryHandler.INSERT_DEMO, null, RecordDbContract.CONTENT_URL, values);
@@ -152,6 +159,15 @@ public class DemoRecordSupport {
     private int generateNumber(int max, int min) {
         Random random = new Random();
         return random.nextInt(max - min) + min;
+    }
+
+    /**
+     * Generate a boolean value and convert it to an int
+     *
+     * @return - the generated boolean value as int
+     */
+    private int generateBoolean() {
+        return new Random().nextBoolean() ? 1 : 0;
     }
 
     /**

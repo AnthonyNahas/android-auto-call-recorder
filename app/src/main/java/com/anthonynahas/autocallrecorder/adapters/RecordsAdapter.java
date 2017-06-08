@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,10 +128,15 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             mIVProfile = (ImageView) view.findViewById(R.id.iv_profile);
             mIVCallIsIncoming = (ImageView) view.findViewById(R.id.iv_call_is_incoming);
             mIVCallIsLove = (ImageView) view.findViewById(R.id.iv_call_isLove);
+
+            mIVCallIsLove.setOnClickListener(this);
         }
 
         private void handleTVCallNameOrNumber(@NonNull RecordViewHolder viewHolder, int position) {
             Record record = mRecordsList.get(position);
+            if(position == RecyclerView.NO_POSITION){
+                Log.d(TAG, "no position");
+            }
             record.setName(record.getName() != null && !record.getName().isEmpty() ?
                     record.getName()
                     :
@@ -144,11 +150,22 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
 
         private void handleIVProfile(@NonNull RecordViewHolder viewHolder, int position) {
             Record record = mRecordsList.get(position);
+            if(position == RecyclerView.NO_POSITION){
+                Log.d(TAG, "no position");
+            }
             Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
             if (cachedBitmap != null) {
                 viewHolder.mIVProfile.setImageBitmap(cachedBitmap);
             } else {
-                new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(mRecordsList.get(position).getContactID());
+                new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(1);
+            }
+        }
+
+        private void handleIVCallIsLove(int position) {
+            if (position != RecyclerView.NO_POSITION) {
+                Record record = mRecordsList.get(position);
+                record.setLove(mContext, !record.isLove());
+                notifyItemChanged(position); //very important -> otherwise the view holder will not update and rebind
             }
         }
 
@@ -160,6 +177,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
                 case R.id.call_selected:
                     break;
                 case R.id.iv_call_isLove:
+                    handleIVCallIsLove(this.getAdapterPosition());
                     break;
             }
         }
@@ -185,7 +203,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
 
         viewHolder
                 .mTVCallNameOrNumber
-                .setText(record.getNumber()); // TODO: 02.06.2017 get name from contact api async
+                .setText(record.getNumber());
 
         viewHolder
                 .mTVDate
@@ -213,7 +231,6 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
         if (viewHolder.mCheckBoxCallSelected.isShown()) {
             viewHolder.mCheckBoxCallSelected.setChecked(record.isSelected());
         }
-
     }
 
     @Override

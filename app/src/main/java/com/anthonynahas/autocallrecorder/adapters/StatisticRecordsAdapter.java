@@ -75,7 +75,7 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
             if (cachedBitmap != null) {
                 viewHolder.mIVProfile.setImageBitmap(cachedBitmap);
             } else {
-                new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(mRecordsList.get(position).getContactID());
+                new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(1);
             }
         }
     }

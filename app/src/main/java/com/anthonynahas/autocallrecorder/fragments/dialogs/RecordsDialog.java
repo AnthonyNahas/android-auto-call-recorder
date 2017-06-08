@@ -42,6 +42,7 @@ import com.anthonynahas.autocallrecorder.AudioSourceSwitcher;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.MainOldActivity;
 import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
+import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.FileDeleterTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
 import com.anthonynahas.autocallrecorder.classes.Record;
@@ -87,6 +88,14 @@ public class RecordsDialog extends DialogFragment implements
     private String mFileName;
 
     private Context mContext;
+
+    public static void show(Context context, Record record) {
+        RecordsDialog recordsDialog = new RecordsDialog();
+        Bundle args = new Bundle();
+        args.putParcelable(Resources.REC_PARC_KEY, record);
+        recordsDialog.setArguments(args);
+        recordsDialog.show(((Activity) context).getFragmentManager(), RecordsDialog.TAG);
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -138,14 +147,7 @@ public class RecordsDialog extends DialogFragment implements
 
         mImageProfile = (ImageView) view.findViewById(R.id.img_profile_recDialog);
 
-        Bitmap contactPhoto = ImageHelper.getRoundedCroppedBitmap(ContactHelper
-                        .getBitmapForContactID(getActivity().getContentResolver(), 0, mRecord.getContactID()),
-                convert_dp_To_px(150));
-        if (contactPhoto != null) {
-            mImageProfile.setImageBitmap(contactPhoto);
-        } else {
-            mImageProfile.setImageResource(R.drawable.custmtranspprofpic);
-        }
+        new ContactPhotosAsyncTask(mContext,mRecord, mImageProfile).execute(0);
 
         mTV_Number_CN = (TextView) view.findViewById(R.id.contact_name_number_recDialog);
 
@@ -278,7 +280,7 @@ public class RecordsDialog extends DialogFragment implements
     Runnable run = new Runnable() {
         @Override
         public void run() {
-            updateSeekBar();
+//            updateSeekBar();
         }
     };
 
@@ -404,13 +406,6 @@ public class RecordsDialog extends DialogFragment implements
             Log.e(TAG, "Error: IndexOutOfBound", e);
         }
         return mPathFile;
-    }
-
-    private int convert_dp_To_px(int dp) {
-        return (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, dp,
-                getResources().getDisplayMetrics()
-        );
     }
 
     private void uploadRecord() {

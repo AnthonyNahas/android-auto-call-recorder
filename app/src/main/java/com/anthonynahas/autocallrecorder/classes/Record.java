@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
+import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
 
 import org.chalup.microorm.MicroOrm;
 import org.chalup.microorm.annotations.Column;
@@ -194,6 +195,11 @@ public class Record implements Serializable, Parcelable {
 
     public boolean isLove() {
         return mLove;
+    }
+
+    public void setLove(Context context, boolean mIsLove) {
+        this.mLove = mIsLove;
+        RecordDbHelper.updateIsLoveColumn(context, m_ID, mLove ? 1 : 0);
     }
 
     public void setLove(boolean mIsLove) {

@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.anthonynahas.autocallrecorder.customs.RoundedImageView
+        <com.anthonynahas.autocallrecorder.views.RoundedImageView
             android:id="@+id/iv_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

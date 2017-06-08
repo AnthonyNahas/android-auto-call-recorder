@@ -18,11 +18,11 @@
         android:fitsSystemWindows="true"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ToolbarTheme2"
-        app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
         app:contentInsetEnd="0dp"
         app:contentInsetLeft="0dp"
         app:contentInsetRight="0dp"
-        app:contentInsetStart="0dp">
+        app:contentInsetStart="0dp"
+        app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar">
 
         <Button
             android:id="@+id/button_rec_dialog_close"
@@ -43,20 +43,21 @@
         android:gravity="center|top"
         android:orientation="vertical">
 
-        <ImageView
+
+        <com.anthonynahas.autocallrecorder.views.RoundedImageView
             android:id="@+id/img_profile_recDialog"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="20dp"
+            android:contentDescription="@string/image_view_profile"
             android:scaleType="fitXY"
-            android:src="@drawable/custmtranspprofpic150px" />
+            android:tag="contact_profile_pic" />
 
         <TextView
             android:id="@+id/contact_name_number_recDialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="asgfsagasg"
             android:textColor="@android:color/white"
             android:textSize="22sp"
             android:textStyle="normal" />
@@ -71,10 +72,7 @@
             android:id="@+id/tv_duration_rec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
             android:layout_marginTop="30dp"
-            android:text="asgfsagasg"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
