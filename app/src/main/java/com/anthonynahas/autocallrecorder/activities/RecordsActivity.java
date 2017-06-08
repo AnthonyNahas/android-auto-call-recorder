@@ -159,23 +159,9 @@ public class RecordsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onItemClicked(RecyclerView recyclerView, final int position, final View v) {
+    public void onItemClicked(RecyclerView recyclerView, int position, final View v) {
         if (mAdapter.isActionMode()) {
-            final CheckBox call_selected = ((CheckBox) v.findViewById(R.id.call_selected));
-            call_selected.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    boolean isChecked = call_selected.isChecked();
-                    call_selected.setChecked(!isChecked);
-                    mAdapter.getRecordsList().get(position).setSelected(!isChecked);
-                    if (isChecked) {
-                        mCounter--;
-                    } else {
-                        mCounter++;
-                    }
-                    updateToolbar();
-                }
-            });
+            CheckBox call_selected = ((CheckBox) v.findViewById(R.id.call_selected));
             boolean isChecked = call_selected.isChecked();
             call_selected.setChecked(!isChecked);
             mAdapter.getRecordsList().get(position).setSelected(!isChecked);
