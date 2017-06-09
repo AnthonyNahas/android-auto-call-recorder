@@ -11,7 +11,11 @@ package com.anthonynahas.autocallrecorder.classes;
  * @since 11.04.2017
  */
 
-public class Resources {
+public class Res {
+
+    //Settings
+    public static final int RECYCLER_VIEW_ANIMATION_DELAY = 500;
+    public static final int CURSOR_LOADER_SIMULATION_DELAY = 2000;
 
     //Local Broadcast actions
     public static final String BROADCAST_ACTION_ON_ACTION_MODE = "broadcast_action_on_action_mode";

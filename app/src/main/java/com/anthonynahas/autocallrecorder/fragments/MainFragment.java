@@ -42,6 +42,7 @@ import java.util.concurrent.ExecutionException;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsCursorAdapter;
 import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.AudioFileAsyncTask;
@@ -151,7 +152,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 
                 switch (item.getItemId()) {
-                    case R.id.action_delete:
+                    case R.id.menu_action_delete:
                         mDeleteFilesTask.execute(mSelectedRecItems);
                         for (Long id : mSelectedRecItemsById) {
                             getActivity().getContentResolver().delete(RecordDbContract.CONTENT_URL, RecordDbContract.RecordItem.COLUMN_ID + "= '" + id + "'", null);
@@ -363,7 +364,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             Bundle args = new Bundle();
             Record record = Record.newInstance(cursor);
             record.setName(((TextView) view.findViewById(R.id.tv_call_contact_name_or_number)).getText().toString());
-            args.putParcelable(com.anthonynahas.autocallrecorder.classes.Resources.REC_PARC_KEY, record);
+            args.putParcelable(Res.REC_PARC_KEY, record);
             RecordsDialog recordsDialog = new RecordsDialog();
             recordsDialog.setArguments(args);
             recordsDialog.show(getFragmentManager(), RecordsDialog.TAG);

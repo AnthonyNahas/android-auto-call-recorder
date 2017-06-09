@@ -73,6 +73,6 @@ public class ContactNameAsyncTask extends AsyncTask<Void, Void, String> {
                 }
                 Log.d(TAG, "done " + sCounter);
             }
-        }, 1000 * sCounter++);
+        }, 100 * sCounter++);
     }
 }

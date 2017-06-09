@@ -7,29 +7,29 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.ProgressBar;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.classes.Record;
-import com.anthonynahas.autocallrecorder.classes.Resources;
+import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
@@ -38,11 +38,15 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.SQLiteHelper;
+import com.anthonynahas.autocallrecorder.utilities.support.ActionModeSupport;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
+import com.anthonynahas.autocallrecorder.views.managers.WrapContentLinearLayoutManager;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
 import org.chalup.microorm.MicroOrm;
+
+import java.util.ArrayList;
 
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
@@ -60,7 +64,8 @@ public class RecordsActivity extends AppCompatActivity implements
         ItemClickSupport.OnItemClickListener,
         ItemClickSupport.OnItemLongClickListener,
         FloatingSearchView.OnQueryChangeListener,
-        FloatingSearchView.OnMenuItemClickListener {
+        FloatingSearchView.OnMenuItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = RecordsActivity.class.getSimpleName();
 
@@ -69,15 +74,17 @@ public class RecordsActivity extends AppCompatActivity implements
     private RecyclerView mRecyclerView;
     private RecordsAdapter mAdapter;
     private FloatingSearchView mSearchView;
+    private ProgressBar mpProgressBar;
+    private ContentLoadingProgressBar mContentLoadingProgressBar;
+    private SwipeRefreshLayout mSwipeContainer;
     private Toolbar mToolbar;
+    private ActionModeSupport mActionModeSupport;
     private BroadcastReceiver mBroadcastReceiver;
 
     private int mLoaderManagerID;
     private Bundle mArguments;
+    private Handler mHandlerToWait;
     private PreferenceHelper mPreferenceHelper;
-
-    public static int COUNTER;
-
 
     public enum args {
         title,
@@ -92,18 +99,20 @@ public class RecordsActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_records);
+
         mContext = this;
         mAppCompatActivity = this;
         String activityTitle = getIntent().getStringExtra(args.title.name());
         mArguments = prepareArguments(activityTitle);
         mPreferenceHelper = new PreferenceHelper(this);
+        mHandlerToWait = new Handler();
         mLoaderManagerID = 0;
-        COUNTER = 0;
 
-        setContentView(R.layout.activity_records);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(activityTitle);
         }
@@ -112,8 +121,8 @@ public class RecordsActivity extends AppCompatActivity implements
             @Override
             public void onReceive(Context context, Intent intent) {
                 switch (intent.getAction()) {
-                    case Resources.ACTION_MODE_COUNTER:
-                        updateToolbarCounter(intent.getBooleanExtra(Resources.IS_CHECKED_KEY, false));
+                    case Res.ACTION_MODE_COUNTER:
+                        mActionModeSupport.updateToolbarCounter(intent.getBooleanExtra(Res.IS_CHECKED_KEY, false));
                         break;
                     default:
                         break;
@@ -121,40 +130,62 @@ public class RecordsActivity extends AppCompatActivity implements
             }
         };
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mContentLoadingProgressBar = (ContentLoadingProgressBar) findViewById(R.id.content_loading_progressbar);
+        mpProgressBar = (ProgressBar) findViewById(R.id.progressbar);
+        // Lookup the swipe container view
+        mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mSwipeContainer.setOnRefreshListener(this);
+        // Configure the refreshing colors
+        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
 
         // specify an adapter (see also next example)
         mAdapter = new RecordsAdapter();
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
+        mRecyclerView.getItemAnimator().setAddDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        mRecyclerView.getItemAnimator().setRemoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        mRecyclerView.getItemAnimator().setMoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        mRecyclerView.getItemAnimator().setChangeDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
 
-        // TODO: 06.06.2017 on resume ?
         ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(this);
         ItemClickSupport.addTo(mRecyclerView).setOnItemLongClickListener(this);
 
         // TODO: 02.06.17 refresh on scrolling the recyclerview
 
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
-//        mSearchView.attachNavigationDrawerToMenuButton(mDrawer);
         mSearchView.setOnQueryChangeListener(this);
         mSearchView.setOnMenuItemClickListener(this);
 
-        getSupportLoaderManager().initLoader(mLoaderManagerID, mArguments, this);
+        mActionModeSupport = new ActionModeSupport(
+                getIntent().getStringExtra(args.title.name()),
+                false,
+                this,
+                getSupportActionBar(),
+                mToolbar,
+                mAdapter);
+
+        refreshCursorLoader();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(this)
-                .registerReceiver(mBroadcastReceiver, new IntentFilter(Resources.ACTION_MODE_COUNTER));
+                .registerReceiver(mBroadcastReceiver, new IntentFilter(Res.ACTION_MODE_COUNTER));
     }
 
     @Override
@@ -166,7 +197,7 @@ public class RecordsActivity extends AppCompatActivity implements
     @Override
     public void onItemClicked(RecyclerView recyclerView, int position, final View v) {
         if (mAdapter.isActionMode()) {
-            handleCheckBoxSelectionInActionMode(position, v);
+            mActionModeSupport.handleCheckBoxSelectionInActionMode(position, v);
         } else {
             RecordsDialog.show(mContext, mAdapter.getRecordsList().get(position));
         }
@@ -174,21 +205,13 @@ public class RecordsActivity extends AppCompatActivity implements
 
     @Override
     public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
-        if (!mAdapter.isActionMode()) {
-            mAdapter.setActionMode(!mAdapter.isActionMode());
-            handleCheckBoxSelectionInActionMode(position, v);
-            updateToolbarMenu();
-        }
+        mActionModeSupport.enterActionMode(position, v);
         return false;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mAdapter.isActionMode()) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.action_mode_menu, menu);
-            return true;
-        }
+        mActionModeSupport.inflateMenu(getMenuInflater(), menu, R.menu.action_mode_menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -203,9 +226,19 @@ public class RecordsActivity extends AppCompatActivity implements
                     finish();
                 }
                 return true;
+
+            case R.id.menu_action_delete:
+                mAdapter.deleteRecordsSelected();
+                cancelActionMode();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void cancelActionMode() {
+        mActionModeSupport.cancelActionMode();
+        refreshCursorLoader();
     }
 
     @Override
@@ -217,58 +250,16 @@ public class RecordsActivity extends AppCompatActivity implements
         }
     }
 
-    private CheckBox getTargetCheckBox(View view) {
-        return ((CheckBox) view.findViewById(R.id.call_selected));
-    }
-
-    private void handleCheckBoxSelectionInActionMode(int position, View v) {
-        CheckBox call_selected = getTargetCheckBox(v);
-        boolean isChecked = call_selected.isChecked();
-        call_selected.setChecked(!isChecked);
-        mAdapter.getRecordsList().get(position).setSelected(!isChecked);
-        updateToolbarCounter(isChecked);
-    }
-
-    private void updateToolbarCounter(boolean isChecked) {
-        if (isChecked) {
-            COUNTER--;
-        } else {
-            COUNTER++;
-        }
-        updateToolbar();
-    }
-
-    private void updateToolbar() {
-        if (mAdapter.isActionMode()) {
-            if (COUNTER == 0) {
-                getSupportActionBar().setTitle(getResources().getString(R.string.toolbar_action_mode_text));
-            } else {
-                getSupportActionBar().setTitle(String.valueOf(COUNTER));
-            }
-        } else {
-            getSupportActionBar().setTitle(getIntent().getStringExtra(args.title.name()));
-        }
-    }
-
-    private void updateToolbarMenu() {
-        if (mAdapter.isActionMode()) {
-            mToolbar.inflateMenu(R.menu.action_mode_menu);
-        } else {
-            mToolbar.getMenu().clear();
-        }
-    }
-
-    private void cancelActionMode() {
-        mAdapter.setActionMode(false);
-        COUNTER = 0;
-        updateToolbar();
-        updateToolbarMenu();
-        mAdapter.notifyDataSetChanged();
-        getSupportLoaderManager().restartLoader(mLoaderManagerID, mArguments, this);
+    @Override
+    public void onRefresh() {
+        refreshCursorLoader();
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        if (!mpProgressBar.isShown()) {
+            mpProgressBar.setVisibility(View.VISIBLE);
+        }
         String[] projection = args.getStringArray(RecordsActivity.args.projection.name());
         String selection = args.getString(RecordsActivity.args.selection.name());
         String[] selectionArgs = args.getStringArray(RecordsActivity.args.selectionArguments.name());
@@ -293,15 +284,23 @@ public class RecordsActivity extends AppCompatActivity implements
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapData((new MicroOrm().listFromCursor(data, Record.class)));
+        mHandlerToWait.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+//                onLoadingMore = false;
+                mContentLoadingProgressBar.hide();
+                mpProgressBar.setVisibility(View.GONE);
+                mSwipeContainer.setRefreshing(false);
+            }
+        }, 2000);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        // TODO: 02.06.2017
+        mAdapter.swapData(new ArrayList<Record>());
     }
 
     /**
@@ -386,7 +385,14 @@ public class RecordsActivity extends AppCompatActivity implements
 
     }
 
+    private void refreshCursorLoader() {
+        getSupportLoaderManager().restartLoader(mLoaderManagerID, mArguments, this);
+    }
+
     private void refreshCursorLoader(Bundle args) {
+        mContentLoadingProgressBar.postInvalidate();
+        android.widget.ProgressBar bar = new android.widget.ProgressBar(this);
+        bar.setIndeterminate(true);
         getSupportLoaderManager().restartLoader(mLoaderManagerID, args, this);
     }
 

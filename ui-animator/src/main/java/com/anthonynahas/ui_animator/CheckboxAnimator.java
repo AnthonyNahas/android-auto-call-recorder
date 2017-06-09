@@ -45,6 +45,7 @@ public class CheckboxAnimator {
             @Override
             public void onAnimationEnd(Animator animator) {
                 mCheckBox.setVisibility(View.GONE);
+                mCheckBox.setChecked(false);
             }
 
             @Override

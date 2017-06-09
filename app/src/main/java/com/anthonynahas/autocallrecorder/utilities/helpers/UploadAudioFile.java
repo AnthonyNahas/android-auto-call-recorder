@@ -15,8 +15,12 @@ import java.io.FileNotFoundException;
 
 /**
  * Created by A on 04.06.16.
+ *
+ * @author Anthony Nahas
+ * @version 1.0
+ * @since 04.06.16
  */
-public class UploadAudioFile extends AsyncTask<Void,Void,Boolean> {
+public class UploadAudioFile extends AsyncTask<Void, Void, Boolean> {
 
     private DropboxAPI dropboxApi;
     private Context context;
@@ -60,7 +64,7 @@ public class UploadAudioFile extends AsyncTask<Void,Void,Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
-        if(result) {
+        if (result) {
             Toast.makeText(context, "File has been uploaded!",
                     Toast.LENGTH_LONG).show();
         } else {

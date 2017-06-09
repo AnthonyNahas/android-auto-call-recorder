@@ -8,7 +8,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.classes.Record;
-import com.anthonynahas.autocallrecorder.classes.Resources;
+import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.services.RecordService;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.autocallrecorder.services.FetchIntentService;
@@ -93,7 +93,7 @@ public class CallReceiver extends BroadcastReceiver {
 //                            sConData.putInt(INCOMINGCALLKEY, 1);
                         }
                         mRecord.setNumber(sNumber);
-                        sIntent.putExtra(Resources.REC_PARC_KEY, (Parcelable) mRecord);
+                        sIntent.putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord);
                         context.startService(sIntent);
                     } else if (state.equals(IDLE)) {
                         OUTGOING = false;
@@ -106,7 +106,7 @@ public class CallReceiver extends BroadcastReceiver {
                             Log.d(TAG, "number = " + sNumber);
                             if (sIntentFetching == null) {
                                 sIntentFetching = new Intent(context, FetchIntentService.class);
-                                sIntent.putExtra(Resources.REC_PARC_KEY, (Parcelable) mRecord);
+                                sIntent.putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord);
                             }
                         }
                     }

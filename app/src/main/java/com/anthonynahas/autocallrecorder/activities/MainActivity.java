@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -30,19 +28,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.anthonynahas.autocallrecorder.R;
+import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
-import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.classes.Resources;
 import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PermissionsHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
-import com.anthonynahas.autocallrecorder.utilities.support.DemoRecordSupport;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -169,8 +167,8 @@ public class MainActivity extends AppCompatActivity implements
         mActionModeBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String senderClassName = intent.getStringExtra(Resources.ACTION_MODE_SENDER);
-                boolean isInActionMode = intent.getBooleanExtra(Resources.ACTION_MODE_SATE, false);
+                String senderClassName = intent.getStringExtra(Res.ACTION_MODE_SENDER);
+                boolean isInActionMode = intent.getBooleanExtra(Res.ACTION_MODE_SATE, false);
                 handleActionMode(isInActionMode);
                 Log.d(TAG, "on receive action mode: " + isInActionMode + " from --> " + senderClassName);
             }
@@ -178,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements
 
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(mActionModeBroadcastReceiver,
-                        new IntentFilter(Resources.BROADCAST_ACTION_ON_ACTION_MODE));
+                        new IntentFilter(Res.BROADCAST_ACTION_ON_ACTION_MODE));
     }
 
     @Override
@@ -291,9 +289,9 @@ public class MainActivity extends AppCompatActivity implements
      * @param state - whether the app is in action mode (true)
      */
     private void notifyOnActionMode(boolean state) {
-        Intent intent = new Intent(Resources.BROADCAST_ACTION_ON_ACTION_MODE);
-        intent.putExtra(Resources.ACTION_MODE_SENDER, MainActivity.class.getSimpleName());
-        intent.putExtra(Resources.ACTION_MODE_SATE, state);
+        Intent intent = new Intent(Res.BROADCAST_ACTION_ON_ACTION_MODE);
+        intent.putExtra(Res.ACTION_MODE_SENDER, MainActivity.class.getSimpleName());
+        intent.putExtra(Res.ACTION_MODE_SATE, state);
         LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(intent);
     }
@@ -309,16 +307,16 @@ public class MainActivity extends AppCompatActivity implements
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private RecordsListFragment mRecordsListFragment;
-        private RecordsListFragment mLoveRecordsListFragment;
+        private RecordsFragment mLoveRecordsFragment;
 
         private SectionsPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
             mRecordsListFragment = RecordsListFragment.newInstance();
 
             Bundle args = new Bundle();
-            String selection = RecordDbContract.RecordItem.COLUMN_IS_LOVE + " =1";
+            String selection = RecordDbContract.RecordItem.COLUMN_IS_LOVE + " = 1";
             args.putString(RecordsListFragment.BundleArgs.selection.name(), selection);
-            mLoveRecordsListFragment = RecordsListFragment.newInstance(args);
+            mLoveRecordsFragment = RecordsFragment.newInstance(args);
         }
 
         /**
@@ -337,8 +335,8 @@ public class MainActivity extends AppCompatActivity implements
                     mSearchView.setOnQueryChangeListener(mRecordsListFragment.getOnQueryChangeListener());
                     return mRecordsListFragment;
                 case 1:
-                    //mSearchView.setOnQueryChangeListener(mLoveRecordsListFragment.getOnQueryChangeListener());
-                    return mLoveRecordsListFragment;
+                    //mSearchView.setOnQueryChangeListener(mLoveRecordsFragment.getOnQueryChangeListener());
+                    return mLoveRecordsFragment;
                 default:
                     return null;
             }

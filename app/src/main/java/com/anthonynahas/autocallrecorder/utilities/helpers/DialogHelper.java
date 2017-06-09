@@ -2,12 +2,15 @@ package com.anthonynahas.autocallrecorder.utilities.helpers;
 
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.fragments.dialogs.SortDialog;
 
 /**
  * Created by A on 03.04.17.
+ *
+ * @author Anthony Nahas
+ * @version 1.0
+ * @since 03.04.17
  */
 
 public class DialogHelper {

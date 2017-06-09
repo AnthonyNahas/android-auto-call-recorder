@@ -34,7 +34,7 @@ public class PreferenceHelper {
 
     private Context mContext;
     private SharedPreferences mSharedPreferences;
-    private String mSharedPreferenceName = "com.anthonynahas.autocallrecorder.SHARED_PREFERENCE_NAME";
+    private String mSharedPreferenceName = "SHARED_PREFERENCE_NAME";
 
     public PreferenceHelper(Context context) {
         mContext = context;

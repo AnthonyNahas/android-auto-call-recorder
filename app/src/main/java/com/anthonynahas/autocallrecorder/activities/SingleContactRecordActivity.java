@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.classes.Record;
-import com.anthonynahas.autocallrecorder.classes.Resources;
+import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.utilities.decorators.ActionBarDecorator;
@@ -68,7 +68,7 @@ public class SingleContactRecordActivity extends AppCompatActivity {
 
         if (fragment instanceof RecordsListFragment) {
             mRecordsListFragment = (RecordsListFragment) fragment;
-            mRecord = getIntent().getParcelableExtra(Resources.REC_PARC_KEY);
+            mRecord = getIntent().getParcelableExtra(Res.REC_PARC_KEY);
 
             mRecordsListFragment.refresh(createArguments(RecordDbContract.RecordItem.COLUMN_NUMBER
                             + " = ?",

@@ -3,11 +3,8 @@ package com.anthonynahas.autocallrecorder.broadcasts;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
 
-import com.anthonynahas.autocallrecorder.classes.Record;
-import com.anthonynahas.autocallrecorder.classes.Resources;
+import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.services.FetchIntentService;
 
 /**
@@ -26,7 +23,7 @@ public class DoneRecReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        context.startService(new Intent(context, FetchIntentService.class).putExtra(Resources.REC_PARC_KEY,
-                intent.getParcelableExtra(Resources.REC_PARC_KEY)));
+        context.startService(new Intent(context, FetchIntentService.class).putExtra(Res.REC_PARC_KEY,
+                intent.getParcelableExtra(Res.REC_PARC_KEY)));
     }
 }

@@ -35,6 +35,8 @@ import java.util.concurrent.ExecutionException;
  * Created by A on 20.03.17.
  *
  * @author Anthony Nahas
+ * @version 1.0
+ * @since 20.03.17
  */
 
 public class RecordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -144,7 +146,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                 call_contact_profile.setImageBitmap(img);
 //                MemoryCacheHelper.setBitmapToMemoryCache(phoneNumber, img);
             } else {
-                //viewHolder.call_contact_profile.setImageResource(R.drawable.custmtranspprofpic);
+                //viewHolder.call_contact_profile.setImageResource(Res.drawable.custmtranspprofpic);
                 call_contact_profile.setImageBitmap(ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(), R.drawable.custmtranspprofpic60px, 60, 60));
             }
         }
@@ -195,7 +197,10 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                                 mImageCallIsLove.setImageResource(R.drawable.ic_favorite_border_black);
                             }
 
-                            RecordDbHelper.updateIsLoveColumn(mContext, id, isLoveNew);
+                            RecordDbHelper
+                                    .newInstance()
+                                    .updateBooleanColumn(mContext,
+                                            RecordDbContract.RecordItem.COLUMN_IS_LOVE, id, isLoveNew);
                         }
                     }
                 };

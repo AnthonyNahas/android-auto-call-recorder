@@ -6,11 +6,8 @@ import android.app.DialogFragment;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,18 +17,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,16 +35,14 @@ import com.anthonynahas.autocallrecorder.AudioSourceSwitcher;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.MainOldActivity;
+import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.FileDeleterTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
 import com.anthonynahas.autocallrecorder.classes.Record;
-import com.anthonynahas.autocallrecorder.classes.Resources;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.AudioFileAsyncTask;
-import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
-import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.UploadAudioFile;
 import com.anthonynahas.autocallrecorder.utilities.helpers.WindowHelper;
 import com.anthonynahas.ui_animator.AnimationLoader;
@@ -92,7 +84,7 @@ public class RecordsDialog extends DialogFragment implements
     public static void show(Context context, Record record) {
         RecordsDialog recordsDialog = new RecordsDialog();
         Bundle args = new Bundle();
-        args.putParcelable(Resources.REC_PARC_KEY, record);
+        args.putParcelable(Res.REC_PARC_KEY, record);
         recordsDialog.setArguments(args);
         recordsDialog.show(((Activity) context).getFragmentManager(), RecordsDialog.TAG);
     }
@@ -101,7 +93,7 @@ public class RecordsDialog extends DialogFragment implements
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         //-----** extracting sent arguments **------------
         Bundle arguments = getArguments();
-        mRecord = arguments.getParcelable(Resources.REC_PARC_KEY);
+        mRecord = arguments.getParcelable(Res.REC_PARC_KEY);
 
         //---------------------------------------------------
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

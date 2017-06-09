@@ -109,7 +109,7 @@ public class ContactPhotosAsyncTask extends AsyncTask<Integer, Void, Bitmap> {
                 mImageView.setImageBitmap(bitmap);
                 Log.d(TAG, "done " + sCounter);
             }
-        }, 1000 * sCounter++);
+        }, 100 * sCounter++);
 
     }
 }

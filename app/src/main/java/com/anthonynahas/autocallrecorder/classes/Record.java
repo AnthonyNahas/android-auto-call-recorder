@@ -199,7 +199,10 @@ public class Record implements Serializable, Parcelable {
 
     public void setLove(Context context, boolean mIsLove) {
         this.mLove = mIsLove;
-        RecordDbHelper.updateIsLoveColumn(context, m_ID, mLove ? 1 : 0);
+        RecordDbHelper
+                .newInstance()
+                .updateBooleanColumn(context,
+                        RecordDbContract.RecordItem.COLUMN_IS_LOVE, m_ID, mLove ? 1 : 0);
     }
 
     public void setLove(boolean mIsLove) {

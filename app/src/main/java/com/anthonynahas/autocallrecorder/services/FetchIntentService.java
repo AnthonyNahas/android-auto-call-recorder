@@ -1,7 +1,6 @@
 package com.anthonynahas.autocallrecorder.services;
 
 import android.app.IntentService;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Handler;
@@ -10,7 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.anthonynahas.autocallrecorder.classes.Record;
-import com.anthonynahas.autocallrecorder.classes.Resources;
+import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
@@ -71,7 +70,7 @@ public class FetchIntentService extends IntentService {
         Log.d(TAG, "sRecordFile = " + RecordService.sRecordFile);
         //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(RecordService.sRecordFile)));
 
-        Record record = intent.getParcelableExtra(Resources.REC_PARC_KEY);
+        Record record = intent.getParcelableExtra(Res.REC_PARC_KEY);
 
         //String [] projectALL = new String[] { "*" };
         String[] projection = {

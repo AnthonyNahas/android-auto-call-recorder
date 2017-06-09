@@ -24,24 +24,31 @@ public class RecordDbHelper {
 
     private static final String TAG = RecordDbHelper.class.getSimpleName();
 
+    public static RecordDbHelper newInstance() {
+        return new RecordDbHelper();
+    }
+
+
     /**
-     * Update the column isLove using the content resolver
+     * Update a boolean column of the db asynchronously
      *
-     * @param context - the used context
-     * @param id      - the id of the record
-     * @param isLove  - whether the record isLove (favorite)
+     * @param context        - the used context
+     * @param columnToUpdate - the column of the db to update
+     * @param id-            the id of the record
+     * @param value          - the value to put to the target column to update it
      */
-    public static void updateIsLoveColumn(Context context, String id, int isLove) {
+    public void updateBooleanColumn(Context context, String columnToUpdate, String id, int value) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, isLove);
+        contentValues.put(columnToUpdate, value);
         Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, Long.valueOf(id));
         String selection = RecordDbContract.RecordItem.COLUMN_ID + " = ?";
         String[] selectionArgs = {id};
         RecordsQueryHandler.getInstance(context.getContentResolver())
-                .startUpdate(RecordsQueryHandler.update.UPDATE_IS_LOVE.ordinal(), null, uri, contentValues, selection, selectionArgs);
+                .startUpdate(0, null, uri, contentValues, selection, selectionArgs);
     }
 
-    public static void updateIsLockedColumn(Context context, String id,int isLocked){
+
+    public static void updateIsLockedColumn(Context context, String id, int isLocked) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(RecordDbContract.RecordItem.COLUMN_IS_LOCKED, isLocked);
         Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, Long.valueOf(id));

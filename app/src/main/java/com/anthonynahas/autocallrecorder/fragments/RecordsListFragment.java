@@ -32,24 +32,23 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.MainActivity;
+import com.anthonynahas.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
 import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
+import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
 import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
 import com.anthonynahas.autocallrecorder.providers.cursors.CursorLogger;
+import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
+import com.anthonynahas.autocallrecorder.utilities.helpers.SQLiteHelper;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 import com.anthonynahas.recyclerviewfabhandler.FABHandler;
 import com.arlib.floatingsearchview.FloatingSearchView;
-
-import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
-import com.anthonynahas.autocallrecorder.classes.Resources;
-import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
-import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
-import com.anthonynahas.autocallrecorder.utilities.helpers.SQLiteHelper;
 
 import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
@@ -73,9 +72,9 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
+import static com.anthonynahas.autocallrecorder.R.id.recycler_view;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.anthonynahas.autocallrecorder.R.id.recycler_view;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -205,8 +204,6 @@ public class RecordsListFragment extends Fragment implements
 
         if (args != null) {
             mArgs = args;
-            //mSelection = args.getString(BundleArgs.selection.name());
-            //mSelectionArgs = args.getStringArray(BundleArgs.selection.name());
         }
     }
 
@@ -303,11 +300,6 @@ public class RecordsListFragment extends Fragment implements
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        //int itemsCountLocal = getItemsCountLocal();
-        //if (itemsCountLocal == 0) {
-        //fillTestElements();
-        //}
-
         shortToast = Toast.makeText(mContext, "", Toast.LENGTH_SHORT);
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -345,8 +337,8 @@ public class RecordsListFragment extends Fragment implements
         mActionModeBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String senderClassName = intent.getStringExtra(Resources.ACTION_MODE_SENDER);
-                boolean isInActionMode = intent.getBooleanExtra(Resources.ACTION_MODE_SATE, false);
+                String senderClassName = intent.getStringExtra(Res.ACTION_MODE_SENDER);
+                boolean isInActionMode = intent.getBooleanExtra(Res.ACTION_MODE_SATE, false);
                 handleActionMode(isInActionMode);
                 Log.d(TAG, "on receive action mode: " + isInActionMode + " from --> " + senderClassName);
             }
@@ -354,7 +346,7 @@ public class RecordsListFragment extends Fragment implements
 
         LocalBroadcastManager.getInstance(mContext)
                 .registerReceiver(mActionModeBroadcastReceiver,
-                        new IntentFilter(Resources.BROADCAST_ACTION_ON_ACTION_MODE));
+                        new IntentFilter(Res.BROADCAST_ACTION_ON_ACTION_MODE));
     }
 
     @Override
@@ -374,7 +366,7 @@ public class RecordsListFragment extends Fragment implements
         } else {
             //enter action mode
             mToolbar.getMenu().clear();
-            //mToolbar.inflateMenu(R.menu.action_mode_menu);
+            //mToolbar.inflateMenu(Res.menu.action_mode_menu);
             mToolbar.setVisibility(VISIBLE);
             mCounterTV.setVisibility(VISIBLE);
             sIsInActionMode = true;
@@ -613,7 +605,7 @@ public class RecordsListFragment extends Fragment implements
         Bundle args = new Bundle();
         Record record = Record.newInstance(cursor);
         record.setName(((TextView) view.findViewById(R.id.tv_call_contact_name_or_number)).getText().toString());
-        args.putParcelable(Resources.REC_PARC_KEY, record);
+        args.putParcelable(Res.REC_PARC_KEY, record);
 
         RecordsDialog recordsDialog = new RecordsDialog();
         recordsDialog.setArguments(args);
@@ -657,9 +649,9 @@ public class RecordsListFragment extends Fragment implements
     }
 
     private void notifyOnActionMode(boolean state) {
-        Intent intent = new Intent(Resources.BROADCAST_ACTION_ON_ACTION_MODE);
-        intent.putExtra(Resources.ACTION_MODE_SENDER, RecordsListFragment.class.getSimpleName());
-        intent.putExtra(Resources.ACTION_MODE_SATE, state);
+        Intent intent = new Intent(Res.BROADCAST_ACTION_ON_ACTION_MODE);
+        intent.putExtra(Res.ACTION_MODE_SENDER, RecordsListFragment.class.getSimpleName());
+        intent.putExtra(Res.ACTION_MODE_SATE, state);
         LocalBroadcastManager.getInstance(mContext)
                 .sendBroadcast(intent);
         sIsInActionMode = true;

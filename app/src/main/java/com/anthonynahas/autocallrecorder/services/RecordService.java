@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.media.MediaRecorder;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -14,13 +13,12 @@ import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.broadcasts.DoneRecReceiver;
 import com.anthonynahas.autocallrecorder.classes.Record;
-import com.anthonynahas.autocallrecorder.classes.Resources;
+import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
 
 import java.io.File;
 import java.io.IOException;
 
-import com.anthonynahas.autocallrecorder.broadcasts.CallReceiver;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 /**
@@ -66,12 +64,12 @@ public class RecordService extends Service {
                         public void onScanCompleted(String path, Uri uri) {
                             Log.d(TAG, "scan completed");
                             sendBroadcast(new Intent(DoneRecReceiver.ACTION)
-                                    .putExtra(Resources.REC_PARC_KEY, (Parcelable) mRecord));
+                                    .putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord));
                         }
                     });
                 } else {
                     sendBroadcast(new Intent(DoneRecReceiver.ACTION)
-                            .putExtra(Resources.REC_PARC_KEY, (Parcelable) mRecord));
+                            .putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord));
                 }
             }
         }, 1000);
@@ -87,7 +85,7 @@ public class RecordService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() - recording...");
 
-        mRecord = intent.getParcelableExtra(Resources.REC_PARC_KEY);
+        mRecord = intent.getParcelableExtra(Res.REC_PARC_KEY);
 
         // TODO: 08.05.17 to check
         String fileSuffix = FileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout android:id="@+id/main_content"
-                                                 xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 xmlns:tools="http://schemas.android.com/tools"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:fitsSystemWindows="true"
-                                                 android:paddingLeft="10dp"
-                                                 android:paddingRight="10dp"
-                                                 app:backgroundTint="@android:color/white"
-                                                 tools:context=".activities.MainActivity">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    app:backgroundTint="@android:color/white"
+    tools:context=".activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -28,9 +28,9 @@
             android:title="@string/title_activity_rubbished_records"
             app:navigationContentDescription="desc"
             app:navigationIcon="@drawable/ic_chevron_left"
-            app:theme="@style/ToolbarTheme"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:titleTextColor="@color/black"/>
+            app:theme="@style/ToolbarTheme"
+            app:titleTextColor="@color/black" />
 
         <com.arlib.floatingsearchview.FloatingSearchView
             android:id="@+id/floating_search_view"
@@ -38,25 +38,48 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:floatingSearch_close_search_on_keyboard_dismiss="true"
-            app:floatingSearch_leftActionMode="showHamburger"
+            app:floatingSearch_leftActionMode="showSearch"
             app:floatingSearch_menu="@menu/menu_main_tabs"
             app:floatingSearch_searchBarMarginTop="10dp"
             app:floatingSearch_searchHint="Search..."
             app:floatingSearch_showSearchKey="false"
-            app:floatingSearch_suggestionsListAnimDuration="250"/>
+            app:floatingSearch_suggestionsListAnimDuration="250">
+
+            <android.support.v4.widget.ContentLoadingProgressBar
+                android:id="@+id/content_loading_progressbar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:indeterminate="true" />
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvProcessing"
+                android:indeterminateOnly="true"
+                android:visibility="gone" />
+
+        </com.arlib.floatingsearchview.FloatingSearchView>
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="68dp"
-        android:paddingTop="20dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="68dp"
+            android:paddingTop="30dp" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_go_in_action_mode"
@@ -64,6 +87,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_delete_white"/>
+        app:srcCompat="@drawable/ic_delete_white" />
+
+
 
 </android.support.design.widget.CoordinatorLayout>
