@@ -59,7 +59,8 @@ public class RecordsActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         ItemClickSupport.OnItemClickListener,
         ItemClickSupport.OnItemLongClickListener,
-        FloatingSearchView.OnQueryChangeListener {
+        FloatingSearchView.OnQueryChangeListener,
+        FloatingSearchView.OnMenuItemClickListener {
 
     private static final String TAG = RecordsActivity.class.getSimpleName();
 
@@ -76,6 +77,7 @@ public class RecordsActivity extends AppCompatActivity implements
     private PreferenceHelper mPreferenceHelper;
 
     public static int COUNTER;
+
 
     public enum args {
         title,
@@ -143,35 +145,7 @@ public class RecordsActivity extends AppCompatActivity implements
         mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
 //        mSearchView.attachNavigationDrawerToMenuButton(mDrawer);
         mSearchView.setOnQueryChangeListener(this);
-        mSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
-            /**
-             * Perform an action when a menu item is selected
-             *
-             * @param item the selected item
-             */
-            @Override
-            public void onActionMenuItemSelected(MenuItem item) {
-                int id = item.getItemId();
-
-                //noinspection SimplifiableIfStatement
-                switch (id) {
-                    case R.id.action_add_demo_record:
-                        InputDialog.newInstance().show(mAppCompatActivity, "Contact ID");
-                        break;
-                    case R.id.action_start_sample_animations:
-                        startActivity(new Intent(getApplicationContext(), SampleMainActivity.class));
-                        break;
-                    case R.id.action_sort:
-                        DialogHelper.openSortDialog((AppCompatActivity) getApplicationContext());
-                        break;
-                    case R.id.action_settings:
-                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
+        mSearchView.setOnMenuItemClickListener(this);
 
         getSupportLoaderManager().initLoader(mLoaderManagerID, mArguments, this);
     }
@@ -208,18 +182,6 @@ public class RecordsActivity extends AppCompatActivity implements
         return false;
     }
 
-    private CheckBox getTargetCheckBox(View view) {
-        return ((CheckBox) view.findViewById(R.id.call_selected));
-    }
-
-    private void handleCheckBoxSelectionInActionMode(int position, View v) {
-        CheckBox call_selected = getTargetCheckBox(v);
-        boolean isChecked = call_selected.isChecked();
-        call_selected.setChecked(!isChecked);
-        mAdapter.getRecordsList().get(position).setSelected(!isChecked);
-        updateToolbarCounter(isChecked);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mAdapter.isActionMode()) {
@@ -253,6 +215,18 @@ public class RecordsActivity extends AppCompatActivity implements
         } else {
             super.onBackPressed();
         }
+    }
+
+    private CheckBox getTargetCheckBox(View view) {
+        return ((CheckBox) view.findViewById(R.id.call_selected));
+    }
+
+    private void handleCheckBoxSelectionInActionMode(int position, View v) {
+        CheckBox call_selected = getTargetCheckBox(v);
+        boolean isChecked = call_selected.isChecked();
+        call_selected.setChecked(!isChecked);
+        mAdapter.getRecordsList().get(position).setSelected(!isChecked);
+        updateToolbarCounter(isChecked);
     }
 
     private void updateToolbarCounter(boolean isChecked) {
@@ -328,6 +302,35 @@ public class RecordsActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         // TODO: 02.06.2017
+    }
+
+    /**
+     * Perform an action when a menu item is selected from the
+     * floating search view
+     *
+     * @param item the selected item
+     */
+    @Override
+    public void onActionMenuItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        switch (id) {
+            case R.id.action_add_demo_record:
+                InputDialog.newInstance().show(mAppCompatActivity, "Contact ID");
+                break;
+            case R.id.action_start_sample_animations:
+                startActivity(new Intent(getApplicationContext(), SampleMainActivity.class));
+                break;
+            case R.id.action_sort:
+                DialogHelper.openSortDialog((AppCompatActivity) getApplicationContext());
+                break;
+            case R.id.action_settings:
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
