@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -42,12 +41,9 @@ import com.anthonynahas.autocallrecorder.views.managers.WrapContentLinearLayoutM
 
 import org.chalup.microorm.MicroOrm;
 
-import java.util.ArrayList;
-
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 import static android.view.View.GONE;
-import static com.anthonynahas.autocallrecorder.R.id.recycler_view;
 
 /**
  * Created by anahas on 09.06.2017.
@@ -89,15 +85,6 @@ public class RecordsFragment extends Fragment implements
     private final int mLimit = 30;
     private int mLoaderManagerID = 0;
 
-    public enum args {
-        title,
-        projection,
-        selection,
-        selectionArguments,
-        limit,
-        offset
-    }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -124,6 +111,13 @@ public class RecordsFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+
+        if (args != null) {
+            mArguments = args;
+        }
+
 
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -158,7 +152,7 @@ public class RecordsFragment extends Fragment implements
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        mRecyclerView = (RecyclerView) mView.findViewById(recycler_view);
+        mRecyclerView = (RecyclerView) mView.findViewById(R.id.recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -184,11 +178,6 @@ public class RecordsFragment extends Fragment implements
         mToolbar.setVisibility(GONE);
         mCounterTV = (TextView) mView.findViewById(R.id.counter_text);
         mDeleteButton = (Button) mView.findViewById(R.id.button_action_mode_delete);
-        Bundle args = getArguments();
-
-        if (args != null) {
-            mArguments = args;
-        }
 
         mActionModeSupport = new ActionModeSupport("test", true, mContext, mToolbar, mAdapter);
 
@@ -217,7 +206,7 @@ public class RecordsFragment extends Fragment implements
 
         getLoaderManager().initLoader(mLoaderManagerID, mArguments, this);
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return mView;
     }
 
     @Override
@@ -314,7 +303,7 @@ public class RecordsFragment extends Fragment implements
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapData(new ArrayList<Record>());
+//        mAdapter.swapData(new ArrayList<Record>());
     }
 
     private void refreshCursorLoader(Bundle args) {

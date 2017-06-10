@@ -30,17 +30,16 @@ import android.widget.CompoundButton;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.configurations.Config;
 import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
-import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
-import com.anthonynahas.ui_animator.sample.SampleMainActivity;
-import com.arlib.floatingsearchview.FloatingSearchView;
-
 import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
-import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
+import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PermissionsHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
+import com.anthonynahas.ui_animator.sample.SampleMainActivity;
+import com.arlib.floatingsearchview.FloatingSearchView;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -313,10 +312,7 @@ public class MainActivity extends AppCompatActivity implements
             super(fragmentManager);
             mRecordsListFragment = RecordsListFragment.newInstance();
 
-            Bundle args = new Bundle();
-            String selection = RecordDbContract.RecordItem.COLUMN_IS_LOVE + " = 1";
-            args.putString(RecordsListFragment.BundleArgs.selection.name(), selection);
-            mLoveRecordsFragment = RecordsFragment.newInstance(args);
+            mLoveRecordsFragment = RecordsFragment.newInstance(Config.RECORDSFRAGMENT);
         }
 
         /**

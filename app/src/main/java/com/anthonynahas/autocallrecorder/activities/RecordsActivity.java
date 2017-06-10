@@ -46,8 +46,6 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 
 import org.chalup.microorm.MicroOrm;
 
-import java.util.ArrayList;
-
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 /**
@@ -133,13 +131,13 @@ public class RecordsActivity extends AppCompatActivity implements
         mContentLoadingProgressBar = (ContentLoadingProgressBar) findViewById(R.id.content_loading_progressbar);
         mpProgressBar = (ProgressBar) findViewById(R.id.progressbar);
         // Lookup the swipe container view
-        mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
-        mSwipeContainer.setOnRefreshListener(this);
-        // Configure the refreshing colors
-        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+//        mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+//        mSwipeContainer.setOnRefreshListener(this);
+//        // Configure the refreshing colors
+//        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+//                android.R.color.holo_green_light,
+//                android.R.color.holo_orange_light,
+//                android.R.color.holo_red_light);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -293,14 +291,14 @@ public class RecordsActivity extends AppCompatActivity implements
 //                onLoadingMore = false;
                 mContentLoadingProgressBar.hide();
                 mpProgressBar.setVisibility(View.GONE);
-                mSwipeContainer.setRefreshing(false);
+//                mSwipeContainer.setRefreshing(false);
             }
         }, 2000);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapData(new ArrayList<Record>());
+//        mAdapter.swapData(new ArrayList<Record>());
     }
 
     /**

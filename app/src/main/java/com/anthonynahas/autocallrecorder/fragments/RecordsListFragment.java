@@ -568,7 +568,7 @@ public class RecordsListFragment extends Fragment implements
         }
         mRecyclerView.setAdapter(mAdapter);
         mContentLoadingProgressBar.hide();
-        mSwipeContainer.setRefreshing(false);
+//        mSwipeContainer.setRefreshing(false);
         //mAdapter.notifyItemInserted(0);
     }
 
