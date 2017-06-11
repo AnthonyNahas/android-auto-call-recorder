@@ -329,12 +329,31 @@ public class Record implements Serializable, Parcelable {
 
     @Override
     public String toString() {
+        String enter = "\n";
         return "_id: "
                 + m_ID
+                + enter
+                + " path: "
+                + mPath
+                + enter
                 + " number: "
                 + mNumber
+                + enter
                 + " contactID: "
-                + mContactID;
+                + mContactID
+                + enter
+                + " date: "
+                + mDate
+                + enter
+                + " size: "
+                + mSize
+                + enter
+                + " duration: "
+                + mDuration
+                + enter
+                + "isIncoming: "
+                + mIncoming
+                + enter;
     }
 
     public void updateIsLocked() {

@@ -19,6 +19,8 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.exception.DropboxUnlinkedException;
 
+import org.chalup.microorm.MicroOrm;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -49,16 +51,19 @@ public class FetchIntentService extends IntentService {
 
     @Override
     public void onCreate() {
+        super.onCreate();
         mPreferenceHelper = new PreferenceHelper(this);
     }
 
     @Override
     public void onStart(Intent intent, int startId) {
+        super.onStart(intent, startId);
         Log.d(TAG, "onStart()");
     }
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         Log.d(TAG, "onDestroy() fetching..");
     }
 
@@ -119,8 +124,9 @@ public class FetchIntentService extends IntentService {
             }
 
 //            getApplicationContext().getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
+            Log.d(TAG, record.toString());
             RecordsQueryHandler.getInstance(getContentResolver())
-                    .startInsert(0, null, RecordDbContract.CONTENT_URL, record.toContentValues());
+                    .startInsert(0, null, RecordDbContract.CONTENT_URL, new MicroOrm().toContentValues(record));
 
             if (mPreferenceHelper.canUploadOnDropBox()) {
                 Log.d(TAG, "onUpload()");
