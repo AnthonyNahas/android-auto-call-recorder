@@ -15,8 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.recyclerview.BuildConfig;
 import android.util.Log;
 
-import com.anthonynahas.autocallrecorder.classes.Record;
-
 /**
  * Created by A on 29.04.16.
  *
@@ -275,7 +273,7 @@ public class RecordsContentProvider extends ContentProvider {
         //create table query
         static final String CREATE_TABLE = "CREATE TABLE " + RecordDbContract.RecordItem.TABLE_NAME
                 + " ("
-                + RecordDbContract.RecordItem.COLUMN_ID + " TEXT NOT NULL, "
+                + RecordDbContract.RecordItem.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
                 + RecordDbContract.RecordItem.COLUMN_PATH + " TEXT NOT NULL, "
                 + RecordDbContract.RecordItem.COLUMN_NUMBER + " TEXT NOT NULL, "
                 + RecordDbContract.RecordItem.COLUMN_CONTACT_ID + " LONG, "

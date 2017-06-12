@@ -33,7 +33,7 @@ public class Record implements Serializable, Parcelable {
     private static final long serialVersionUID = -5060910544141464421L;
 
     @Column(RecordDbContract.RecordItem.COLUMN_ID)
-    private String m_ID; //like mDate + number
+    private int m_ID; //like mDate + number
 
     @Column(RecordDbContract.RecordItem.COLUMN_PATH)
     private String mPath;
@@ -90,7 +90,7 @@ public class Record implements Serializable, Parcelable {
 
     public Record(Cursor cursor, Object object) {
         if (cursor != null && cursor.getCount() > 0) {
-            m_ID = cursor.getString(cursor
+            m_ID = cursor.getInt(cursor
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID));
             mPath = cursor.getString(cursor
                     .getColumnIndex(RecordDbContract.RecordItem.COLUMN_PATH));
@@ -106,7 +106,7 @@ public class Record implements Serializable, Parcelable {
         }
     }
 
-    public Record(String m_ID,
+    public Record(int m_ID,
                   String mNumber,
                   long mContactID,
                   long mDate, int mSize,
@@ -125,11 +125,11 @@ public class Record implements Serializable, Parcelable {
         this.mLove = mLove;
     }
 
-    public String get_ID() {
+    public int get_ID() {
         return m_ID;
     }
 
-    public void set_ID(String m_ID) {
+    public void set_ID(int m_ID) {
         this.m_ID = m_ID;
     }
 
@@ -284,7 +284,7 @@ public class Record implements Serializable, Parcelable {
     @Override
     public int hashCode() {
         int hashCode = 3;
-        hashCode = 12 * hashCode + (m_ID != null ? m_ID.hashCode() : 0);
+        hashCode = 12 * hashCode + (m_ID != -1 ? m_ID : 0);
         hashCode = 12 * hashCode + (mNumber != null ? mNumber.hashCode() : 0);
         hashCode = 12 * hashCode + (mContactID != 0 ? (int) mContactID : 0);
         hashCode = 12 * hashCode + (mDate != 0 ? (int) mDate : 0);
@@ -300,7 +300,7 @@ public class Record implements Serializable, Parcelable {
         if (obj instanceof Record) {
             Record recordToCompare = (Record) obj;
             return
-                    m_ID.equals(recordToCompare.m_ID)
+                    m_ID == recordToCompare.m_ID
                             &&
                             mPath.equals(recordToCompare.mPath)
                             &&
@@ -414,7 +414,7 @@ public class Record implements Serializable, Parcelable {
         @Override
         public Record createFromParcel(Parcel parcel) {
             Record record = new Record();
-            record.m_ID = parcel.readString();
+            record.m_ID = parcel.readInt();
             record.mPath = parcel.readString();
             record.mNumber = parcel.readString();
             record.mContactID = parcel.readLong();
@@ -447,7 +447,7 @@ public class Record implements Serializable, Parcelable {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeString(m_ID);
+        parcel.writeInt(m_ID);
         parcel.writeString(mPath);
         parcel.writeString(mNumber);
         parcel.writeLong(mContactID);

@@ -2,7 +2,6 @@ package com.anthonynahas.autocallrecorder.services;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -98,44 +97,44 @@ public class FetchIntentService extends IntentService {
 
 
         // TODO: 11.05.17 query should be achieved with asyncquery handler
-        Cursor audioCursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection, selection, args, null);
+//        Cursor audioCursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+//                projection, selection, args, null);
+//
+//        String data;
+//        String displayName;
+//
+//        if (audioCursor != null && audioCursor.moveToFirst()) {
 
-        String data;
-        String displayName;
+//        Log.d(TAG, "cursor count = " + audioCursor.getCount());
+        // TODO: 08.05.17 cursor with try and catch
+//            record.set_ID(audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media._ID)));
+//        record.setSize(audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
+//        record.setDuration(audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)));
+//        data = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+//        displayName = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
+        // do what ever you want here
 
-        if (audioCursor != null && audioCursor.moveToFirst()) {
+//            audioCursor.close();
 
-            Log.d(TAG, "cursor count = " + audioCursor.getCount());
-            // TODO: 08.05.17 cursor with try and catch
-            record.set_ID(audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media._ID)));
-            record.setSize(audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.SIZE)));
-            record.setDuration(audioCursor.getInt(audioCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)));
-            data = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-            displayName = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
-            // do what ever you want here
+        long contactID = ContactHelper.getContactID(this.getContentResolver(), record.getNumber());
 
-            audioCursor.close();
-
-            long contactID = ContactHelper.getContactID(this.getContentResolver(), record.getNumber());
-
-            if (contactID != -1) {
-                record.setContactID(contactID);
-            }
-
-//            getApplicationContext().getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
-            Log.d(TAG, record.toString());
-            RecordsQueryHandler.getInstance(getContentResolver())
-                    .startInsert(0, null, RecordDbContract.CONTENT_URL, new MicroOrm().toContentValues(record));
-
-            if (mPreferenceHelper.canUploadOnDropBox()) {
-                Log.d(TAG, "onUpload()");
-                uploadAudioFile(data, displayName);
-
-            }
+        if (contactID != -1) {
+            record.setContactID(contactID);
         }
 
+//            getApplicationContext().getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
+        Log.d(TAG, record.toString());
+        RecordsQueryHandler.getInstance(getContentResolver())
+                .startInsert(0, null, RecordDbContract.CONTENT_URL, new MicroOrm().toContentValues(record));
+
+        if (mPreferenceHelper.canUploadOnDropBox()) {
+            Log.d(TAG, "onUpload()");
+//            uploadAudioFile(data, displayName);
+
+        }
     }
+
+//    }
 
     private boolean uploadAudioFile(String filePath, String fileName) {
         DropBoxHelper dropBoxHelper = new DropBoxHelper(this);

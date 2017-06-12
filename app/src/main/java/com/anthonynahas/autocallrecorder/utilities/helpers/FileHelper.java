@@ -34,12 +34,12 @@ public class FileHelper {
      * @param context - the used context
      * @param recordID - the id of the record file that will be shared
      */
-    public static void share(Context context, String recordID) {
+    public static void share(Context context, int recordID) {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("audio/*");
         share.putExtra(Intent.EXTRA_STREAM,
                 ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        Long.valueOf(recordID)));
+                        (long) recordID));
         context.startActivity(Intent.createChooser(share, "Share Sound File"));
     }
 

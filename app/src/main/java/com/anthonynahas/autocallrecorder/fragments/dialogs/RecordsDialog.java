@@ -3,7 +3,6 @@ package com.anthonynahas.autocallrecorder.fragments.dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -27,25 +26,24 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
 import com.anthonynahas.autocallrecorder.AudioSourceSwitcher;
-
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.MainOldActivity;
+import com.anthonynahas.autocallrecorder.classes.Record;
 import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
+import com.anthonynahas.autocallrecorder.utilities.asyncTasks.AudioFileAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.FileDeleterTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
-import com.anthonynahas.autocallrecorder.classes.Record;
-import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
-import com.anthonynahas.autocallrecorder.utilities.asyncTasks.AudioFileAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.UploadAudioFile;
 import com.anthonynahas.autocallrecorder.utilities.helpers.WindowHelper;
 import com.anthonynahas.ui_animator.AnimationLoader;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by A on 04.05.16.
@@ -329,12 +327,12 @@ public class RecordsDialog extends DialogFragment implements
     private void setAndPrepareMediaPlayer() {
         if (mMediaPlayer != null) {
             try {
-                mMediaPlayer.setDataSource(getActivity(),
-                        ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                                Long.valueOf(mRecord.get_ID())));
+                mMediaPlayer.setDataSource(mRecord.getPath());
                 mMediaPlayer.prepare();
+//                mMediaPlayer.setDataSource(getActivity(), ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Long.valueOf(mRecord.get_ID())));
             } catch (IOException | NullPointerException e) {
                 Log.e(TAG, "error - IOException", e);
+                // TODO: 12.06.17 enhance catching error with firebase
                 //todo - 26.04 - create dialog fragment --> no source file found 404 - id now found in the media store
             }
         }
@@ -377,7 +375,8 @@ public class RecordsDialog extends DialogFragment implements
         //getActivity().getContentResolver().delete(ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id),null,null);
         //getActivity().getContentResolver().delete(ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, id),null,null);
         ArrayList<String> filesToDelete = new ArrayList<>();
-        filesToDelete.add(getAudioFilePath(mRecord.get_ID()));
+//        filesToDelete.add(getAudioFilePath(String.valueOf(mRecord.get_ID())));
+        filesToDelete.add(mRecord.getPath());
         AsyncTask<ArrayList<String>, Void, Boolean> task = new FileDeleterTask().execute(filesToDelete);
         getActivity().getContentResolver().delete(RecordDbContract.CONTENT_URL, RecordDbContract.RecordItem.COLUMN_ID
                 + "= '" + mRecord.get_ID() + "'", null);

@@ -37,25 +37,26 @@ public class RecordDbHelper {
      * @param id-            the id of the record
      * @param value          - the value to put to the target column to update it
      */
-    public void updateBooleanColumn(Context context, String columnToUpdate, String id, int value) {
+    public void updateBooleanColumn(Context context, String columnToUpdate, int id, int value) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(columnToUpdate, value);
-        Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, Long.valueOf(id));
+        Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, (long) id);
         String selection = RecordDbContract.RecordItem.COLUMN_ID + " = ?";
-        String[] selectionArgs = {id};
+        String[] selectionArgs = {String.valueOf(id)};
         RecordsQueryHandler.getInstance(context.getContentResolver())
                 .startUpdate(0, null, uri, contentValues, selection, selectionArgs);
     }
 
 
-    public static void updateIsLockedColumn(Context context, String id, int isLocked) {
+    public static void updateIsLockedColumn(Context context, int id, int isLocked) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(RecordDbContract.RecordItem.COLUMN_IS_LOCKED, isLocked);
-        Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, Long.valueOf(id));
-        String selection = RecordDbContract.RecordItem.COLUMN_ID + "=?";
-        String[] selectionArgs = {id};
+        Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, (long) id);
+        String selection = RecordDbContract.RecordItem.COLUMN_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(id)};
         RecordsQueryHandler.getInstance(context.getContentResolver())
-                .startUpdate(RecordsQueryHandler.update.UPDATE_IS_LOCKED.ordinal(), null, uri, contentValues, selection, selectionArgs);
+                .startUpdate(RecordsQueryHandler.update.UPDATE_IS_LOCKED.ordinal(), null, uri,
+                        contentValues, selection, selectionArgs);
     }
 
 
@@ -71,7 +72,7 @@ public class RecordDbHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                String _id = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID));
+                int _id = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_ID));
                 String number = cursor.getString(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_NUMBER));
                 long contact_id = cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
                 long date = cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));

@@ -186,7 +186,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                             cursor.moveToFirst();
                             logCursor(cursor);
                             cursor.moveToFirst();
-                            String id = cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_ID));
+                            int id = cursor.getInt(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_ID));
                             int isLove = cursor.getInt(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
 
                             Log.d(TAG, "mImageCallIsLove = " + isLove);

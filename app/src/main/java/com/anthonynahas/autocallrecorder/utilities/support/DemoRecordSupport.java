@@ -111,7 +111,7 @@ public class DemoRecordSupport {
 //                String contact_number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 ContentValues values = new ContentValues();
-                values.put(RecordDbContract.RecordItem.COLUMN_ID, String.valueOf(generateNumber(10000, 5000)));
+//                values.put(RecordDbContract.RecordItem.COLUMN_ID, String.valueOf(generateNumber(10000, 5000)));
                 values.put(RecordDbContract.RecordItem.COLUMN_PATH, Res.DEMO_PATH);
                 values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
                 values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, contact.getNumber());
@@ -214,7 +214,6 @@ public class DemoRecordSupport {
         for (int i = 0; i < howManyRecords; i++) {
 
             Record record = new Record();
-            record.set_ID(String.valueOf(generateNumber(1000, 0)));
             record.setNumber(generatePhoneNumber());
             record.setContactID(generateNumber(1000, 500));
             record.setIncoming(generateNumber(1000, 0) >= 500);
