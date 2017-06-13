@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.classes.Record;
-import com.anthonynahas.autocallrecorder.classes.RecordExtended;
+import com.anthonynahas.autocallrecorder.models.Record;
+import com.anthonynahas.autocallrecorder.models.RecordExtended;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactNameAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;

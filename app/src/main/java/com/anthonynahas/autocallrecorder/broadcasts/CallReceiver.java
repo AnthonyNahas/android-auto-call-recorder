@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.services.RecordService;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;

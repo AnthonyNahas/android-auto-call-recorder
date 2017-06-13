@@ -6,7 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
-import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.models.Record;
 
 import java.util.ArrayList;
 import java.util.List;

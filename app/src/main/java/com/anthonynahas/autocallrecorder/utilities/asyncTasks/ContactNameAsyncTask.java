@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 

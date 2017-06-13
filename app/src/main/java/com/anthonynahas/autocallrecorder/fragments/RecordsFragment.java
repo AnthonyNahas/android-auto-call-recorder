@@ -29,7 +29,7 @@ import android.widget.TextView;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.RecordsActivity;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
-import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;

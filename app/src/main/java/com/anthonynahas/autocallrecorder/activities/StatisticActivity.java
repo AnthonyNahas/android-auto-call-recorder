@@ -17,8 +17,8 @@ import android.view.View;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.StatisticRecordsAdapter;
-import com.anthonynahas.autocallrecorder.classes.Record;
-import com.anthonynahas.autocallrecorder.classes.RecordExtended;
+import com.anthonynahas.autocallrecorder.models.Record;
+import com.anthonynahas.autocallrecorder.models.RecordExtended;
 import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;

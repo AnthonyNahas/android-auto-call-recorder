@@ -1,4 +1,4 @@
-package com.anthonynahas.autocallrecorder.classes;
+package com.anthonynahas.autocallrecorder.models;
 
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 

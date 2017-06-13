@@ -15,7 +15,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.anthonynahas.autocallrecorder.classes.Record;
+import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.providers.cursors.CursorLogger;
 
 import java.io.BufferedInputStream;
