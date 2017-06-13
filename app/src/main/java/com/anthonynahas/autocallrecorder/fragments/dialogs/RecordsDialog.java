@@ -45,6 +45,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -62,6 +64,9 @@ public class RecordsDialog extends DialogFragment implements
         SeekBar.OnSeekBarChangeListener {
 
     public static final String TAG = RecordsDialog.class.getSimpleName();
+
+    @Inject
+    FileHelper mFileHelper;
 
     @BindView(R.id.toolbar_rec_dialog)
     Toolbar toolbar;
@@ -244,6 +249,7 @@ public class RecordsDialog extends DialogFragment implements
                 }
                 break;
             case R.id.fab_share:
+                mFileHelper.share(668);
                 mRecord.share(mContext);
                 break;
             case R.id.fab_delete:
@@ -274,7 +280,7 @@ public class RecordsDialog extends DialogFragment implements
                 updateIsLockedMenuItemTitle(item);
                 return true;
             case R.id.action_share:
-                FileHelper.share(getActivity(), mRecord.get_ID());
+                mFileHelper.share(mRecord.get_ID());
                 return true;
             case R.id.action_upload:
                 uploadRecord();

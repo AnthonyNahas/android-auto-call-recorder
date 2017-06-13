@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import javax.inject.Inject;
+
 /**
  * IntentService that deals with the record service as well as with the db.
  * The content values will be sent from the record service and forwarded to insert
@@ -38,6 +40,9 @@ import java.io.FileNotFoundException;
 public class FetchIntentService extends IntentService {
 
     private static final String TAG = FetchIntentService.class.getSimpleName();
+
+    @Inject
+    FileHelper mFileHelper;
 
     private PreferenceHelper mPreferenceHelper;
 
@@ -89,10 +94,10 @@ public class FetchIntentService extends IntentService {
                 + MediaStore.Audio.Media.DISPLAY_NAME
                 + " == "
                 + record.getDate()
-                + FileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
+                + mFileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
         //String selection = MediaStore.Audio.Media.DISPLAY_NAME + "=? ";
         String selection = MediaStore.Images.Media.DISPLAY_NAME + " like ? ";
-        String suffixFile = FileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
+        String suffixFile = mFileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
         String[] args = {record.getDate() + suffixFile}; // TODO: 09.05.2017 args should be dynamic
 
 

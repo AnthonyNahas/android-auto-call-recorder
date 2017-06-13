@@ -16,8 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactNameAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
@@ -31,7 +31,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by anahas on 02.06.2017.
@@ -173,8 +172,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             iv_love.setOnClickListener(this);
         }
 
-        @OnClick(R.id.cb_call_selected)
-        private void handleCheckBoxCallSelected(Boolean isChecked, int position) {
+        protected void handleCheckBoxCallSelected(Boolean isChecked, int position) {
             mRecordsList.get(position).setSelected(isChecked);
             LocalBroadcastManager.getInstance(mContext)
                     .sendBroadcast(new Intent(Res.ACTION_MODE_COUNTER)
@@ -182,8 +180,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             notifyItemChanged(position); //very important -> otherwise the view holder will not update and rebind
         }
 
-        @OnClick(R.id.iv_call_isLove)
-        private void handleIVCallIsLove(int position) {
+        protected void handleIVCallIsLove(int position) {
             if (position != RecyclerView.NO_POSITION) {
                 Record record = mRecordsList.get(position);
                 record.setLove(mContext, !record.isLove());

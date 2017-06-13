@@ -12,14 +12,15 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.broadcasts.DoneRecReceiver;
-import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
+import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 
 import java.io.File;
 import java.io.IOException;
 
-import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
+import javax.inject.Inject;
 
 /**
  * Created by A on 28.03.16.
@@ -31,6 +32,9 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 public class RecordService extends Service {
 
     private static final String TAG = RecordService.class.getSimpleName();
+
+    @Inject
+    FileHelper mFileHelper;
 
     public static File sRecordFile;
 
@@ -88,8 +92,8 @@ public class RecordService extends Service {
         mRecord = intent.getParcelableExtra(Res.REC_PARC_KEY);
 
         // TODO: 08.05.17 to check
-        String fileSuffix = FileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
-        sRecordFile = new File(FileHelper.getChildDir(mRecord.getDate()), mRecord.getDate() + fileSuffix);
+        String fileSuffix = mFileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
+        sRecordFile = new File(mFileHelper.getChildDir(mRecord.getDate()), mRecord.getDate() + fileSuffix);
         mRecord.setPath(sRecordFile.getAbsolutePath());
 
         Log.d(TAG, sRecordFile.getAbsolutePath());

@@ -8,11 +8,16 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
+
 import java.io.File;
 import java.io.IOError;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Class helper that deals with the file system and more.
@@ -21,29 +26,35 @@ import java.util.Date;
  * @version 1.0
  * @since 11.05.2017
  */
-
+@Singleton
 public class FileHelper {
 
     private static final String TAG = FileHelper.class.getSimpleName();
 
     private static final String FILENAME = "com.anthonynahas.autocallrecorder";
 
+    private Context mContext;
+
+    @Inject
+    public FileHelper(@ApplicationContext Context context) {
+        mContext = context;
+    }
+
     /**
      * Share a record audio file
      *
-     * @param context - the used context
      * @param recordID - the id of the record file that will be shared
      */
-    public static void share(Context context, int recordID) {
+    public void share(int recordID) {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("audio/*");
         share.putExtra(Intent.EXTRA_STREAM,
                 ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                         (long) recordID));
-        context.startActivity(Intent.createChooser(share, "Share Sound File"));
+        mContext.startActivity(Intent.createChooser(share, "Share Sound File"));
     }
 
-    public static File getChildDir(long currentDate) {
+    public File getChildDir(long currentDate) {
         File childFile = new File(getBaseDir().getPath(), getDate(currentDate));
         Log.d(TAG, childFile.getAbsolutePath());
         if (!childFile.mkdir()) {
@@ -52,7 +63,7 @@ public class FileHelper {
         return childFile;
     }
 
-    private static File getBaseDir() {
+    public File getBaseDir() {
         File baseFileDir = new File(Environment.getExternalStorageDirectory(), FILENAME);
         Log.d(TAG, baseFileDir.toString());
         //make dir
@@ -62,7 +73,7 @@ public class FileHelper {
         return baseFileDir;
     }
 
-    private static String getDate(long l) {
+    private String getDate(long l) {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
         Date date = new Date(l);
 
@@ -70,7 +81,7 @@ public class FileHelper {
     }
 
 
-    public static String getAudioFileSuffix(int audioOutPutFormat) {
+    public String getAudioFileSuffix(int audioOutPutFormat) {
 
         switch (audioOutPutFormat) {
 
