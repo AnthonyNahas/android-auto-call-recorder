@@ -86,7 +86,7 @@
 
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floating_action_button_play_pause"
+                android:id="@+id/fab_play_pause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -96,31 +96,31 @@
                 app:fabSize="mini" />
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floating_action_button_delete"
+                android:id="@+id/fab_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
-                android:layout_toLeftOf="@id/floating_action_button_play_pause"
+                android:layout_toLeftOf="@id/fab_play_pause"
                 android:src="@android:drawable/ic_menu_delete"
                 app:backgroundTint="@android:color/darker_gray"
                 app:fabSize="mini" />
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floating_action_button_share"
+                android:id="@+id/fab_share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
-                android:layout_toLeftOf="@id/floating_action_button_delete"
+                android:layout_toLeftOf="@id/fab_delete"
                 android:src="@android:drawable/ic_menu_share"
                 app:backgroundTint="@android:color/holo_blue_light"
                 app:fabSize="mini" />
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floating_action_button_call"
+                android:id="@+id/fab_call"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
-                android:layout_toLeftOf="@id/floating_action_button_share"
+                android:layout_toLeftOf="@id/fab_share"
                 android:src="@android:drawable/ic_menu_call"
                 app:backgroundTint="@android:color/holo_green_dark"
                 app:fabSize="mini" />

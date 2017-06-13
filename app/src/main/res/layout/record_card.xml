@@ -27,7 +27,7 @@
             android:background="?android:attr/selectableItemBackgroundBorderless">
 
             <CheckBox
-                android:id="@+id/call_selected"
+                android:id="@+id/cb_call_selected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="false"
@@ -48,8 +48,8 @@
                 android:layout_alignTop="@+id/linearLayout"
                 android:layout_marginLeft="14dp"
                 android:layout_marginStart="14dp"
-                android:layout_toEndOf="@+id/call_selected"
-                android:layout_toRightOf="@+id/call_selected"
+                android:layout_toEndOf="@+id/cb_call_selected"
+                android:layout_toRightOf="@+id/cb_call_selected"
                 android:contentDescription="@string/image_view_profile"
                 android:scaleType="fitXY"
                 android:src="@drawable/custmtranspprofpic200px"

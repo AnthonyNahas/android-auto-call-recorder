@@ -41,6 +41,9 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
@@ -49,11 +52,34 @@ public class MainActivity extends AppCompatActivity implements
     public static boolean sIsInActionMode = false;
 
     private Activity mAppCompatActivity;
-    private FloatingActionButton fabActionMode;
-    private PreferenceHelper mPreferenceHelper;
-    private FloatingSearchView mSearchView;
-    private TabLayout mTabLayout;
+
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    @BindView(R.id.container)
+    ViewPager mViewPager;
+
+//    @BindView(R.id.toolbar)
+//    Toolbar toolbar;
+
+    @BindView(R.id.tabs)
+    TabLayout tabs;
+
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+
+    @BindView(R.id.floating_search_view)
+    FloatingSearchView searchView;
+
+    @BindView(R.id.fab_go_in_action_mode)
+    FloatingActionButton fabActionMode;
+
     private SwitchCompat mSwitch_auto_rec;
+
+    private PreferenceHelper mPreferenceHelper;
     private int mCurrentFragmentPosition;
     private BroadcastReceiver mActionModeBroadcastReceiver;
     private FloatingSearchView.OnQueryChangeListener mOnQueryChangeListener;
@@ -69,15 +95,13 @@ public class MainActivity extends AppCompatActivity implements
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_navigation_drawer_tabs);
+
+        ButterKnife.bind(this);
 
         mAppCompatActivity = this;
 
@@ -92,13 +116,10 @@ public class MainActivity extends AppCompatActivity implements
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        mTabLayout = (TabLayout) findViewById(R.id.tabs);
-        mTabLayout.setupWithViewPager(mViewPager);
+        tabs.setupWithViewPager(mViewPager);
 
-        fabActionMode = (FloatingActionButton) findViewById(R.id.fab_go_in_action_mode);
         fabActionMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,15 +129,15 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        DrawerLayout mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawer.setDrawerListener(toggle);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
-        mSearchView.attachNavigationDrawerToMenuButton(mDrawer);
-        mSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
+        final AppCompatActivity appCompatActivity = this;
+
+        searchView.attachNavigationDrawerToMenuButton(drawer);
+        searchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
             /**
              * Perform an action when a menu item is selected
              *
@@ -135,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements
                         startActivity(new Intent(getApplicationContext(), SampleMainActivity.class));
                         break;
                     case R.id.action_sort:
-                        DialogHelper.openSortDialog((AppCompatActivity) getApplicationContext(), mSectionsPagerAdapter.getItem(0));
+                        DialogHelper.openSortDialog(appCompatActivity, mSectionsPagerAdapter.getItem(0));
                         break;
                     case R.id.action_settings:
                         startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
@@ -146,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Menu menu = navigationView.getMenu();
         MenuItem menuItem_switch_auto_rec = menu.findItem(R.id.nav_switch_auto_rec);
@@ -205,7 +225,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (sIsInActionMode) {
@@ -252,7 +271,6 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -269,13 +287,13 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void handleActionMode(boolean isInActionMode) {
         if (isInActionMode) {
-            mSearchView.setVisibility(View.GONE);
-            mTabLayout.setVisibility(View.GONE);
+            searchView.setVisibility(View.GONE);
+            tabs.setVisibility(View.GONE);
             fabActionMode.setImageResource(R.drawable.ic_close_white);
 
         } else {
-            mSearchView.setVisibility(View.VISIBLE);
-            mTabLayout.setVisibility(View.VISIBLE);
+            searchView.setVisibility(View.VISIBLE);
+            tabs.setVisibility(View.VISIBLE);
             fabActionMode.setImageResource(R.drawable.ic_delete_white);
         }
 
@@ -328,10 +346,10 @@ public class MainActivity extends AppCompatActivity implements
             mCurrentFragmentPosition = position;
             switch (position) {
                 case 0:
-                    mSearchView.setOnQueryChangeListener(mRecordsListFragment.getOnQueryChangeListener());
+                    searchView.setOnQueryChangeListener(mRecordsListFragment.getOnQueryChangeListener());
                     return mRecordsListFragment;
                 case 1:
-                    //mSearchView.setOnQueryChangeListener(mLoveRecordsFragment.getOnQueryChangeListener());
+                    //searchView.setOnQueryChangeListener(mLoveRecordsFragment.getOnQueryChangeListener());
                     return mLoveRecordsFragment;
                 default:
                     return null;

@@ -29,6 +29,10 @@ import org.apache.commons.collections4.ListUtils;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by anahas on 02.06.2017.
  *
@@ -140,28 +144,51 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     class RecordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // each data item is just a string in this case
-        private CheckBox mCheckBoxCallSelected;
-        private TextView mTVCallNameOrNumber;
-        private TextView mTVDate;
-        private TextView mTVDuration;
-        private ImageView mIVProfile;
-        private ImageView mIVCallIsIncoming;
-        private ImageView mIVCallIsLove;
+        @BindView(R.id.cb_call_selected)
+        CheckBox cb_call_selected;
+
+        @BindView(R.id.tv_call_contact_name_or_number)
+        TextView tv_number_name;
+
+        @BindView(R.id.tv_call_date)
+        TextView tv_date;
+
+        @BindView(R.id.tv_call_duration)
+        TextView tv_duration;
+
+        @BindView(R.id.iv_profile)
+        ImageView iv_profile;
+
+        @BindView(R.id.iv_call_is_incoming)
+        ImageView iv_incoming;
+
+        @BindView(R.id.iv_call_isLove)
+        ImageView iv_love;
 
         RecordViewHolder(View view) {
             super(view);
-            mCheckBoxCallSelected = (CheckBox) view.findViewById(R.id.call_selected);
-            mCheckBoxCallSelected.setOnClickListener(this);
+            ButterKnife.bind(this, view);
 
-            mTVCallNameOrNumber = (TextView) view.findViewById(R.id.tv_call_contact_name_or_number);
-            mTVDate = (TextView) view.findViewById(R.id.tv_call_date);
-            mTVDuration = (TextView) view.findViewById(R.id.tv_call_duration);
+            cb_call_selected.setOnClickListener(this);
+            iv_love.setOnClickListener(this);
+        }
 
-            mIVProfile = (ImageView) view.findViewById(R.id.iv_profile);
-            mIVCallIsIncoming = (ImageView) view.findViewById(R.id.iv_call_is_incoming);
+        @OnClick(R.id.cb_call_selected)
+        private void handleCheckBoxCallSelected(Boolean isChecked, int position) {
+            mRecordsList.get(position).setSelected(isChecked);
+            LocalBroadcastManager.getInstance(mContext)
+                    .sendBroadcast(new Intent(Res.ACTION_MODE_COUNTER)
+                            .putExtra(Res.IS_CHECKED_KEY, !isChecked));
+            notifyItemChanged(position); //very important -> otherwise the view holder will not update and rebind
+        }
 
-            mIVCallIsLove = (ImageView) view.findViewById(R.id.iv_call_isLove);
-            mIVCallIsLove.setOnClickListener(this);
+        @OnClick(R.id.iv_call_isLove)
+        private void handleIVCallIsLove(int position) {
+            if (position != RecyclerView.NO_POSITION) {
+                Record record = mRecordsList.get(position);
+                record.setLove(mContext, !record.isLove());
+                notifyItemChanged(position); //very important -> otherwise the view holder will not update and rebind
+            }
         }
 
         private void handleTVCallNameOrNumber(@NonNull RecordViewHolder viewHolder, int position) {
@@ -174,9 +201,9 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
                     :
                     MemoryCacheHelper.getMemoryCacheForContactsName(record.getNumber()));
             if (record.getName() != null && !record.getName().isEmpty()) {
-                viewHolder.mTVCallNameOrNumber.setText(record.getName());
+                viewHolder.tv_number_name.setText(record.getName());
             } else {
-                new ContactNameAsyncTask(mContext, record, viewHolder.mTVCallNameOrNumber).execute();
+                new ContactNameAsyncTask(mContext, record, viewHolder.tv_number_name).execute();
             }
         }
 
@@ -187,38 +214,16 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             }
             Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
             if (cachedBitmap != null) {
-                viewHolder.mIVProfile.setImageBitmap(cachedBitmap);
+                viewHolder.iv_profile.setImageBitmap(cachedBitmap);
             } else {
-                new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(1);
+                new ContactPhotosAsyncTask(mContext, record, viewHolder.iv_profile).execute(1);
             }
-        }
-
-        private void handleIVCallIsLove(int position) {
-            if (position != RecyclerView.NO_POSITION) {
-                Record record = mRecordsList.get(position);
-                record.setLove(mContext, !record.isLove());
-                notifyItemChanged(position); //very important -> otherwise the view holder will not update and rebind
-            }
-        }
-
-        private void handleCheckBoxCallSelected(Boolean isChecked, int position) {
-            mRecordsList.get(position).setSelected(isChecked);
-            LocalBroadcastManager.getInstance(mContext)
-                    .sendBroadcast(new Intent(Res.ACTION_MODE_COUNTER)
-                            .putExtra(Res.IS_CHECKED_KEY, !isChecked));
-            notifyItemChanged(position); //very important -> otherwise the view holder will not update and rebind
         }
 
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.tv_call_contact_name_or_number:
-                    break;
-                case R.id.call_selected:
-                    handleCheckBoxCallSelected(mCheckBoxCallSelected.isChecked(), getAdapterPosition());
-                    break;
-                case R.id.iv_call_isLove:
-                    handleIVCallIsLove(getAdapterPosition());
                     break;
             }
         }
@@ -263,40 +268,40 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
         Record record = mRecordsList.get(position);
 
         if (isActionMode()) {
-            CheckboxAnimator.newInstance(viewHolder.mCheckBoxCallSelected).toRight();
+            CheckboxAnimator.newInstance(viewHolder.cb_call_selected).toRight();
         } else if (!actionMode && closeActionMode) {
-            CheckboxAnimator.newInstance(viewHolder.mCheckBoxCallSelected).toLeft();
+            CheckboxAnimator.newInstance(viewHolder.cb_call_selected).toLeft();
         }
 
         viewHolder
-                .mTVCallNameOrNumber
+                .tv_number_name
                 .setText(record.getNumber());
 
         viewHolder
-                .mTVDate
+                .tv_date
                 .setText(mDateTimeHelper.getLocalFormatterDate(record.getDate()));
 
         viewHolder
-                .mTVDuration
+                .tv_duration
                 .setText(mDateTimeHelper.getTimeString(record.getDuration()));
 
         viewHolder
-                .mIVCallIsIncoming
+                .iv_incoming
                 .setImageResource(record.isIncoming() ? R.drawable.ic_call_received : R.drawable.ic_call_made);
 
         viewHolder
-                .mIVCallIsIncoming
+                .iv_incoming
                 .setColorFilter(record.isIncoming() ? Color.RED : Color.GREEN);
 
         viewHolder
-                .mIVCallIsLove
+                .iv_love
                 .setImageResource(record.isLove() ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
 
         viewHolder.handleTVCallNameOrNumber(viewHolder, position);
         viewHolder.handleIVProfile(viewHolder, position);
 
-        if (viewHolder.mCheckBoxCallSelected.isShown()) {
-            viewHolder.mCheckBoxCallSelected.setChecked(record.isSelected());
+        if (viewHolder.cb_call_selected.isShown()) {
+            viewHolder.cb_call_selected.setChecked(record.isSelected());
         }
     }
 

@@ -46,6 +46,8 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 
 import org.chalup.microorm.MicroOrm;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 /**
@@ -67,15 +69,25 @@ public class RecordsActivity extends AppCompatActivity implements
 
     private static final String TAG = RecordsActivity.class.getSimpleName();
 
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
+
+    @BindView(R.id.floating_search_view)
+    FloatingSearchView searchView;
+
+    @BindView(R.id.progressbar)
+    ProgressBar progressBar;
+
+    @BindView(R.id.content_loading_progressbar)
+    ContentLoadingProgressBar contentLoadingProgressBar;
+
+    private SwipeRefreshLayout mSwipeContainer;
+
+    private Toolbar mToolbar;
     private Context mContext;
     private Activity mAppCompatActivity;
-    private RecyclerView mRecyclerView;
     private RecordsAdapter mAdapter;
-    private FloatingSearchView mSearchView;
-    private ProgressBar mpProgressBar;
-    private ContentLoadingProgressBar mContentLoadingProgressBar;
-    private SwipeRefreshLayout mSwipeContainer;
-    private Toolbar mToolbar;
+
     private ActionModeSupport mActionModeSupport;
     private BroadcastReceiver mBroadcastReceiver;
 
@@ -96,8 +108,9 @@ public class RecordsActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_records);
+
+        ButterKnife.bind(this);
 
         mContext = this;
         mAppCompatActivity = this;
@@ -128,8 +141,6 @@ public class RecordsActivity extends AppCompatActivity implements
             }
         };
 
-        mContentLoadingProgressBar = (ContentLoadingProgressBar) findViewById(R.id.content_loading_progressbar);
-        mpProgressBar = (ProgressBar) findViewById(R.id.progressbar);
         // Lookup the swipe container view
 //        mSwipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
 //        mSwipeContainer.setOnRefreshListener(this);
@@ -139,34 +150,31 @@ public class RecordsActivity extends AppCompatActivity implements
 //                android.R.color.holo_orange_light,
 //                android.R.color.holo_red_light);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
 
         // specify an adapter (see also next example)
         mAdapter = new RecordsAdapter();
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
-        mRecyclerView.getItemAnimator().setAddDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        mRecyclerView.getItemAnimator().setRemoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        mRecyclerView.getItemAnimator().setMoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        mRecyclerView.getItemAnimator().setChangeDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setItemAnimator(new SlideInLeftAnimator());
+        recyclerView.getItemAnimator().setAddDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setRemoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setMoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setChangeDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
 
-        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(this);
-        ItemClickSupport.addTo(mRecyclerView).setOnItemLongClickListener(this);
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(this);
+        ItemClickSupport.addTo(recyclerView).setOnItemLongClickListener(this);
 
         // TODO: 02.06.17 refresh on scrolling the recyclerview
-
-        mSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
-        mSearchView.setOnQueryChangeListener(this);
-        mSearchView.setOnMenuItemClickListener(this);
+        searchView.setOnQueryChangeListener(this);
+        searchView.setOnMenuItemClickListener(this);
 
         mActionModeSupport = new ActionModeSupport(
                 getIntent().getStringExtra(args.title.name()),
@@ -255,8 +263,8 @@ public class RecordsActivity extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (!mpProgressBar.isShown()) {
-            mpProgressBar.setVisibility(View.VISIBLE);
+        if (!progressBar.isShown()) {
+            progressBar.setVisibility(View.VISIBLE);
         }
         String[] projection = args.getStringArray(RecordsActivity.args.projection.name());
         String selection = args.getString(RecordsActivity.args.selection.name());
@@ -289,8 +297,8 @@ public class RecordsActivity extends AppCompatActivity implements
             @Override
             public void run() {
 //                onLoadingMore = false;
-                mContentLoadingProgressBar.hide();
-                mpProgressBar.setVisibility(View.GONE);
+                contentLoadingProgressBar.hide();
+                progressBar.setVisibility(View.GONE);
 //                mSwipeContainer.setRefreshing(false);
             }
         }, 2000);
@@ -388,7 +396,7 @@ public class RecordsActivity extends AppCompatActivity implements
     }
 
     private void refreshCursorLoader(Bundle args) {
-        mContentLoadingProgressBar.postInvalidate();
+        contentLoadingProgressBar.postInvalidate();
         android.widget.ProgressBar bar = new android.widget.ProgressBar(this);
         bar.setIndeterminate(true);
         getSupportLoaderManager().restartLoader(mLoaderManagerID, args, this);

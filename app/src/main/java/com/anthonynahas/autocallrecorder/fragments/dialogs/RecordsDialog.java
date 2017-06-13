@@ -45,6 +45,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by A on 04.05.16.
  *
@@ -59,11 +63,37 @@ public class RecordsDialog extends DialogFragment implements
 
     public static final String TAG = RecordsDialog.class.getSimpleName();
 
-    private ImageView mImageProfile;
-    private TextView mTV_Number_CN;
-    private SeekBar mSeekbarRec;
-    private TextView mTV_Duration;
-    private FloatingActionButton mFloatingActionButton_play_pause;
+    @BindView(R.id.toolbar_rec_dialog)
+    Toolbar toolbar;
+
+    @BindView(R.id.img_profile_recDialog)
+    ImageView iv_profile;
+
+    @BindView(R.id.contact_name_number_recDialog)
+    TextView tv_number_or_name;
+
+    @BindView(R.id.seekbar_rec)
+    SeekBar seekBar;
+
+    @BindView(R.id.tv_duration_rec)
+    TextView tv_duration;
+
+    @BindView(R.id.button_rec_dialog_close)
+    Button b_close;
+
+    @BindView(R.id.fab_play_pause)
+    FloatingActionButton fab_play_pause;
+
+    @BindView(R.id.fab_share)
+    FloatingActionButton fab_share;
+
+    @BindView(R.id.fab_delete)
+    FloatingActionButton fab_delete;
+
+    @BindView(R.id.fab_call)
+    FloatingActionButton fab_call;
+
+    private Unbinder mUnbinder;
 
     private MediaPlayer mMediaPlayer;
 
@@ -100,6 +130,8 @@ public class RecordsDialog extends DialogFragment implements
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         View view = inflater.inflate(R.layout.record_dialog_layout, null);
+        mUnbinder = ButterKnife.bind(this, view);
+
         mContext = view.getContext();
         builder.setView(view);
 
@@ -109,6 +141,12 @@ public class RecordsDialog extends DialogFragment implements
         Log.d(TAG, "id = " + mRecord.get_ID());
 
         return builder.create();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 
     @Override
@@ -126,45 +164,35 @@ public class RecordsDialog extends DialogFragment implements
     private void init(View view) {
 
         //toolbar setup
-        Toolbar mToolbar = (Toolbar) view.findViewById(R.id.toolbar_rec_dialog);
-        mToolbar.inflateMenu(R.menu.menu_record_dialog);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        toolbar.inflateMenu(R.menu.menu_record_dialog);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         setHasOptionsMenu(true);
 
-        Button closeButton = (Button) view.findViewById(R.id.button_rec_dialog_close);
-        closeButton.setOnClickListener(this);
+        b_close.setOnClickListener(this);
 
-        mImageProfile = (ImageView) view.findViewById(R.id.img_profile_recDialog);
-
-        new ContactPhotosAsyncTask(mContext,mRecord, mImageProfile).execute(0);
-
-        mTV_Number_CN = (TextView) view.findViewById(R.id.contact_name_number_recDialog);
+        new ContactPhotosAsyncTask(mContext,mRecord, iv_profile).execute(0);
 
         if (mRecord.getName() != null) {
-            mTV_Number_CN.setText(mRecord.getName());
-            mTV_Number_CN.setOnClickListener(this);
+            tv_number_or_name.setText(mRecord.getName());
+            tv_number_or_name.setOnClickListener(this);
         } else {
-            mTV_Number_CN.setText(mRecord.getNumber());
+            tv_number_or_name.setText(mRecord.getNumber());
         }
 
-        mSeekbarRec = (SeekBar) view.findViewById(R.id.seekbar_rec);
-        mSeekbarRec.setOnSeekBarChangeListener(this);
+        seekBar.setOnSeekBarChangeListener(this);
         isDurationTextPressed = false;
 
-        mTV_Duration = (TextView) view.findViewById(R.id.tv_duration_rec);
-        mTV_Duration.setOnClickListener(this);
+        tv_duration.setOnClickListener(this);
 
         getAudioFilePath(String.valueOf(mRecord.get_ID()));
         mMediaPlayer = new MediaPlayer();
         mAudioSourceSwitcher = new AudioSourceSwitcher(getActivity(), mMediaPlayer);
 
         setAndPrepareMediaPlayer();
-        mTV_Duration.setText(getTimeString(mMediaPlayer.getDuration()));
-        mSeekbarRec.setMax(mMediaPlayer.getDuration());
+        tv_duration.setText(getTimeString(mMediaPlayer.getDuration()));
+        seekBar.setMax(mMediaPlayer.getDuration());
         isPaused = true;
-
-        mFloatingActionButton_play_pause = (FloatingActionButton) view.findViewById(R.id.floating_action_button_play_pause);
 
         /**
          * The mediaplayer will be released, when the mediaplayer is done with playing the audio file
@@ -172,29 +200,25 @@ public class RecordsDialog extends DialogFragment implements
 
         mMediaPlayer.setOnCompletionListener(null);
 
-        FloatingActionButton floatingActionButton_share = (FloatingActionButton) view.findViewById(R.id.floating_action_button_share);
-        FloatingActionButton floatingActionButton_delete = (FloatingActionButton) view.findViewById(R.id.floating_action_button_delete);
-        FloatingActionButton floatingActionButton_call = (FloatingActionButton) view.findViewById(R.id.floating_action_button_call);
-
         /**
          * Play/Pause the media player
          */
-        mFloatingActionButton_play_pause.setOnClickListener(this);
+        fab_play_pause.setOnClickListener(this);
 
         /**
          * Share the audio file
          */
-        floatingActionButton_share.setOnClickListener(this);
+        fab_share.setOnClickListener(this);
 
         /**
          * Delete the audio file
          */
-        floatingActionButton_delete.setOnClickListener(this);
+        fab_delete.setOnClickListener(this);
 
         /**
          * Call the contact
          */
-        floatingActionButton_call.setOnClickListener(this);
+        fab_call.setOnClickListener(this);
 
     }
 
@@ -202,8 +226,8 @@ public class RecordsDialog extends DialogFragment implements
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.contact_name_number_recDialog:
-                mTV_Number_CN.startAnimation(AnimationLoader.get(mContext, R.anim.sample_animation));
-                mTV_Number_CN.setText(mTV_Number_CN.getText().equals(mRecord.getNumber())
+                tv_number_or_name.startAnimation(AnimationLoader.get(mContext, R.anim.sample_animation));
+                tv_number_or_name.setText(tv_number_or_name.getText().equals(mRecord.getNumber())
                         ? mRecord.getName() : mRecord.getNumber());
                 break;
             case R.id.button_rec_dialog_close:
@@ -212,22 +236,22 @@ public class RecordsDialog extends DialogFragment implements
             case R.id.tv_duration_rec:
                 isDurationTextPressed = !isDurationTextPressed;
                 break;
-            case R.id.floating_action_button_play_pause:
+            case R.id.fab_play_pause:
                 if (isPaused) {
                     playMediaPlayer();
                 } else {
                     stopMediaPlayer();
                 }
                 break;
-            case R.id.floating_action_button_share:
+            case R.id.fab_share:
                 mRecord.share(mContext);
                 break;
-            case R.id.floating_action_button_delete:
+            case R.id.fab_delete:
                 deleteRecord();
                 dismiss();
                 break;
 
-            case R.id.floating_action_button_call:
+            case R.id.fab_call:
                 mRecord.call(mContext);
                 break;
         }
@@ -276,7 +300,7 @@ public class RecordsDialog extends DialogFragment implements
 
     private void updateSeekBar() {
         if (mMediaPlayer != null) {
-            mSeekbarRec.setProgress(mMediaPlayer.getCurrentPosition());
+            seekBar.setProgress(mMediaPlayer.getCurrentPosition());
         }
         mSeekHandler.postDelayed(run, 100);
     }
@@ -290,9 +314,9 @@ public class RecordsDialog extends DialogFragment implements
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (isDurationTextPressed) {
-            mTV_Duration.setText(getTimeString(progress) + "/" + getTimeString(mSeekbarRec.getMax()));
+            tv_duration.setText(getTimeString(progress) + "/" + getTimeString(this.seekBar.getMax()));
         } else {
-            mTV_Duration.setText(getTimeString(mSeekbarRec.getMax() - progress));
+            tv_duration.setText(getTimeString(this.seekBar.getMax() - progress));
         }
     }
 
@@ -304,7 +328,7 @@ public class RecordsDialog extends DialogFragment implements
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        mMediaPlayer.seekTo(mSeekbarRec.getProgress());
+        mMediaPlayer.seekTo(this.seekBar.getProgress());
         playMediaPlayer();
         mSeekHandler.postDelayed(run, 100);
     }
@@ -341,14 +365,14 @@ public class RecordsDialog extends DialogFragment implements
     private void playMediaPlayer() {
         mMediaPlayer.setOnCompletionListener(this);
         isPaused = false;
-        mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_pause);
+        fab_play_pause.setImageResource(android.R.drawable.ic_media_pause);
         mMediaPlayer.start();
     }
 
     private void stopMediaPlayer() {
         mMediaPlayer.setOnCompletionListener(null);
         isPaused = true;
-        mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
+        fab_play_pause.setImageResource(android.R.drawable.ic_media_play);
         mMediaPlayer.pause();
     }
 
@@ -357,14 +381,14 @@ public class RecordsDialog extends DialogFragment implements
     public void onCompletion(MediaPlayer mediaPlayer) {
         if (!isPaused) {
             isPaused = true;
-            mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
+            fab_play_pause.setImageResource(android.R.drawable.ic_media_play);
         }
         if (mMediaPlayer != null) {
             mMediaPlayer.reset();
-            mFloatingActionButton_play_pause.setImageResource(android.R.drawable.ic_media_play);
+            fab_play_pause.setImageResource(android.R.drawable.ic_media_play);
             isPaused = true;
             setAndPrepareMediaPlayer();
-            mSeekbarRec.setProgress(0);
+            seekBar.setProgress(0);
             //mMediaPlayer.release();
             //isReleased = true;
             //mSeekHandler.removeCallbacks(run);

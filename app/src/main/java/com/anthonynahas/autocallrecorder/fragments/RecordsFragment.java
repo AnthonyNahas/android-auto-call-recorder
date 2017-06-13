@@ -41,6 +41,9 @@ import com.anthonynahas.autocallrecorder.views.managers.WrapContentLinearLayoutM
 
 import org.chalup.microorm.MicroOrm;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 import static android.view.View.GONE;
@@ -62,10 +65,28 @@ public class RecordsFragment extends Fragment implements
 
     private static RecordsFragment sRecordFragment;
 
-    private Context mContext;
-    private RecyclerView mRecyclerView;
-    private RecordsAdapter mAdapter;
+    @BindView(R.id.content_loading_progressbar)
+    ContentLoadingProgressBar contentLoadingProgressBar;
 
+    @BindView(R.id.swipe_container)
+    SwipeRefreshLayout swipeContainer;
+
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
+
+    @BindView(R.id.toolbar_action_mode)
+    Toolbar toolbar;
+
+    @BindView(R.id.counter_text)
+    TextView tv_counter;
+
+    @BindView(R.id.button_action_mode_delete)
+    Button b_delete;
+
+    private Unbinder mUnbinder;
+
+    private Context mContext;
+    private RecordsAdapter mAdapter;
 
     private Bundle mArguments;
     private PreferenceHelper mPreferenceHelper;
@@ -73,11 +94,7 @@ public class RecordsFragment extends Fragment implements
     private BroadcastReceiver mBroadcastReceiver;
     private BroadcastReceiver mActionModeBroadcastReceiver;
 
-    private ContentLoadingProgressBar mContentLoadingProgressBar;
-    private SwipeRefreshLayout mSwipeContainer;
-    private Toolbar mToolbar;
-    private TextView mCounterTV;
-    private Button mDeleteButton;
+
     private Handler mHandlerToWait;
 
     private boolean onLoadingMore = false;
@@ -137,51 +154,46 @@ public class RecordsFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         // Inflate the layout for this fragment
-        View mView = inflater.inflate(R.layout.fragment_recrods_card_list, container, false);
-        mContext = mView.getContext();
+        View view = inflater.inflate(R.layout.fragment_recrods_card_list, container, false);
+        mUnbinder = ButterKnife.bind(this, view);
+
+        mContext = view.getContext();
         mPreferenceHelper = new PreferenceHelper(mContext);
         mHandlerToWait = new Handler();
 
-        mContentLoadingProgressBar = (ContentLoadingProgressBar) mView.findViewById(R.id.content_loading_progressbar);
         // Lookup the swipe container view
-        mSwipeContainer = (SwipeRefreshLayout) mView.findViewById(R.id.swipe_container);
-        mSwipeContainer.setOnRefreshListener(this);
+        swipeContainer.setOnRefreshListener(this);
         // Configure the refreshing colors
-        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        mRecyclerView = (RecyclerView) mView.findViewById(R.id.recycler_view);
-
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 
         // specify an adapter (see also next example)
         mAdapter = new RecordsAdapter();
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
-        mRecyclerView.getItemAnimator().setAddDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        mRecyclerView.getItemAnimator().setRemoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        mRecyclerView.getItemAnimator().setMoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        mRecyclerView.getItemAnimator().setChangeDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setItemAnimator(new SlideInLeftAnimator());
+        recyclerView.getItemAnimator().setAddDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setRemoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setMoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setChangeDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
 
-        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(this);
-        ItemClickSupport.addTo(mRecyclerView).setOnItemLongClickListener(this);
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(this);
+        ItemClickSupport.addTo(recyclerView).setOnItemLongClickListener(this);
 
-        mToolbar = (Toolbar) mView.findViewById(R.id.toolbar_action_mode);
-        mToolbar.setVisibility(GONE);
-        mCounterTV = (TextView) mView.findViewById(R.id.counter_text);
-        mDeleteButton = (Button) mView.findViewById(R.id.button_action_mode_delete);
+        toolbar.setVisibility(GONE);
 
-        mActionModeSupport = new ActionModeSupport("test", true, mContext, mToolbar, mAdapter);
+        mActionModeSupport = new ActionModeSupport("test", true, mContext, toolbar, mAdapter);
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -206,7 +218,15 @@ public class RecordsFragment extends Fragment implements
 
         getLoaderManager().initLoader(mLoaderManagerID, mArguments, this);
 
-        return mView;
+        return view;
+    }
+
+    // When binding a fragment in onCreateView, set the views to null in onDestroyView.
+    // ButterKnife returns an Unbinder on the initial binding that has an unbind method to do this automatically.
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mUnbinder.unbind();
     }
 
     @Override
@@ -261,7 +281,7 @@ public class RecordsFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        mContentLoadingProgressBar.show();
+        contentLoadingProgressBar.show();
 
         String[] projection = args.getStringArray(RecordsActivity.args.projection.name());
         String selection = args.getString(RecordsActivity.args.selection.name());
@@ -294,8 +314,8 @@ public class RecordsFragment extends Fragment implements
             @Override
             public void run() {
                 onLoadingMore = false;
-                mContentLoadingProgressBar.hide();
-                mSwipeContainer.setRefreshing(false);
+                contentLoadingProgressBar.hide();
+                swipeContainer.setRefreshing(false);
             }
         }, 2000);
     }

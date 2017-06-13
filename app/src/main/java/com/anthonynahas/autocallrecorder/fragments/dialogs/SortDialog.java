@@ -16,6 +16,10 @@ import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 
 /**
  * Created by A on 14.06.16.
@@ -28,6 +32,11 @@ public class SortDialog extends DialogFragment {
 
     public final static String TAG = SortDialog.class.getSimpleName();
 
+    @BindView(R.id.radiogroup_sort_arrange)
+    RadioGroup radiogroup_arrange;
+
+    private Unbinder mUnbinder;
+
     private String mSelect;
     private String mArrange;
     private PreferenceHelper mPreferenceHelper;
@@ -39,6 +48,7 @@ public class SortDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         View view = inflater.inflate(R.layout.sort_dialog_layout, null);
+        mUnbinder = ButterKnife.bind(this, view);
 
         mPreferenceHelper = new PreferenceHelper(view.getContext());
 
@@ -66,9 +76,9 @@ public class SortDialog extends DialogFragment {
                 }
             }
         });
-        RadioGroup arrange_radiogroup = (RadioGroup) view.findViewById(R.id.radiogroup_sort_arrange);
-        checkArrangeRadioGroup(arrange_radiogroup, mArrange);
-        arrange_radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+        checkArrangeRadioGroup(radiogroup_arrange, mArrange);
+        radiogroup_arrange.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
@@ -105,6 +115,12 @@ public class SortDialog extends DialogFragment {
                 })
                 .setTitle(R.string.sort_dialog_title);
         return builder.create();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 
     @Override

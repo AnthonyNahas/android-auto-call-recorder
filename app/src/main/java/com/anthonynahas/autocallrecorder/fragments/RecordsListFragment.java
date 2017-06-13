@@ -231,11 +231,11 @@ public class RecordsListFragment extends Fragment implements
 
 
         mRecyclerView.setItemAnimator(Type.values()[4].getAnimator());
-        //mRecyclerView.getItemAnimator().setAddDuration(500);
+        //recyclerView.getItemAnimator().setAddDuration(500);
         mRecyclerView.getItemAnimator().setRemoveDuration(500);
-        //mRecyclerView.setItemAnimator(new SlideInLeftAnimator()); // https://github.com/wasabeef/recyclerview-animators
+        //recyclerView.setItemAnimator(new SlideInLeftAnimator()); // https://github.com/wasabeef/recyclerview-animators
         //SlideInUpAnimator animator = new SlideInUpAnimator(new OvershootInterpolator(1f));
-        //mRecyclerView.setItemAnimator(animator);
+        //recyclerView.setItemAnimator(animator);
         //mAdapter.notifyItemRemoved();
 
         // use a linear layout manager
@@ -265,7 +265,7 @@ public class RecordsListFragment extends Fragment implements
                         if (sIsInActionMode) {
                             //Cursor cursor = mAdapter.getCursor();
                             //cursor.moveToPosition(position);
-                            CheckBox call_selected = ((CheckBox) v.findViewById(R.id.call_selected));
+                            CheckBox call_selected = ((CheckBox) v.findViewById(R.id.cb_call_selected));
                             boolean isChecked = call_selected.isChecked();
                             if (isChecked) {
                                 sCounter--;

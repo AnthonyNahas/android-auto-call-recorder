@@ -15,8 +15,14 @@ import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.utilities.decorators.ActionBarDecorator;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 // TODO: 07.06.2017 pull refresh --> get all contacts <=> error
 public class SingleContactRecordActivity extends AppCompatActivity {
+
+    @BindView(R.id.navigation)
+    BottomNavigationView navigation;
 
     private Record mRecord;
     private RecordsListFragment mRecordsListFragment;
@@ -59,6 +65,8 @@ public class SingleContactRecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_contact_record);
 
+        ButterKnife.bind(this);
+
         //Setup material action bar
         ActionBarDecorator actionBarDecorator = new ActionBarDecorator();
         actionBarDecorator.setup(this);
@@ -90,7 +98,6 @@ public class SingleContactRecordActivity extends AppCompatActivity {
                     .setSubtitle(mRecord.getNumber());
         }
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 

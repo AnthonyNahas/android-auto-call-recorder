@@ -28,6 +28,9 @@ import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 import org.apache.commons.lang3.ArrayUtils;
 import org.chalup.microorm.MicroOrm;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Class that deals with the content provider (DB) in order to analyse the db and
  * push a statistic as GUI.
@@ -41,7 +44,9 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
 
     private static final String TAG = StatisticActivity.class.getSimpleName();
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
+
     private StatisticRecordsAdapter mAdapter;
 
     @Override
@@ -49,27 +54,27 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
 
+        ButterKnife.bind(this);
+
         //Setup material action bar
         ActionBarDecorator actionBarDecorator = new ActionBarDecorator();
         actionBarDecorator.setup(this);
         actionBarDecorator.getActionBar().setDisplayHomeAsUpEnabled(true);
         actionBarDecorator.getActionBar().setTitle(getResources().getString(R.string.title_activity_statistic));
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
         mAdapter = new StatisticRecordsAdapter(null);
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
 
-        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 Bundle bundle = new Bundle();
@@ -148,7 +153,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
         // if you need to dump the whole cursor to list
 //        mAdapter = new StatisticRecordsAdapter(RecordDbHelper.convertCursorToContactRecordsList(data));
         mAdapter = new StatisticRecordsAdapter((new MicroOrm().listFromCursor(data, RecordExtended.class)));
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
 
     }
 

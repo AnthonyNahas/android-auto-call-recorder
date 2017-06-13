@@ -69,7 +69,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         call_icon_isIncoming = (ImageView) view.findViewById(R.id.iv_call_is_incoming);
         call_duration = (TextView) view.findViewById(R.id.tv_call_duration);
 
-        call_selected = (CheckBox) view.findViewById(R.id.call_selected);
+        call_selected = (CheckBox) view.findViewById(R.id.cb_call_selected);
         call_selected.setOnClickListener(this);
 
         mImageCallIsLove = (ImageButton) view.findViewById(R.id.iv_call_isLove);
@@ -174,7 +174,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
     public void onClick(View view) {
         switch (view.getId()) {
 
-            case R.id.call_selected:
+            case R.id.cb_call_selected:
                 RecordsListFragment.getInstance().prepareSelection(view, this.getAdapterPosition());
                 break;
 

@@ -113,7 +113,7 @@ public class ActionModeSupport {
     }
 
     private CheckBox getTargetCheckBox(View view) {
-        return ((CheckBox) view.findViewById(R.id.call_selected));
+        return ((CheckBox) view.findViewById(R.id.cb_call_selected));
     }
 
     private void notifyOnActionMode(boolean state) {
