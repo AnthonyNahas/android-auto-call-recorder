@@ -19,6 +19,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -609,7 +610,7 @@ public class RecordsListFragment extends Fragment implements
 
         RecordsDialog recordsDialog = new RecordsDialog();
         recordsDialog.setArguments(args);
-        recordsDialog.show(((Activity) mContext).getFragmentManager(), RecordsDialog.TAG);
+        recordsDialog.show(((AppCompatActivity) mContext).getSupportFragmentManager(), RecordsDialog.TAG);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

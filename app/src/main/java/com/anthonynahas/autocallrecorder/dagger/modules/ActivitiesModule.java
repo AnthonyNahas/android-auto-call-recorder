@@ -1,9 +1,11 @@
-package com.anthonynahas.autocallrecorder.dagger.modules.activities;
+package com.anthonynahas.autocallrecorder.dagger.modules;
 
 import android.app.Activity;
 
 import com.anthonynahas.autocallrecorder.activities.MainActivity;
+import com.anthonynahas.autocallrecorder.activities.RecordsActivity;
 import com.anthonynahas.autocallrecorder.dagger.components.sub.activities.MainActivitySubcomponent;
+import com.anthonynahas.autocallrecorder.dagger.components.sub.activities.RecordsActivitySubcomponent;
 
 import dagger.Binds;
 import dagger.Module;
@@ -18,12 +20,20 @@ import dagger.multibindings.IntoMap;
  * @version 1.0
  * @since 14.06.17
  */
-
-@Module(subcomponents = {MainActivitySubcomponent.class,})
-public abstract class MainActivityModule {
+@Module(subcomponents =
+        {
+                MainActivitySubcomponent.class,
+                RecordsActivitySubcomponent.class
+        })
+public abstract class ActivitiesModule {
 
     @Binds
     @IntoMap
     @ActivityKey(MainActivity.class)
     abstract AndroidInjector.Factory<? extends Activity> bindYourActivityInjectorFactory(MainActivitySubcomponent.Builder builder);
+
+    @Binds
+    @IntoMap
+    @ActivityKey(RecordsActivity.class)
+    abstract AndroidInjector.Factory<? extends Activity> bindMainActivityInjectorFactory(RecordsActivitySubcomponent.Builder builder);
 }

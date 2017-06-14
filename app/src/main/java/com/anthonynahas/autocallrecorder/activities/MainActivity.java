@@ -34,8 +34,6 @@ import com.anthonynahas.autocallrecorder.configurations.Config;
 import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
 import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
-import com.anthonynahas.autocallrecorder.services.FetchIntentService;
-import com.anthonynahas.autocallrecorder.services.RecordService;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DaggerTestClass;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
@@ -52,7 +50,7 @@ import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 

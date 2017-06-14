@@ -1,8 +1,6 @@
 package com.anthonynahas.autocallrecorder.fragments.dialogs;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -12,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,8 +28,8 @@ import android.widget.TextView;
 import com.anthonynahas.autocallrecorder.AudioSourceSwitcher;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.MainOldActivity;
-import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.AudioFileAsyncTask;
@@ -50,6 +49,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import dagger.android.support.AndroidSupportInjection;
 
 /**
  * Created by A on 04.05.16.
@@ -119,7 +119,7 @@ public class RecordsDialog extends DialogFragment implements
         Bundle args = new Bundle();
         args.putParcelable(Res.REC_PARC_KEY, record);
         recordsDialog.setArguments(args);
-        recordsDialog.show(((Activity) context).getFragmentManager(), RecordsDialog.TAG);
+        recordsDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), RecordsDialog.TAG);
     }
 
     @Override
@@ -160,11 +160,12 @@ public class RecordsDialog extends DialogFragment implements
         WindowHelper.init(getDialog().getWindow());
     }
 
-
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
     }
+
 
     private void init(View view) {
 
@@ -176,7 +177,7 @@ public class RecordsDialog extends DialogFragment implements
 
         b_close.setOnClickListener(this);
 
-        new ContactPhotosAsyncTask(mContext,mRecord, iv_profile).execute(0);
+        new ContactPhotosAsyncTask(mContext, mRecord, iv_profile).execute(0);
 
         if (mRecord.getName() != null) {
             tv_number_or_name.setText(mRecord.getName());

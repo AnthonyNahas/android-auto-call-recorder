@@ -20,6 +20,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ActionMode;
@@ -35,18 +36,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anthonynahas.autocallrecorder.R;
+import com.anthonynahas.autocallrecorder.adapters.RecordsCursorAdapter;
+import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
+import com.anthonynahas.autocallrecorder.models.Record;
+import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
+import com.anthonynahas.autocallrecorder.utilities.asyncTasks.AudioFileAsyncTask;
+import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
+import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.adapters.RecordsCursorAdapter;
-import com.anthonynahas.autocallrecorder.models.Record;
-import com.anthonynahas.autocallrecorder.classes.Res;
-import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
-import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
-import com.anthonynahas.autocallrecorder.utilities.asyncTasks.AudioFileAsyncTask;
-import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
+import javax.inject.Inject;
 
 /**
  * Created by A on 25.04.16.
@@ -56,6 +60,12 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
  * @since 25.04.2016
  */
 public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    @Inject
+    Context mContext;
+
+    @Inject
+    FileHelper mFileHelper;
 
     private View v;
     private ListView mRecListView;
@@ -367,7 +377,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             args.putParcelable(Res.REC_PARC_KEY, record);
             RecordsDialog recordsDialog = new RecordsDialog();
             recordsDialog.setArguments(args);
-            recordsDialog.show(getFragmentManager(), RecordsDialog.TAG);
+            recordsDialog.show(((AppCompatActivity) mContext).getSupportFragmentManager(), RecordsDialog.TAG);
         }
     };
 
