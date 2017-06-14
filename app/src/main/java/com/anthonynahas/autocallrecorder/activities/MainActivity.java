@@ -34,15 +34,22 @@ import com.anthonynahas.autocallrecorder.configurations.Config;
 import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
 import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
+import com.anthonynahas.autocallrecorder.services.FetchIntentService;
+import com.anthonynahas.autocallrecorder.services.RecordService;
+import com.anthonynahas.autocallrecorder.utilities.helpers.DaggerTestClass;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
+import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PermissionsHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +59,12 @@ public class MainActivity extends AppCompatActivity implements
     public static boolean sIsInActionMode = false;
 
     private Activity mAppCompatActivity;
+
+    @Inject
+    FileHelper mFileHelper;
+
+    @Inject
+    DaggerTestClass daggerTestClass;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -99,9 +112,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidInjection.inject(this);
         setContentView(R.layout.activity_main_navigation_drawer_tabs);
 
         ButterKnife.bind(this);
+
+        daggerTestClass.print();
 
         mAppCompatActivity = this;
 

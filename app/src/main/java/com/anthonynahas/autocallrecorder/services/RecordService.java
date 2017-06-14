@@ -22,6 +22,8 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
+import dagger.android.AndroidInjection;
+
 /**
  * Created by A on 28.03.16.
  *
@@ -45,45 +47,12 @@ public class RecordService extends Service {
 
     @Override
     public void onCreate() {
+        AndroidInjection.inject(this);
         super.onCreate();
         Log.d(TAG, "onCreate()");
         mPreferenceHelper = new PreferenceHelper(this);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy() - stop recording...");
-
-        mRecordHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                stopRecord();
-
-                String[] string_rec_path = {sRecordFile.getAbsolutePath()};
-
-                if (mPreferenceHelper.canAudioFileBeAddedToLibrary()) {
-                    MediaScannerConnection.scanFile(getApplicationContext(), string_rec_path, null, new MediaScannerConnection.OnScanCompletedListener() {
-                        @Override
-                        public void onScanCompleted(String path, Uri uri) {
-                            Log.d(TAG, "scan completed");
-                            sendBroadcast(new Intent(DoneRecReceiver.ACTION)
-                                    .putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord));
-                        }
-                    });
-                } else {
-                    sendBroadcast(new Intent(DoneRecReceiver.ACTION)
-                            .putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord));
-                }
-            }
-        }, 1000);
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -110,6 +79,41 @@ public class RecordService extends Service {
 
         return super.onStartCommand(intent, flags, startId);
     }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() - stop recording...");
+        mRecordHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                stopRecord();
+
+                String[] string_rec_path = {sRecordFile.getAbsolutePath()};
+
+                if (mPreferenceHelper.canAudioFileBeAddedToLibrary()) {
+                    MediaScannerConnection.scanFile(getApplicationContext(), string_rec_path, null, new MediaScannerConnection.OnScanCompletedListener() {
+                        @Override
+                        public void onScanCompleted(String path, Uri uri) {
+                            Log.d(TAG, "scan completed");
+                            sendBroadcast(new Intent(DoneRecReceiver.ACTION)
+                                    .putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord));
+                        }
+                    });
+                } else {
+                    sendBroadcast(new Intent(DoneRecReceiver.ACTION)
+                            .putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord));
+                }
+            }
+        }, 1000);
+    }
+
 
     private void startAndSaveRecord(File recordFile) {
         stopRecord();

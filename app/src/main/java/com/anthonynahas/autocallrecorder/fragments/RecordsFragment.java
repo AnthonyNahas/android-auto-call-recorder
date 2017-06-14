@@ -34,12 +34,15 @@ import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
+import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.autocallrecorder.utilities.support.ActionModeSupport;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 import com.anthonynahas.autocallrecorder.views.managers.WrapContentLinearLayoutManager;
 
 import org.chalup.microorm.MicroOrm;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,6 +67,9 @@ public class RecordsFragment extends Fragment implements
     private static final String TAG = RecordsFragment.class.getSimpleName();
 
     private static RecordsFragment sRecordFragment;
+
+    @Inject
+    FileHelper mFileHelper;
 
     @BindView(R.id.content_loading_progressbar)
     ContentLoadingProgressBar contentLoadingProgressBar;

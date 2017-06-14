@@ -26,6 +26,8 @@ import java.io.FileNotFoundException;
 
 import javax.inject.Inject;
 
+import dagger.android.AndroidInjection;
+
 /**
  * IntentService that deals with the record service as well as with the db.
  * The content values will be sent from the record service and forwarded to insert
@@ -55,6 +57,7 @@ public class FetchIntentService extends IntentService {
 
     @Override
     public void onCreate() {
+        AndroidInjection.inject(this);
         super.onCreate();
         mPreferenceHelper = new PreferenceHelper(this);
     }
