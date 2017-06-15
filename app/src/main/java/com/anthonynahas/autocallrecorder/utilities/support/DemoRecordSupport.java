@@ -8,9 +8,10 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.anthonynahas.autocallrecorder.configurations.Constant;
+import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
 import com.anthonynahas.autocallrecorder.models.Contact;
 import com.anthonynahas.autocallrecorder.models.Record;
-import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
 import com.anthonynahas.autocallrecorder.providers.cursors.CursorLogger;
@@ -23,6 +24,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * This class is responsible to mock and generate demo records for test
  * and debug purposes.
@@ -31,23 +35,27 @@ import java.util.TimeZone;
  * @version 0.5.0
  * @since 25.04.2017
  */
-
+@Singleton
 public class DemoRecordSupport {
 
+    //todo generatePics with lru cache
     private static final String TAG = DemoRecordSupport.class.getSimpleName();
 
-    //todo generatePics with lru cache
+    private Context mContext;
+    private Constant mConstant;
+    private RecordsQueryHandler mRecordsQueryHandler;
 
-    public static DemoRecordSupport newInstance() {
-        return new DemoRecordSupport();
+    @Inject
+    public DemoRecordSupport(@ApplicationContext Context mContext, Constant mConstant, RecordsQueryHandler mRecordsQueryHandler) {
+        this.mContext = mContext;
+        this.mConstant = mConstant;
+        this.mRecordsQueryHandler = mRecordsQueryHandler;
     }
 
     /**
      * Create a demo record and save it in the db using the content resolver
-     *
-     * @param context - the used context to add the demo record
      */
-    public void createDummyRecord(Context context) {
+    public void createDummyRecord() {
         ContentValues values = new ContentValues();
         values.put(RecordDbContract.RecordItem.COLUMN_ID, String.valueOf(generateNumber(10000, 5000)));
         values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
@@ -56,20 +64,18 @@ public class DemoRecordSupport {
         values.put(RecordDbContract.RecordItem.COLUMN_IS_LOVE, generateNumber(1, 0));
         values.put(RecordDbContract.RecordItem.COLUMN_SIZE, generateNumber(100, 1));
         values.put(RecordDbContract.RecordItem.COLUMN_DURATION, generateNumber(800, 400));
-        RecordsQueryHandler.getInstance(context.getContentResolver())
-                .startInsert(RecordsQueryHandler.INSERT_DEMO, null, RecordDbContract.CONTENT_URL, values);
+        mRecordsQueryHandler.startInsert(RecordsQueryHandler.INSERT_DEMO, null, RecordDbContract.CONTENT_URL, values);
 
-        //context.getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
+        //mContext.getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
         Log.d(TAG, "contentResolver inserted dummy record");
     }
 
     /**
      * create and insert db record using a real contact information.
      *
-     * @param context   - the used context
      * @param contactID - the target contact id. If id = -1 then get a random one
      */
-    public void createDemoRecord(final Context context, long contactID) {
+    public void createDemoRecord(long contactID) {
 
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         // TODO: 17.05.2017 @contact_ID
@@ -87,12 +93,12 @@ public class DemoRecordSupport {
 
         String orderBy = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
 
-        AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(context.getContentResolver()) {
+        AsyncQueryHandler asyncQueryHandler = new AsyncQueryHandler(mContext.getContentResolver()) {
             @Override
             protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
 
                 if (cursor.getCount() == 0) {
-//                    createDummyRecord(context);
+//                    createDummyRecord(mContext);
                     return;
                 }
 
@@ -112,7 +118,7 @@ public class DemoRecordSupport {
 
                 ContentValues values = new ContentValues();
 //                values.put(RecordDbContract.RecordItem.COLUMN_ID, String.valueOf(generateNumber(10000, 5000)));
-                values.put(RecordDbContract.RecordItem.COLUMN_PATH, Res.DEMO_PATH);
+                values.put(RecordDbContract.RecordItem.COLUMN_PATH, mConstant.DEMO_PATH);
                 values.put(RecordDbContract.RecordItem.COLUMN_DATE, generateDate());
                 values.put(RecordDbContract.RecordItem.COLUMN_NUMBER, contact.getNumber());
                 values.put(RecordDbContract.RecordItem.COLUMN_CONTACT_ID, contact.get_ID());
@@ -123,8 +129,7 @@ public class DemoRecordSupport {
                 values.put(RecordDbContract.RecordItem.COLUMN_IS_LOCKED, generateBoolean());
                 values.put(RecordDbContract.RecordItem.COLUMN_IS_TO_DELETE, generateBoolean());
 
-                RecordsQueryHandler.getInstance(context.getContentResolver())
-                        .startInsert(RecordsQueryHandler.INSERT_DEMO, null, RecordDbContract.CONTENT_URL, values);
+                mRecordsQueryHandler.startInsert(RecordsQueryHandler.INSERT_DEMO, null, RecordDbContract.CONTENT_URL, values);
             }
         };
 

@@ -1,11 +1,14 @@
 package com.anthonynahas.autocallrecorder.dagger.components;
 
+import com.anthonynahas.autocallrecorder.activities.MainActivity;
 import com.anthonynahas.autocallrecorder.dagger.AutoCallRecorderApp;
 import com.anthonynahas.autocallrecorder.dagger.modules.ActivitiesModule;
-import com.anthonynahas.autocallrecorder.dagger.modules.AdaptersModule;
 import com.anthonynahas.autocallrecorder.dagger.modules.AppModule;
+import com.anthonynahas.autocallrecorder.dagger.modules.BroadcastsReceiverModule;
+import com.anthonynahas.autocallrecorder.dagger.modules.HelperModule;
 import com.anthonynahas.autocallrecorder.dagger.modules.ServicesModule;
-import com.anthonynahas.autocallrecorder.dagger.modules.fragments.FragmentSupportModule;
+import com.anthonynahas.autocallrecorder.dagger.modules.FragmentSupportModule;
+import com.anthonynahas.autocallrecorder.dagger.modules.SupportModule;
 
 import javax.inject.Singleton;
 
@@ -23,10 +26,12 @@ import dagger.android.AndroidInjectionModule;
 @Component(modules =
         {
                 AppModule.class,
+                HelperModule.class,
+                SupportModule.class,
                 ActivitiesModule.class,
                 ServicesModule.class,
                 FragmentSupportModule.class,
-                AdaptersModule.class,
+                BroadcastsReceiverModule.class,
                 AndroidInjectionModule.class
         })
 public interface AppComponent {

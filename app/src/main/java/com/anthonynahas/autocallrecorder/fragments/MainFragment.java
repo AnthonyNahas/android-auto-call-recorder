@@ -38,7 +38,7 @@ import android.widget.Toast;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsCursorAdapter;
-import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
@@ -59,10 +59,14 @@ import javax.inject.Inject;
  * @version 1.0
  * @since 25.04.2016
  */
+@Deprecated
 public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     @Inject
     Context mContext;
+
+    @Inject
+    Constant mConstant;
 
     @Inject
     FileHelper mFileHelper;
@@ -92,7 +96,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         setHasOptionsMenu(true);
         mCoordinatorLayout = (CoordinatorLayout) v.findViewById(R.id.coordinator);
         mRecListView = (ListView) v.findViewById(R.id.listView_records_main);
-        mPreferenceHelper = new PreferenceHelper(v.getContext());
 
         mFloatingActionButton = (FloatingActionButton) v.findViewById(R.id.floating_action_button_search);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -367,17 +370,17 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Cursor cursor = mRecordsCursorAdapter.getCursor();
-            cursor.moveToPosition(position);
-            Log.d(TAG, "list-position = " + position);
-
-            Bundle args = new Bundle();
-            Record record = Record.newInstance(cursor);
-            record.setName(((TextView) view.findViewById(R.id.tv_call_contact_name_or_number)).getText().toString());
-            args.putParcelable(Res.REC_PARC_KEY, record);
-            RecordsDialog recordsDialog = new RecordsDialog();
-            recordsDialog.setArguments(args);
-            recordsDialog.show(((AppCompatActivity) mContext).getSupportFragmentManager(), RecordsDialog.TAG);
+//            Cursor cursor = mRecordsCursorAdapter.getCursor();
+//            cursor.moveToPosition(position);
+//            Log.d(TAG, "list-position = " + position);
+//
+//            Bundle args = new Bundle();
+//            Record record = Record.newInstance(cursor);
+//            record.setName(((TextView) view.findViewById(R.id.tv_call_contact_name_or_number)).getText().toString());
+//            args.putParcelable(mConstant.REC_PARC_KEY, record);
+//            RecordsDialog recordsDialog = new RecordsDialog();
+//            recordsDialog.setArguments(args);
+//            recordsDialog.show(((AppCompatActivity) mContext).getSupportFragmentManager(), RecordsDialog.TAG);
         }
     };
 

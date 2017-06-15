@@ -3,6 +3,7 @@ package com.anthonynahas.autocallrecorder.fragments.dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,9 @@ import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 
+import javax.inject.Inject;
+
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -32,14 +36,19 @@ public class SortDialog extends DialogFragment {
 
     public final static String TAG = SortDialog.class.getSimpleName();
 
+    @Inject
+    PreferenceHelper mPreferenceHelper;
+
     @BindView(R.id.radiogroup_sort_arrange)
     RadioGroup radiogroup_arrange;
+
+    @BindColor(R.color.colorPrimary)
+    int mPrimaryColor;
 
     private Unbinder mUnbinder;
 
     private String mSelect;
     private String mArrange;
-    private PreferenceHelper mPreferenceHelper;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -49,8 +58,6 @@ public class SortDialog extends DialogFragment {
 
         View view = inflater.inflate(R.layout.sort_dialog_layout, null);
         mUnbinder = ButterKnife.bind(this, view);
-
-        mPreferenceHelper = new PreferenceHelper(view.getContext());
 
         mSelect = mPreferenceHelper.getSortSelection();
         mArrange = mPreferenceHelper.getSortArrange();
@@ -126,7 +133,7 @@ public class SortDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.colorPrimary));
+        ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), mPrimaryColor));
         ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.colorPrimary));
     }
 

@@ -12,7 +12,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.broadcasts.DoneRecReceiver;
-import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
@@ -38,19 +38,22 @@ public class RecordService extends Service {
     @Inject
     FileHelper mFileHelper;
 
-    public static File sRecordFile;
+    @Inject
+    PreferenceHelper mPreferenceHelper;
 
+    @Inject
+    Constant mConstant;
+
+    public static File sRecordFile;
     private Record mRecord;
     private Handler mRecordHandler;
     private MediaRecorder mMediaRecorder;
-    private PreferenceHelper mPreferenceHelper;
 
     @Override
     public void onCreate() {
         AndroidInjection.inject(this);
         super.onCreate();
         Log.d(TAG, "onCreate()");
-        mPreferenceHelper = new PreferenceHelper(this);
     }
 
 
@@ -58,7 +61,7 @@ public class RecordService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() - recording...");
 
-        mRecord = intent.getParcelableExtra(Res.REC_PARC_KEY);
+        mRecord = intent.getParcelableExtra(mConstant.REC_PARC_KEY);
 
         // TODO: 08.05.17 to check
         String fileSuffix = mFileHelper.getAudioFileSuffix(mPreferenceHelper.getOutputFormat());
@@ -103,12 +106,12 @@ public class RecordService extends Service {
                         public void onScanCompleted(String path, Uri uri) {
                             Log.d(TAG, "scan completed");
                             sendBroadcast(new Intent(DoneRecReceiver.ACTION)
-                                    .putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord));
+                                    .putExtra(mConstant.REC_PARC_KEY, (Parcelable) mRecord));
                         }
                     });
                 } else {
                     sendBroadcast(new Intent(DoneRecReceiver.ACTION)
-                            .putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord));
+                            .putExtra(mConstant.REC_PARC_KEY, (Parcelable) mRecord));
                 }
             }
         }, 1000);

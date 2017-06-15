@@ -34,10 +34,17 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     private Context mContext;
     private List<RecordExtended> mRecordsList;
 
+    private MemoryCacheHelper mMemoryCacheHelper;
+
+    public StatisticRecordsAdapter(Context mContext, MemoryCacheHelper mMemoryCacheHelper) {
+        this.mContext = mContext;
+        this.mMemoryCacheHelper = mMemoryCacheHelper;
+    }
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-     class RecordViewHolder extends RecyclerView.ViewHolder {
+    class RecordViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         private TextView mTVCallNameOrNumber;
         private TextView mTVRank;
@@ -61,21 +68,21 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
             record.setName(record.getName() != null && !record.getName().isEmpty() ?
                     record.getName()
                     :
-                    MemoryCacheHelper.getMemoryCacheForContactsName(record.getNumber()));
+                    mMemoryCacheHelper.getMemoryCacheForContactsName(record.getNumber()));
             if (record.getName() != null && !record.getName().isEmpty()) {
                 viewHolder.mTVCallNameOrNumber.setText(record.getName());
             } else {
-                new ContactNameAsyncTask(mContext, record, viewHolder.mTVCallNameOrNumber).execute();
+//                new ContactNameAsyncTask(mContext, record, viewHolder.mTVCallNameOrNumber).execute();
             }
         }
 
         private void handleIVProfile(@NonNull RecordViewHolder viewHolder, int position) {
             Record record = mRecordsList.get(position);
-            Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
+            Bitmap cachedBitmap = mMemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
             if (cachedBitmap != null) {
                 viewHolder.mIVProfile.setImageBitmap(cachedBitmap);
             } else {
-                new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(1);
+//                new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(1);
             }
         }
     }

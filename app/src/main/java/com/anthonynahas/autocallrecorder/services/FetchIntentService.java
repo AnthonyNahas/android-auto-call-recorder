@@ -8,7 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.anthonynahas.autocallrecorder.models.Record;
-import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
@@ -44,9 +44,16 @@ public class FetchIntentService extends IntentService {
     private static final String TAG = FetchIntentService.class.getSimpleName();
 
     @Inject
+    RecordsQueryHandler mRecordsQueryHandler;
+
+    @Inject
+    PreferenceHelper mPreferenceHelper;
+
+    @Inject
     FileHelper mFileHelper;
 
-    private PreferenceHelper mPreferenceHelper;
+    @Inject
+    Constant mConstant;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -59,7 +66,6 @@ public class FetchIntentService extends IntentService {
     public void onCreate() {
         AndroidInjection.inject(this);
         super.onCreate();
-        mPreferenceHelper = new PreferenceHelper(this);
     }
 
     @Override
@@ -82,7 +88,7 @@ public class FetchIntentService extends IntentService {
         Log.d(TAG, "sRecordFile = " + RecordService.sRecordFile);
         //getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(RecordService.sRecordFile)));
 
-        Record record = intent.getParcelableExtra(Res.REC_PARC_KEY);
+        Record record = intent.getParcelableExtra(mConstant.REC_PARC_KEY);
 
         //String [] projectALL = new String[] { "*" };
         String[] projection = {
@@ -132,8 +138,7 @@ public class FetchIntentService extends IntentService {
 
 //            getApplicationContext().getContentResolver().insert(RecordDbContract.CONTENT_URL, values);
         Log.d(TAG, record.toString());
-        RecordsQueryHandler.getInstance(getContentResolver())
-                .startInsert(0, null, RecordDbContract.CONTENT_URL, new MicroOrm().toContentValues(record));
+        mRecordsQueryHandler.startInsert(0, null, RecordDbContract.CONTENT_URL, new MicroOrm().toContentValues(record));
 
         if (mPreferenceHelper.canUploadOnDropBox()) {
             Log.d(TAG, "onUpload()");

@@ -1,4 +1,4 @@
-package com.anthonynahas.autocallrecorder.dagger.modules.fragments;
+package com.anthonynahas.autocallrecorder.dagger.modules;
 
 import android.support.v4.app.Fragment;
 

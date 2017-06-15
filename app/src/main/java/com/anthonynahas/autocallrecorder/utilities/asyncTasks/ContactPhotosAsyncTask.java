@@ -35,19 +35,25 @@ public class ContactPhotosAsyncTask extends AsyncTask<Integer, Void, Bitmap> {
 
     private static int sCounter = 1;
 
-    @Inject
-    ImageHelper mImageHelper;
 
     private Context mContext;
     private Record mRecord;
     private ImageView mImageView;
+    private ImageHelper mImageHelper;
+    private MemoryCacheHelper mMemoryCacheHelper;
 
     public ContactPhotosAsyncTask(@NonNull Context context,
                                   @NonNull Record record,
-                                  @NonNull ImageView imageView) {
+                                  @NonNull ImageView imageView,
+                                  MemoryCacheHelper mMemoryCacheHelper) {
         mContext = context;
         mRecord = record;
         mImageView = imageView;
+        this.mMemoryCacheHelper = mMemoryCacheHelper;
+
+        if (mImageHelper == null) {
+            mImageHelper = new ImageHelper(mContext.getResources());
+        }
     }
 
     @Override
@@ -75,14 +81,14 @@ public class ContactPhotosAsyncTask extends AsyncTask<Integer, Void, Bitmap> {
                         mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic, 150, 150);
 
             case 1:
-                Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(mRecord.getNumber());
+                Bitmap cachedBitmap = mMemoryCacheHelper.getBitmapFromMemoryCache(mRecord.getNumber());
                 contactBitmap = cachedBitmap != null ?
                         cachedBitmap
                         :
                         ContactHelper.getBitmapForContactID(mContext.getContentResolver(),
                                 integers[0], mRecord.getContactID());
                 if (cachedBitmap == null && contactBitmap != null) {
-                    MemoryCacheHelper.setBitmapToMemoryCache(mRecord.getNumber(), contactBitmap);
+                    mMemoryCacheHelper.setBitmapToMemoryCache(mRecord.getNumber(), contactBitmap);
                     return contactBitmap;
                 }
 

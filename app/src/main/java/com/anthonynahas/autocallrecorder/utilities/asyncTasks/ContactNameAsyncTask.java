@@ -31,17 +31,22 @@ public class ContactNameAsyncTask extends AsyncTask<Void, Void, String> {
     private Record mRecord;
     private TextView mTVCallNameOrNumber;
 
+    private MemoryCacheHelper mMemoryCacheHelper;
+
     public ContactNameAsyncTask(@NonNull Context context,
                                 @NonNull Record record,
-                                @NonNull TextView TVCallNameOrNumber) {
+                                @NonNull TextView TVCallNameOrNumber,
+                                MemoryCacheHelper mMemoryCacheHelper) {
         mContext = context;
         mRecord = record;
         mTVCallNameOrNumber = TVCallNameOrNumber;
+
+        this.mMemoryCacheHelper = mMemoryCacheHelper;
     }
 
     @Override
     protected String doInBackground(Void... voids) {
-        String cachedContactName = MemoryCacheHelper.getMemoryCacheForContactsName(mRecord.getNumber());
+        String cachedContactName = mMemoryCacheHelper.getMemoryCacheForContactsName(mRecord.getNumber());
 
         String contactName = cachedContactName != null ?
                 cachedContactName
@@ -50,7 +55,7 @@ public class ContactNameAsyncTask extends AsyncTask<Void, Void, String> {
 
         if (cachedContactName == null && contactName != null) {
             mRecord.setName(contactName);
-            MemoryCacheHelper.setContactNameToMemoryCache(mRecord.getNumber(), mRecord.getName());
+            mMemoryCacheHelper.setContactNameToMemoryCache(mRecord.getNumber(), mRecord.getName());
             return contactName;
         }
 

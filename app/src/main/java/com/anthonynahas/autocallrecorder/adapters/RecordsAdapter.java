@@ -16,10 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.models.Record;
-import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactNameAsyncTask;
-import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
@@ -29,9 +27,10 @@ import org.apache.commons.collections4.ListUtils;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dagger.android.AndroidInjection;
 
 /**
  * Created by anahas on 02.06.2017.
@@ -46,6 +45,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     private static final String TAG = RecordsAdapter.class.getSimpleName();
 
     private Context mContext;
+    private Constant mConstant;
     private int mCounter;
     private boolean actionMode;
     private boolean closeActionMode;
@@ -53,12 +53,17 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     private DateTimeHelper mDateTimeHelper;
     private PreferenceHelper mPreferenceHelper;
 
-    public RecordsAdapter() {
+    private MemoryCacheHelper mMemoryCacheHelper;
+
+    @Inject
+    public RecordsAdapter(MemoryCacheHelper mMemoryCacheHelper, PreferenceHelper mPreferenceHelper, Constant mConstant) {
         actionMode = false;
         closeActionMode = false;
         mCounter = 0;
         mDateTimeHelper = DateTimeHelper.newInstance();
-
+        this.mMemoryCacheHelper = mMemoryCacheHelper;
+        this.mPreferenceHelper = mPreferenceHelper;
+        this.mConstant = mConstant;
     }
 
     public RecordsAdapter(List<Record> mRecordsList) {
@@ -176,15 +181,15 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
         protected void handleCheckBoxCallSelected(Boolean isChecked, int position) {
             mRecordsList.get(position).setSelected(isChecked);
             LocalBroadcastManager.getInstance(mContext)
-                    .sendBroadcast(new Intent(Res.ACTION_MODE_COUNTER)
-                            .putExtra(Res.IS_CHECKED_KEY, !isChecked));
+                    .sendBroadcast(new Intent(mConstant.ACTION_MODE_COUNTER)
+                            .putExtra(mConstant.IS_CHECKED_KEY, !isChecked));
             notifyItemChanged(position); //very important -> otherwise the view holder will not update and rebind
         }
 
         protected void handleIVCallIsLove(int position) {
             if (position != RecyclerView.NO_POSITION) {
                 Record record = mRecordsList.get(position);
-                record.setLove(mContext, !record.isLove());
+                record.setLove(!record.isLove());
                 notifyItemChanged(position); //very important -> otherwise the view holder will not update and rebind
             }
         }
@@ -197,24 +202,25 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             record.setName(record.getName() != null && !record.getName().isEmpty() ?
                     record.getName()
                     :
-                    MemoryCacheHelper.getMemoryCacheForContactsName(record.getNumber()));
+                    mMemoryCacheHelper.getMemoryCacheForContactsName(record.getNumber()));
             if (record.getName() != null && !record.getName().isEmpty()) {
                 viewHolder.tv_number_name.setText(record.getName());
             } else {
-                new ContactNameAsyncTask(mContext, record, viewHolder.tv_number_name).execute();
+//                new ContactNameAsyncTask(mContext, record, viewHolder.tv_number_name).execute();
             }
         }
 
         private void handleIVProfile(@NonNull RecordViewHolder viewHolder, int position) {
+
             Record record = mRecordsList.get(position);
             if (position == RecyclerView.NO_POSITION) {
                 Log.d(TAG, "no position");
             }
-            Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
+            Bitmap cachedBitmap = mMemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
             if (cachedBitmap != null) {
                 viewHolder.iv_profile.setImageBitmap(cachedBitmap);
             } else {
-                new ContactPhotosAsyncTask(mContext, record, viewHolder.iv_profile).execute(1);
+//                new ContactPhotosAsyncTask(mContext, record, viewHolder.iv_profile).execute(1);
             }
         }
 
@@ -236,8 +242,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     }
 
     public void deleteRecordsSelected() {
-        PreferenceHelper preferenceHelper = new PreferenceHelper(mContext);
-        boolean toRecycleBin = preferenceHelper.toMoveInRecycleBin();
+        boolean toRecycleBin = mPreferenceHelper.toMoveInRecycleBin();
         for (int i = 0, j = mRecordsList.size(); i < j; i++) {
             Record record = mRecordsList.get(i);
             if (record.isSelected()) {

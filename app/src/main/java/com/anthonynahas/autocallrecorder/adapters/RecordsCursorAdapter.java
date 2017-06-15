@@ -137,7 +137,7 @@ public class RecordsCursorAdapter extends CursorAdapter {
                 viewHolder.call_contact_profile.setImageBitmap(img);
                 MainOldActivity.setBitmapToMemoryCache(phoneNumber, img);
             } else {
-                //viewHolder.call_contact_profile.setImageResource(Res.drawable.custmtranspprofpic);
+                //viewHolder.call_contact_profile.setImageResource(Constant.drawable.custmtranspprofpic);
                 viewHolder.call_contact_profile.setImageBitmap(mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic60px, 60, 60));
             }
         }
@@ -172,7 +172,7 @@ public class RecordsCursorAdapter extends CursorAdapter {
                 Log.d(TAG,"contactPhotoUri = " + contactPhotoUri);
             }
             else {
-                call_contact_profile.setImageResource(Res.drawable.custmtranspprofpic);
+                call_contact_profile.setImageResource(Constant.drawable.custmtranspprofpic);
             }*/
         //}
     }

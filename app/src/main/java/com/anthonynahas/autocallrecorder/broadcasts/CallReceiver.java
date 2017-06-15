@@ -8,10 +8,14 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.models.Record;
-import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.services.RecordService;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.autocallrecorder.services.FetchIntentService;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 
 /**
  * Created by A on 04.04.16. using telephonymanager API
@@ -45,13 +49,18 @@ public class CallReceiver extends BroadcastReceiver {
 
     private Record mRecord;
 
+    @Inject
+    PreferenceHelper mPreferenceHelper;
+
+    @Inject
+    Constant mConstant;
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        AndroidInjection.inject(this, context);
 
-        PreferenceHelper preferenceHelper = new PreferenceHelper(context);
-
-        if (preferenceHelper.canAutoRecord()) {
+        if (mPreferenceHelper.canAutoRecord()) {
 
             String action = intent.getAction();
             String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
@@ -93,7 +102,7 @@ public class CallReceiver extends BroadcastReceiver {
 //                            sConData.putInt(INCOMINGCALLKEY, 1);
                         }
                         mRecord.setNumber(sNumber);
-                        sIntent.putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord);
+                        sIntent.putExtra(mConstant.REC_PARC_KEY, (Parcelable) mRecord);
                         context.startService(sIntent);
                     } else if (state.equals(IDLE)) {
                         OUTGOING = false;
@@ -106,7 +115,7 @@ public class CallReceiver extends BroadcastReceiver {
                             Log.d(TAG, "number = " + sNumber);
                             if (sIntentFetching == null) {
                                 sIntentFetching = new Intent(context, FetchIntentService.class);
-                                sIntent.putExtra(Res.REC_PARC_KEY, (Parcelable) mRecord);
+                                sIntent.putExtra(mConstant.REC_PARC_KEY, (Parcelable) mRecord);
                             }
                         }
                     }

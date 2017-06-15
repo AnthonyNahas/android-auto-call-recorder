@@ -19,7 +19,7 @@ Eclipse projects. Here's how the projects were restructured:
 * libs/dropbox-android-sdk-1.6.3.jar => dBRoulette/libs/dropbox-android-sdk-1.6.3.jar
 * libs/httpmime-4.0.3.jar => dBRoulette/libs/httpmime-4.0.3.jar
 * libs/json_simple-1.1.jar => dBRoulette/libs/json_simple-1.1.jar
-* res/ => dBRoulette/src/main/res/
+* constant/ => dBRoulette/src/main/constant/
 * src/ => dBRoulette/src/main/java/
 
 Next Steps:

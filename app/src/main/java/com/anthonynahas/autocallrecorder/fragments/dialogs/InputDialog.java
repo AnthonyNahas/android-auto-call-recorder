@@ -8,6 +8,8 @@ import android.widget.EditText;
 
 import com.anthonynahas.autocallrecorder.utilities.support.DemoRecordSupport;
 
+import javax.inject.Inject;
+
 /**
  * Created by anahas on 07.06.2017.
  *
@@ -15,11 +17,13 @@ import com.anthonynahas.autocallrecorder.utilities.support.DemoRecordSupport;
  * @version 1.0
  * @since 07.06.17
  */
-
 public class InputDialog {
 
-    public static InputDialog newInstance() {
-        return new InputDialog();
+    private DemoRecordSupport mDemoRecordSupport;
+
+    @Inject
+    public InputDialog(DemoRecordSupport mDemoRecordSupport) {
+        this.mDemoRecordSupport = mDemoRecordSupport;
     }
 
     public void show(final Activity activity, String title) {
@@ -37,9 +41,8 @@ public class InputDialog {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                DemoRecordSupport
-                        .newInstance()
-                        .createDemoRecord(activity, Long.valueOf(input.getText().toString()));
+                mDemoRecordSupport
+                        .createDemoRecord(Long.valueOf(input.getText().toString()));
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

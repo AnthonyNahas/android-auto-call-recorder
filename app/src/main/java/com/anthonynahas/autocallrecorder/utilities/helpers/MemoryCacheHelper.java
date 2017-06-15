@@ -6,6 +6,9 @@ import android.support.v4.util.LruCache;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Class that deals with the memory cache to load quickly bitmaps
  * of the profile picture of a contact.
@@ -14,27 +17,34 @@ import java.util.Map;
  * @version 1.0
  * @since 31.03.2017
  */
-
+@Singleton
 public class MemoryCacheHelper {
 
     /************** Memory Cache ***************/
-    private static LruCache<String, Bitmap> mMemoryCacheForContactsBitmap;
-    private static Map<String, String> mMemoryCacheForContactsName;
+    private LruCache<String, Bitmap> mMemoryCacheForContactsBitmap;
+    private Map<String, String> mMemoryCacheForContactsName;
 
-    /**
-     * Initializing the LruCache on runtime
-     */
-    public static void init() {
-        final int maxMemorySize = (int) Runtime.getRuntime().maxMemory() / 1024;
-        final int cacheSize = maxMemorySize / 10;
-        mMemoryCacheForContactsBitmap = new LruCache<String, Bitmap>(cacheSize) {
-            @Override
-            protected int sizeOf(String key, Bitmap value) {
-                return value.getByteCount() / 1024;
-            }
-        };
-        mMemoryCacheForContactsName = new HashMap<>(15);
+    @Inject
+    public MemoryCacheHelper(LruCache<String, Bitmap> mMemoryCacheForContactsBitmap,
+                             Map<String, String> mMemoryCacheForContactsName) {
+        this.mMemoryCacheForContactsBitmap = mMemoryCacheForContactsBitmap;
+        this.mMemoryCacheForContactsName = mMemoryCacheForContactsName;
     }
+
+//    /**
+//     * Initializing the LruCache on runtime
+//     */
+//    public void init() {
+//        final int maxMemorySize = (int) Runtime.getRuntime().maxMemory() / 1024;
+//        final int cacheSize = maxMemorySize / 10;
+//        mMemoryCacheForContactsBitmap = new LruCache<String, Bitmap>(cacheSize) {
+//            @Override
+//            protected int sizeOf(String key, Bitmap value) {
+//                return value.getByteCount() / 1024;
+//            }
+//        };
+//        mMemoryCacheForContactsName = new HashMap<>(15);
+//    }
 
     /**
      * Get a bitmap of a contact by number from the LruCache
@@ -42,7 +52,7 @@ public class MemoryCacheHelper {
      * @param key - the phone number of a contact
      * @return - the bitmap (avatar profile pic)
      */
-    public static Bitmap getBitmapFromMemoryCache(String key) {
+    public Bitmap getBitmapFromMemoryCache(String key) {
         return mMemoryCacheForContactsBitmap.get(key);
     }
 
@@ -52,7 +62,7 @@ public class MemoryCacheHelper {
      * @param key    - the phone number of a contact
      * @param bitmap - the bitmap (avatar profile pic)
      */
-    public static void setBitmapToMemoryCache(String key, Bitmap bitmap) {
+    public void setBitmapToMemoryCache(String key, Bitmap bitmap) {
         if (getBitmapFromMemoryCache(key) == null) {
             mMemoryCacheForContactsBitmap.put(key, bitmap);
         }
@@ -64,7 +74,7 @@ public class MemoryCacheHelper {
      * @param key - the phone number of a contact
      * @return - the contact name associate to the phone number (key)
      */
-    public static String getMemoryCacheForContactsName(String key) {
+    public String getMemoryCacheForContactsName(String key) {
         return mMemoryCacheForContactsName.get(key);
     }
 
@@ -75,7 +85,7 @@ public class MemoryCacheHelper {
      * @param key   - the phone number of a contact
      * @param value - the contact name associate to the phone number (key)
      */
-    public static void setContactNameToMemoryCache(String key, String value) {
+    public void setContactNameToMemoryCache(String key, String value) {
         if (mMemoryCacheForContactsName.get(key) == null) {
             mMemoryCacheForContactsName.put(key, value);
         }

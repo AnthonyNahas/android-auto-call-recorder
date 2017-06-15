@@ -8,6 +8,9 @@ import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by anahas on 26.04.2017.
  *
@@ -15,14 +18,12 @@ import com.anthonynahas.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapt
  * @version 1.0
  * @since 26.04.17
  */
-
+@Singleton
 public class RecordsQueryHandler extends AsyncQueryHandler {
 
     private static RecordsQueryHandler mRecordsQueryHandler;
     private static final String TAG = RecordsQueryHandler.class.getSimpleName();
 
-    //INSERT
-    public static final int INSERT = 0;
     public static final int INSERT_DEMO = 1;
 
     //UPDATE
@@ -30,28 +31,14 @@ public class RecordsQueryHandler extends AsyncQueryHandler {
         UPDATE_IS_LOVE,
         UPDATE_IS_LOCKED
     }
-    public static final int UPDATE_IS_LOVE = 0;
 
     private RecordsCursorRecyclerViewAdapter mAdapter;
 
-    private RecordsQueryHandler(ContentResolver contentResolver) {
+    @Inject
+    public RecordsQueryHandler(ContentResolver contentResolver) {
         super(contentResolver);
     }
 
-    public RecordsQueryHandler newInstance(ContentResolver contentResolver) {
-        return new RecordsQueryHandler(contentResolver);
-    }
-
-    public synchronized static RecordsQueryHandler getInstance(ContentResolver contentResolver) {
-        if (mRecordsQueryHandler == null) {
-            mRecordsQueryHandler = new RecordsQueryHandler(contentResolver);
-        }
-        return mRecordsQueryHandler;
-    }
-
-    public RecordsCursorRecyclerViewAdapter getAdapter() {
-        return mAdapter;
-    }
 
     public void setAdapter(RecordsCursorRecyclerViewAdapter mAdapter) {
         this.mAdapter = mAdapter;

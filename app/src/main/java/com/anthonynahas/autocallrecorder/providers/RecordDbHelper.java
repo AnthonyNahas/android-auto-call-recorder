@@ -6,10 +6,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
+import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
 import com.anthonynahas.autocallrecorder.models.Record;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Helper class that deal with the content provider in otder to simplify the work within an
@@ -19,44 +23,45 @@ import java.util.List;
  * @version 1.2
  * @since 17.04.17
  */
-
+@Singleton
 public class RecordDbHelper {
 
     private static final String TAG = RecordDbHelper.class.getSimpleName();
 
-    public static RecordDbHelper newInstance() {
-        return new RecordDbHelper();
-    }
+    private Context mContext;
+    private RecordsQueryHandler mRecordsQueryHandler;
 
+    @Inject
+    public RecordDbHelper(@ApplicationContext Context mContext, RecordsQueryHandler mRecordsQueryHandler) {
+        this.mContext = mContext;
+        this.mRecordsQueryHandler = mRecordsQueryHandler;
+    }
 
     /**
      * Update a boolean column of the db asynchronously
      *
-     * @param context        - the used context
      * @param columnToUpdate - the column of the db to update
      * @param id-            the id of the record
      * @param value          - the value to put to the target column to update it
      */
-    public void updateBooleanColumn(Context context, String columnToUpdate, int id, int value) {
+    public void updateBooleanColumn(String columnToUpdate, int id, int value) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(columnToUpdate, value);
         Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, (long) id);
         String selection = RecordDbContract.RecordItem.COLUMN_ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
-        RecordsQueryHandler.getInstance(context.getContentResolver())
-                .startUpdate(0, null, uri, contentValues, selection, selectionArgs);
+        mRecordsQueryHandler.startUpdate(0, null, uri, contentValues, selection, selectionArgs);
     }
 
 
-    public static void updateIsLockedColumn(Context context, int id, int isLocked) {
+    public void updateIsLockedColumn(int id, int isLocked) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(RecordDbContract.RecordItem.COLUMN_IS_LOCKED, isLocked);
         Uri uri = ContentUris.withAppendedId(RecordDbContract.CONTENT_URL, (long) id);
         String selection = RecordDbContract.RecordItem.COLUMN_ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
-        RecordsQueryHandler.getInstance(context.getContentResolver())
-                .startUpdate(RecordsQueryHandler.update.UPDATE_IS_LOCKED.ordinal(), null, uri,
-                        contentValues, selection, selectionArgs);
+        mRecordsQueryHandler.startUpdate(RecordsQueryHandler.update.UPDATE_IS_LOCKED.ordinal(), null, uri,
+                contentValues, selection, selectionArgs);
     }
 
 
@@ -66,7 +71,7 @@ public class RecordDbHelper {
      * @param cursor - the cursor received from db
      * @return - the converted cursor into list of records
      */
-    public static List<Record> convertCursorToRecordList(Cursor cursor) {
+    public List<Record> convertCursorToRecordList(Cursor cursor) {
 
         List<Record> recordsList = new ArrayList<>();
 
@@ -81,8 +86,8 @@ public class RecordDbHelper {
                 int isIncoming = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_INCOMING));
                 int isLove = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_LOVE));
 
-                Record record = new Record(_id, number, contact_id, date, size, duration, isIncoming == 1, isLove == 1);
-                recordsList.add(record);
+//                Record record = new Record(_id, number, contact_id, date, size, duration, isIncoming == 1, isLove == 1);
+//                recordsList.add(record);
 
             } while (cursor.moveToNext());
         }
@@ -93,7 +98,7 @@ public class RecordDbHelper {
     }
 
 
-    public static List<Record> convertCursorToContactRecordsList(Cursor cursor) {
+    public List<Record> convertCursorToContactRecordsList(Cursor cursor) {
 
         List<Record> contactRecordList = new ArrayList<>();
 

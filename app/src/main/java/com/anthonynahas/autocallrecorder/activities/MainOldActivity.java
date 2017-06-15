@@ -47,6 +47,7 @@ import com.anthonynahas.autocallrecorder.fragments.MainFragment;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.UploadFile;
 
+@Deprecated
 public class MainOldActivity extends AppCompatActivity {
 
     private static final String TAG = MainOldActivity.class.getSimpleName();
@@ -79,7 +80,7 @@ public class MainOldActivity extends AppCompatActivity {
     private Toolbar mToolbar;
 
 
-    private SharedPreferences mSharedPreferences;
+//    private SharedPreferences mSharedPreferences;
 
     private PreferenceHelper mPreferenceHelper;
 
@@ -99,13 +100,13 @@ public class MainOldActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate()");
         setContentView(R.layout.activity_main_plus);
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         context = MainOldActivity.this;
         // Set a Toolbar to replace the ActionBar.
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        mPreferenceHelper = new PreferenceHelper(this);
+//        mPreferenceHelper = new PreferenceHelper(this);
 
         /************** Memory Cache ***************/
         final int maxMemorySize = (int) Runtime.getRuntime().maxMemory() / 1024;

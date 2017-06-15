@@ -16,6 +16,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -29,8 +30,8 @@ import android.widget.TextView;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.RecordsActivity;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.models.Record;
-import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
@@ -47,6 +48,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import dagger.android.support.AndroidSupportInjection;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 import static android.view.View.GONE;
@@ -69,7 +71,19 @@ public class RecordsFragment extends Fragment implements
     private static RecordsFragment sRecordFragment;
 
     @Inject
+    RecordsAdapter mAdapter;
+
+    @Inject
+    RecordsDialog mRecordsDialog;
+
+    @Inject
+    PreferenceHelper mPreferenceHelper;
+
+    @Inject
     FileHelper mFileHelper;
+
+    @Inject
+    Constant mConstant;
 
     @BindView(R.id.content_loading_progressbar)
     ContentLoadingProgressBar contentLoadingProgressBar;
@@ -92,10 +106,8 @@ public class RecordsFragment extends Fragment implements
     private Unbinder mUnbinder;
 
     private Context mContext;
-    private RecordsAdapter mAdapter;
 
     private Bundle mArguments;
-    private PreferenceHelper mPreferenceHelper;
     private ActionModeSupport mActionModeSupport;
     private BroadcastReceiver mBroadcastReceiver;
     private BroadcastReceiver mActionModeBroadcastReceiver;
@@ -141,15 +153,12 @@ public class RecordsFragment extends Fragment implements
             mArguments = args;
         }
 
-
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                switch (intent.getAction()) {
-                    case Res.ACTION_MODE_COUNTER:
-                        break;
-                    default:
-                        break;
+
+                if (intent.getAction().equals(mConstant.ACTION_MODE_COUNTER)) {
+                    // TODO: 15.06.2017
                 }
             }
         };
@@ -164,7 +173,6 @@ public class RecordsFragment extends Fragment implements
         mUnbinder = ButterKnife.bind(this, view);
 
         mContext = view.getContext();
-        mPreferenceHelper = new PreferenceHelper(mContext);
         mHandlerToWait = new Handler();
 
         // Lookup the swipe container view
@@ -183,21 +191,19 @@ public class RecordsFragment extends Fragment implements
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 
-        // specify an adapter (see also next example)
-        mAdapter = new RecordsAdapter();
         recyclerView.setAdapter(mAdapter);
         recyclerView.setItemAnimator(new SlideInLeftAnimator());
-        recyclerView.getItemAnimator().setAddDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        recyclerView.getItemAnimator().setRemoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        recyclerView.getItemAnimator().setMoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        recyclerView.getItemAnimator().setChangeDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setAddDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setRemoveDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setMoveDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setChangeDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
 
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(this);
         ItemClickSupport.addTo(recyclerView).setOnItemLongClickListener(this);
 
         toolbar.setVisibility(GONE);
 
-        mActionModeSupport = new ActionModeSupport("test", true, mContext, toolbar, mAdapter);
+//        mActionModeSupport = new ActionModeSupport("test", true, mContext, toolbar, mAdapter);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -227,6 +233,12 @@ public class RecordsFragment extends Fragment implements
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
+    }
+
     // When binding a fragment in onCreateView, set the views to null in onDestroyView.
     // ButterKnife returns an Unbinder on the initial binding that has an unbind method to do this automatically.
     @Override
@@ -242,19 +254,19 @@ public class RecordsFragment extends Fragment implements
         mActionModeBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String senderClassName = intent.getStringExtra(Res.ACTION_MODE_SENDER);
-                boolean isInActionMode = intent.getBooleanExtra(Res.ACTION_MODE_SATE, false);
+                String senderClassName = intent.getStringExtra(mConstant.ACTION_MODE_SENDER);
+                boolean isInActionMode = intent.getBooleanExtra(mConstant.ACTION_MODE_SATE, false);
                 if (isInActionMode) {
-//                    mActionModeSupport.enterActionMode();
+//                    mActionModeSupport.enterActionMode(); //no need
                 } else {
-                    mActionModeSupport.cancelActionMode();
+//                    mActionModeSupport.cancelActionMode();
                 }
             }
         };
 
         LocalBroadcastManager.getInstance(mContext)
                 .registerReceiver(mActionModeBroadcastReceiver,
-                        new IntentFilter(Res.BROADCAST_ACTION_ON_ACTION_MODE));
+                        new IntentFilter(mConstant.BROADCAST_ACTION_ON_ACTION_MODE));
     }
 
     @Override
@@ -270,7 +282,9 @@ public class RecordsFragment extends Fragment implements
         if (mAdapter.isActionMode()) {
             mActionModeSupport.handleCheckBoxSelectionInActionMode(position, v);
         } else {
-            RecordsDialog.show(mContext, mAdapter.getRecordsList().get(position));
+            Bundle args = new Bundle();
+            args.putParcelable(mConstant.REC_PARC_KEY, mAdapter.getRecordsList().get(position));
+            mRecordsDialog.show(getActivity().getSupportFragmentManager(), RecordsDialog.TAG);
         }
     }
 

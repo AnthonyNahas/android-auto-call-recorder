@@ -14,11 +14,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".dagger.AutoCallRecorderApp"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_profo_launcher"
         android:label="@string/app_name"
+        android:name=".dagger.AutoCallRecorderApp"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -38,8 +38,8 @@
         </activity>
 
         <activity
-            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
+            android:name=".activities.SettingsActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -48,19 +48,19 @@
         <activity android:name=".activities.StatisticActivity" />
 
         <activity
-            android:name=".activities.SingleContactRecordActivity"
-            android:label="@string/title_activity_single_contact_record" />
+            android:label="@string/title_activity_single_contact_record"
+            android:name=".activities.SingleContactRecordActivity" />
         <activity
-            android:name=".activities.ContactFullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_contact_fullscreen"
+            android:name=".activities.ContactFullscreenActivity"
             android:theme="@style/FullscreenTheme" />
 
         <!-- DROP BOX API CORE -->
         <activity
-            android:name="com.dropbox.client2.android.AuthActivity"
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask"
+            android:name="com.dropbox.client2.android.AuthActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>
 
@@ -78,8 +78,8 @@
         <!-- DROP BOX API CORE -->
 
         <receiver
-            android:name=".broadcasts.CallReceiver"
-            android:exported="false">
+            android:exported="false"
+            android:name=".broadcasts.CallReceiver">
             <intent-filter android:priority="1">
                 <action android:name="android.intent.action.PHONE_STATE" />
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
@@ -91,8 +91,8 @@
         </receiver>
 
         <receiver
-            android:name=".broadcasts.DoneRecReceiver"
-            android:exported="false">
+            android:exported="false"
+            android:name=".broadcasts.DoneRecReceiver">
             <intent-filter>
                 <action android:name="autocallrecorder.intent.action.RECORD_DONE" />
 
@@ -102,24 +102,24 @@
         </receiver>
 
         <service
-            android:name=".services.RecordService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:name=".services.RecordService" />
 
         <service
-            android:name=".services.FetchIntentService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:name=".services.FetchIntentService" />
 
         <provider
-            android:name="com.anthonynahas.autocallrecorder.providers.RecordsContentProvider"
             android:authorities="com.anthonynahas.autocallrecorder"
-            android:exported="false" />
+            android:exported="false"
+            android:name="com.anthonynahas.autocallrecorder.providers.RecordsContentProvider" />
 
         <provider
-            android:name=".providers.RecentSuggestionProvider"
             android:authorities="com.anthonynahas.autocallrecorder.providers.RecentSuggestionProvider"
-            android:exported="false" />
+            android:exported="false"
+            android:name=".providers.RecentSuggestionProvider" />
 
     </application>
 

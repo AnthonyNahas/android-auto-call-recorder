@@ -12,7 +12,8 @@ import android.widget.CheckBox;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
-import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
+import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
 import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
 
 /**
@@ -25,36 +26,60 @@ import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
 
 public class ActionModeSupport {
 
+    private Context mContext;
+    private Constant mConstant;
+
     private String mTitle;
     private boolean mIsForBroadcast;
-    private Context mContext;
     private ActionBar mActionBar;
     private Toolbar mToolbar;
     private RecordsAdapter mAdapter;
 
-    public ActionModeSupport(String mTitle,
-                             boolean mIsForBroadcast,
-                             Context mContext,
-                             Toolbar mToolbar,
-                             RecordsAdapter mAdapter) {
+    public ActionModeSupport
+            (@ApplicationContext Context mContext,
+             Constant mConstant,
+             String mTitle,
+             boolean mIsForBroadcast,
+             Toolbar mToolbar,
+             RecordsAdapter mAdapter) {
         this.mTitle = mTitle;
         this.mIsForBroadcast = mIsForBroadcast;
-        this.mContext = mContext;
         this.mToolbar = mToolbar;
         this.mAdapter = mAdapter;
     }
 
+    public ActionModeSupport
+            (@ApplicationContext Context mContext,
+             Constant mConstant,
+             String mTitle,
+             boolean mIsForBroadcast) {
+        this.mContext = mContext;
+        this.mConstant = mConstant;
+        this.mTitle = mTitle;
+        this.mIsForBroadcast = mIsForBroadcast;
+    }
+
     public ActionModeSupport(String mTitle,
                              boolean mIsForBroadcast,
-                             Context mContext,
                              ActionBar mActionBar,
                              Toolbar mToolbar,
                              RecordsAdapter mAdapter) {
         this.mTitle = mTitle;
         this.mIsForBroadcast = mIsForBroadcast;
-        this.mContext = mContext;
         this.mActionBar = mActionBar;
         this.mToolbar = mToolbar;
+        this.mAdapter = mAdapter;
+    }
+
+    public void setActionBar(ActionBar mActionBar) {
+        this.mActionBar = mActionBar;
+    }
+
+    public void setToolbar(Toolbar mToolbar) {
+        this.mToolbar = mToolbar;
+    }
+
+    public void setAdapter(RecordsAdapter mAdapter) {
         this.mAdapter = mAdapter;
     }
 
@@ -117,9 +142,9 @@ public class ActionModeSupport {
     }
 
     private void notifyOnActionMode(boolean state) {
-        Intent intent = new Intent(Res.BROADCAST_ACTION_ON_ACTION_MODE);
-        intent.putExtra(Res.ACTION_MODE_SENDER, RecordsFragment.class.getSimpleName());
-        intent.putExtra(Res.ACTION_MODE_SATE, state);
+        Intent intent = new Intent(mConstant.BROADCAST_ACTION_ON_ACTION_MODE);
+        intent.putExtra(mConstant.ACTION_MODE_SENDER, RecordsFragment.class.getSimpleName());
+        intent.putExtra(mConstant.ACTION_MODE_SATE, state);
         LocalBroadcastManager.getInstance(mContext)
                 .sendBroadcast(intent);
     }

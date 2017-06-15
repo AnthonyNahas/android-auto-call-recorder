@@ -8,18 +8,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.anthonynahas.autocallrecorder.R;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.models.Record;
-import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.utilities.decorators.ActionBarDecorator;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 // TODO: 07.06.2017 pull refresh --> get all contacts <=> error
 public class SingleContactRecordActivity extends AppCompatActivity {
+
+    @Inject
+    Constant mConstant;
 
     @BindView(R.id.navigation)
     BottomNavigationView navigation;
@@ -76,7 +81,7 @@ public class SingleContactRecordActivity extends AppCompatActivity {
 
         if (fragment instanceof RecordsListFragment) {
             mRecordsListFragment = (RecordsListFragment) fragment;
-            mRecord = getIntent().getParcelableExtra(Res.REC_PARC_KEY);
+            mRecord = getIntent().getParcelableExtra(mConstant.REC_PARC_KEY);
 
             mRecordsListFragment.refresh(createArguments(RecordDbContract.RecordItem.COLUMN_NUMBER
                             + " = ?",

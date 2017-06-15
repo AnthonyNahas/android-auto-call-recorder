@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -29,15 +30,12 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.configurations.Config;
 import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
 import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
-import com.anthonynahas.autocallrecorder.utilities.helpers.DaggerTestClass;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
-import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
-import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PermissionsHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
@@ -47,10 +45,12 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.Module;
+import dagger.Provides;
 import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener{
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -58,20 +58,21 @@ public class MainActivity extends AppCompatActivity implements
 
     private Activity mAppCompatActivity;
 
-    @Inject
-    FileHelper mFileHelper;
 
     @Inject
-    DaggerTestClass daggerTestClass;
+    InputDialog mInputDialog;
+
+    @Inject
+    PreferenceHelper mPreferenceHelper;
+
+    @Inject
+    Constant mConstant;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     @BindView(R.id.container)
     ViewPager mViewPager;
-
-//    @BindView(R.id.toolbar)
-//    Toolbar toolbar;
 
     @BindView(R.id.tabs)
     TabLayout tabs;
@@ -88,9 +89,16 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.fab_go_in_action_mode)
     FloatingActionButton fabActionMode;
 
-    private SwitchCompat mSwitch_auto_rec;
+    @StringRes
+    int mNavDrawerOpen = R.string.navigation_drawer_open;
 
-    private PreferenceHelper mPreferenceHelper;
+    @StringRes
+    int mNavDrawerClose = R.string.navigation_drawer_close;
+
+//    @BindView(R.id.toolbar)
+//    Toolbar toolbar;
+
+    private SwitchCompat mSwitch_auto_rec;
     private int mCurrentFragmentPosition;
     private BroadcastReceiver mActionModeBroadcastReceiver;
     private FloatingSearchView.OnQueryChangeListener mOnQueryChangeListener;
@@ -115,13 +123,7 @@ public class MainActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        daggerTestClass.print();
-
         mAppCompatActivity = this;
-
-        mPreferenceHelper = new PreferenceHelper(this);
-
-        MemoryCacheHelper.init();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -144,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, mNavDrawerOpen, mNavDrawerClose);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -164,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements
                 //noinspection SimplifiableIfStatement
                 switch (id) {
                     case R.id.action_add_demo_record:
-                        InputDialog.newInstance().show(mAppCompatActivity, "Contact ID");
+                        mInputDialog.show(mAppCompatActivity, "Contact ID");
                         break;
                     case R.id.action_start_sample_animations:
                         startActivity(new Intent(getApplicationContext(), SampleMainActivity.class));
@@ -200,8 +202,8 @@ public class MainActivity extends AppCompatActivity implements
         mActionModeBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String senderClassName = intent.getStringExtra(Res.ACTION_MODE_SENDER);
-                boolean isInActionMode = intent.getBooleanExtra(Res.ACTION_MODE_SATE, false);
+                String senderClassName = intent.getStringExtra(mConstant.ACTION_MODE_SENDER);
+                boolean isInActionMode = intent.getBooleanExtra(mConstant.ACTION_MODE_SATE, false);
                 handleActionMode(isInActionMode);
                 Log.d(TAG, "on receive action mode: " + isInActionMode + " from --> " + senderClassName);
             }
@@ -209,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements
 
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(mActionModeBroadcastReceiver,
-                        new IntentFilter(Res.BROADCAST_ACTION_ON_ACTION_MODE));
+                        new IntentFilter(mConstant.BROADCAST_ACTION_ON_ACTION_MODE));
     }
 
     @Override
@@ -320,9 +322,9 @@ public class MainActivity extends AppCompatActivity implements
      * @param state - whether the app is in action mode (true)
      */
     private void notifyOnActionMode(boolean state) {
-        Intent intent = new Intent(Res.BROADCAST_ACTION_ON_ACTION_MODE);
-        intent.putExtra(Res.ACTION_MODE_SENDER, MainActivity.class.getSimpleName());
-        intent.putExtra(Res.ACTION_MODE_SATE, state);
+        Intent intent = new Intent(mConstant.BROADCAST_ACTION_ON_ACTION_MODE);
+        intent.putExtra(mConstant.ACTION_MODE_SENDER, MainActivity.class.getSimpleName());
+        intent.putExtra(mConstant.ACTION_MODE_SATE, state);
         LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(intent);
     }

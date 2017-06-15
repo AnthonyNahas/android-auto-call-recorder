@@ -19,7 +19,7 @@ import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.StatisticRecordsAdapter;
 import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.models.RecordExtended;
-import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
 import com.anthonynahas.autocallrecorder.utilities.decorators.ActionBarDecorator;
@@ -27,6 +27,8 @@ import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.chalup.microorm.MicroOrm;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,6 +45,9 @@ import butterknife.ButterKnife;
 public class StatisticActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = StatisticActivity.class.getSimpleName();
+
+    @Inject
+    Constant mConstant;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -79,7 +84,7 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 Bundle bundle = new Bundle();
                 Record record = mAdapter.getItem(position);
-                bundle.putParcelable(Res.REC_PARC_KEY, record);
+                bundle.putParcelable(mConstant.REC_PARC_KEY, record);
                 startActivity(new Intent(getApplicationContext(),
                         SingleContactRecordActivity.class).putExtras(bundle));
             }

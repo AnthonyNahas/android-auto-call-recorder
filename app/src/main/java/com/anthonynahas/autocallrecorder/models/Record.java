@@ -13,11 +13,14 @@ import android.widget.Toast;
 
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
+import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
 
 import org.chalup.microorm.MicroOrm;
 import org.chalup.microorm.annotations.Column;
 
 import java.io.Serializable;
+
+import javax.inject.Inject;
 
 /**
  * Class that deal the record table location in content provider.
@@ -31,6 +34,8 @@ public class Record implements Serializable, Parcelable {
 
     //implements Serializable
     private static final long serialVersionUID = -5060910544141464421L;
+
+    private RecordDbHelper mRecordDbHelper;
 
     @Column(RecordDbContract.RecordItem.COLUMN_ID)
     private int m_ID; //like mDate + number
@@ -85,7 +90,11 @@ public class Record implements Serializable, Parcelable {
     //base64 // TODO: 01.06.2017
 
     public Record() {
-        super();
+    }
+
+    @Inject
+    public Record(RecordDbHelper mRecordDbHelper) {
+        this.mRecordDbHelper = mRecordDbHelper;
     }
 
     public Record(Cursor cursor, Object object) {
@@ -106,24 +115,6 @@ public class Record implements Serializable, Parcelable {
         }
     }
 
-    public Record(int m_ID,
-                  String mNumber,
-                  long mContactID,
-                  long mDate, int mSize,
-                  int mDuration,
-                  boolean mIncoming,
-                  boolean mLove) {
-
-        super();
-        this.m_ID = m_ID;
-        this.mNumber = mNumber;
-        this.mContactID = mContactID;
-        this.mDate = mDate;
-        this.mSize = mSize;
-        this.mDuration = mDuration;
-        this.mIncoming = mIncoming;
-        this.mLove = mLove;
-    }
 
     public int get_ID() {
         return m_ID;
@@ -197,16 +188,9 @@ public class Record implements Serializable, Parcelable {
         return mLove;
     }
 
-    public void setLove(Context context, boolean mIsLove) {
-        this.mLove = mIsLove;
-        RecordDbHelper
-                .newInstance()
-                .updateBooleanColumn(context,
-                        RecordDbContract.RecordItem.COLUMN_IS_LOVE, m_ID, mLove ? 1 : 0);
-    }
-
-    public void setLove(boolean mIsLove) {
-        this.mLove = mIsLove;
+    public void setLove(boolean mLove) {
+        this.mLove = mLove;
+        mRecordDbHelper.updateBooleanColumn(RecordDbContract.RecordItem.COLUMN_IS_LOVE, m_ID, this.mLove ? 1 : 0);
     }
 
     public void setLove(int mIsLove) {

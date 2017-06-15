@@ -36,12 +36,11 @@ import android.widget.Toast;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.MainActivity;
 import com.anthonynahas.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.models.Record;
-import com.anthonynahas.autocallrecorder.classes.Res;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
-import com.anthonynahas.autocallrecorder.providers.RecordsQueryHandler;
 import com.anthonynahas.autocallrecorder.providers.cursors.CursorLogger;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
@@ -50,6 +49,8 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.SQLiteHelper;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 import com.anthonynahas.recyclerviewfabhandler.FABHandler;
 import com.arlib.floatingsearchview.FloatingSearchView;
+
+import javax.inject.Inject;
 
 import jp.wasabeef.recyclerview.animators.BaseItemAnimator;
 import jp.wasabeef.recyclerview.animators.FadeInAnimator;
@@ -89,6 +90,7 @@ import static android.view.View.VISIBLE;
  * @version 1.4.0
  * @since 29.03.2017
  */
+@Deprecated
 public class RecordsListFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
         FloatingSearchView.OnQueryChangeListener,
@@ -98,6 +100,9 @@ public class RecordsListFragment extends Fragment implements
 
     private static RecordsListFragment sFragment;
 
+
+    @Inject
+    Constant mConstant;
 
     public int sCounter = 0;
     private int mOffset = 0;
@@ -217,7 +222,7 @@ public class RecordsListFragment extends Fragment implements
         // Inflate the layout for this fragment
         View mView = inflater.inflate(R.layout.fragment_recrods_card_list, container, false);
         mContext = mView.getContext();
-        mPreferenceHelper = new PreferenceHelper(mContext);
+//        mPreferenceHelper = new PreferenceHelper(mContext);
 
         mContentLoadingProgressBar = (ContentLoadingProgressBar) mView.findViewById(R.id.content_loading_progressbar);
         // Lookup the swipe container view
@@ -255,7 +260,7 @@ public class RecordsListFragment extends Fragment implements
                     (FloatingActionButton) mView.findViewById(R.id.fab_scroll_to_top));
         }
 
-        RecordsQueryHandler.getInstance(mContext.getContentResolver()).setAdapter(mAdapter);
+//        RecordsQueryHandler.getInstance(mContext.getContentResolver()).setAdapter(mAdapter);
         mSwipeContainer.setOnRefreshListener(this);
 
         ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(
@@ -338,22 +343,22 @@ public class RecordsListFragment extends Fragment implements
         mActionModeBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String senderClassName = intent.getStringExtra(Res.ACTION_MODE_SENDER);
-                boolean isInActionMode = intent.getBooleanExtra(Res.ACTION_MODE_SATE, false);
+                String senderClassName = intent.getStringExtra(mConstant.ACTION_MODE_SENDER);
+                boolean isInActionMode = intent.getBooleanExtra(mConstant.ACTION_MODE_SATE, false);
                 handleActionMode(isInActionMode);
                 Log.d(TAG, "on receive action mode: " + isInActionMode + " from --> " + senderClassName);
             }
         };
 
-        LocalBroadcastManager.getInstance(mContext)
-                .registerReceiver(mActionModeBroadcastReceiver,
-                        new IntentFilter(Res.BROADCAST_ACTION_ON_ACTION_MODE));
+//        LocalBroadcastManager.getInstance(mContext)
+//                .registerReceiver(mActionModeBroadcastReceiver,
+//                        new IntentFilter(mConstant.BROADCAST_ACTION_ON_ACTION_MODE));
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mActionModeBroadcastReceiver);
+//        LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mActionModeBroadcastReceiver);
 
     }
 
@@ -367,7 +372,7 @@ public class RecordsListFragment extends Fragment implements
         } else {
             //enter action mode
             mToolbar.getMenu().clear();
-            //mToolbar.inflateMenu(Res.menu.action_mode_menu);
+            //mToolbar.inflateMenu(Constant.menu.action_mode_menu);
             mToolbar.setVisibility(VISIBLE);
             mCounterTV.setVisibility(VISIBLE);
             sIsInActionMode = true;
@@ -497,8 +502,8 @@ public class RecordsListFragment extends Fragment implements
             }
         }
 
-        String sort = mPreferenceHelper.getSortSelection()
-                + mPreferenceHelper.getSortArrange();
+//        String sort = mPreferenceHelper.getSortSelection()
+//                + mPreferenceHelper.getSortArrange();
 
         switch (id) {
             case 0:
@@ -512,7 +517,7 @@ public class RecordsListFragment extends Fragment implements
                         //.encodedQuery("mLimit=" + mLimit + "," + mOffset)
                         .build();
                 return new CursorLoader(getActivity(),
-                        uri, projection, selection, selectionArgs, sort);
+                        uri, projection, selection, selectionArgs, null);
             default:
                 throw new IllegalArgumentException("no id handled!");
         }
@@ -606,7 +611,7 @@ public class RecordsListFragment extends Fragment implements
         Bundle args = new Bundle();
         Record record = Record.newInstance(cursor);
         record.setName(((TextView) view.findViewById(R.id.tv_call_contact_name_or_number)).getText().toString());
-        args.putParcelable(Res.REC_PARC_KEY, record);
+        args.putParcelable(mConstant.REC_PARC_KEY, record);
 
         RecordsDialog recordsDialog = new RecordsDialog();
         recordsDialog.setArguments(args);
@@ -650,9 +655,9 @@ public class RecordsListFragment extends Fragment implements
     }
 
     private void notifyOnActionMode(boolean state) {
-        Intent intent = new Intent(Res.BROADCAST_ACTION_ON_ACTION_MODE);
-        intent.putExtra(Res.ACTION_MODE_SENDER, RecordsListFragment.class.getSimpleName());
-        intent.putExtra(Res.ACTION_MODE_SATE, state);
+        Intent intent = new Intent(mConstant.BROADCAST_ACTION_ON_ACTION_MODE);
+        intent.putExtra(mConstant.ACTION_MODE_SENDER, RecordsListFragment.class.getSimpleName());
+        intent.putExtra(mConstant.ACTION_MODE_SATE, state);
         LocalBroadcastManager.getInstance(mContext)
                 .sendBroadcast(intent);
         sIsInActionMode = true;

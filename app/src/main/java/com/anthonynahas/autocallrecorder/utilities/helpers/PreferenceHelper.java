@@ -8,6 +8,9 @@ import android.util.Log;
 
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by A on 08.05.17.
  *
@@ -15,7 +18,7 @@ import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
  * @version 1.0
  * @since 09.05.2017
  */
-
+@Singleton
 public class PreferenceHelper {
 
     private static final String TAG = PreferenceHelper.class.getSimpleName();
@@ -36,12 +39,17 @@ public class PreferenceHelper {
     private SharedPreferences mSharedPreferences;
     private String mSharedPreferenceName = "SHARED_PREFERENCE_NAME";
 
-    public PreferenceHelper(Context context) {
-        mContext = context;
-        //mSharedPreferences = mContext.getSharedPreferences(mSharedPreferenceName, Context.MODE_PRIVATE);
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-
+    @Inject
+    public PreferenceHelper(SharedPreferences mSharedPreferences){
+        this.mSharedPreferences = mSharedPreferences;
     }
+
+//    public PreferenceHelper(Context context) {
+//        mContext = context;
+//        //mSharedPreferences = mContext.getSharedPreferences(mSharedPreferenceName, Context.MODE_PRIVATE);
+//        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+//
+//    }
 
     public boolean setCanAutoRecord(boolean isAutoRecord) {
         SharedPreferences.Editor editor = mSharedPreferences.edit();

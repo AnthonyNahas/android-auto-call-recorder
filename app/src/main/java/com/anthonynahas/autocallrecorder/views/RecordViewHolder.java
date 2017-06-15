@@ -45,9 +45,6 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
     private static final String TAG = RecordViewHolder.class.getSimpleName();
 
-    @Inject
-    ImageHelper mImageHelper;
-
     private Context mContext;
     private Cursor mCursor;
     private DateTimeHelper mDateTimeHelper;
@@ -66,6 +63,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
     public RecordViewHolder(View view) {
         super(view);
+
         mContext = view.getContext();
         mDateTimeHelper = DateTimeHelper.newInstance();
         call_contact_profile = (ImageView) view.findViewById(R.id.iv_profile);
@@ -91,7 +89,6 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                                         call_contact_profile, "photo").toBundle());
             }
         });
-
     }
 
     public void setData(Cursor cursor) {
@@ -133,12 +130,12 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         int duration = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION));
         call_duration.setText(mDateTimeHelper.getTimeString(duration));
 
-        Bitmap bitmap = MemoryCacheHelper.getBitmapFromMemoryCache(phoneNumber);
+//        Bitmap bitmap = MemoryCacheHelper.getBitmapFromMemoryCache(phoneNumber);
 
-        //Bitmap bitmap = null;
+        Bitmap bitmap = null;
 
         if (bitmap != null) {
-            call_contact_profile.setImageBitmap(bitmap);
+//            call_contact_profile.setImageBitmap(bitmap);
         } else {
             //BitmapWorkerTask bitmapWorkerTask =  new BitmapWorkerTask(viewHolder.call_contact_profile,context,cursor);
             //bitmapWorkerTask.execute();
@@ -151,8 +148,8 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                 call_contact_profile.setImageBitmap(img);
 //                MemoryCacheHelper.setBitmapToMemoryCache(phoneNumber, img);
             } else {
-                //viewHolder.call_contact_profile.setImageResource(Res.drawable.custmtranspprofpic);
-                call_contact_profile.setImageBitmap(mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic60px, 60, 60));
+                //viewHolder.call_contact_profile.setImageResource(Constant.drawable.custmtranspprofpic);
+//                call_contact_profile.setImageBitmap(mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic60px, 60, 60));
             }
         }
 
@@ -201,11 +198,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
                             } else {
                                 mImageCallIsLove.setImageResource(R.drawable.ic_favorite_border_black);
                             }
-
-                            RecordDbHelper
-                                    .newInstance()
-                                    .updateBooleanColumn(mContext,
-                                            RecordDbContract.RecordItem.COLUMN_IS_LOVE, id, isLoveNew);
+//                            RecordDbHelper.newInstance().updateBooleanColumn(mContext, RecordDbContract.RecordItem.COLUMN_IS_LOVE, id, isLoveNew);
                         }
                     }
                 };

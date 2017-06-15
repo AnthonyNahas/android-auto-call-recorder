@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,12 +29,11 @@ import android.widget.TextView;
 import com.anthonynahas.autocallrecorder.AudioSourceSwitcher;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.MainOldActivity;
-import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.AudioFileAsyncTask;
-import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.FileDeleterTask;
 import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.UploadAudioFile;
@@ -66,7 +66,13 @@ public class RecordsDialog extends DialogFragment implements
     public static final String TAG = RecordsDialog.class.getSimpleName();
 
     @Inject
+    RecordDbHelper mRecordDbHelper;
+
+    @Inject
     FileHelper mFileHelper;
+
+    @Inject
+    Constant mConstant;
 
     @BindView(R.id.toolbar_rec_dialog)
     Toolbar toolbar;
@@ -114,19 +120,15 @@ public class RecordsDialog extends DialogFragment implements
 
     private Context mContext;
 
-    public static void show(Context context, Record record) {
-        RecordsDialog recordsDialog = new RecordsDialog();
-        Bundle args = new Bundle();
-        args.putParcelable(Res.REC_PARC_KEY, record);
-        recordsDialog.setArguments(args);
-        recordsDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), RecordsDialog.TAG);
+    @Inject
+    public RecordsDialog() {
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         //-----** extracting sent arguments **------------
         Bundle arguments = getArguments();
-        mRecord = arguments.getParcelable(Res.REC_PARC_KEY);
+        mRecord = arguments.getParcelable(mConstant.REC_PARC_KEY);
 
         //---------------------------------------------------
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -177,7 +179,7 @@ public class RecordsDialog extends DialogFragment implements
 
         b_close.setOnClickListener(this);
 
-        new ContactPhotosAsyncTask(mContext, mRecord, iv_profile).execute(0);
+//        new ContactPhotosAsyncTask(mContext, mRecord, iv_profile).execute(0);
 
         if (mRecord.getName() != null) {
             tv_number_or_name.setText(mRecord.getName());
@@ -277,7 +279,7 @@ public class RecordsDialog extends DialogFragment implements
         switch (item.getItemId()) {
             case R.id.action_update_isLocked:
                 mRecord.updateIsLocked();
-                RecordDbHelper.updateIsLockedColumn(mContext, mRecord.get_ID(), mRecord.isLockedAsInt());
+                mRecordDbHelper.updateBooleanColumn(RecordDbContract.RecordItem.COLUMN_IS_LOCKED, mRecord.get_ID(), mRecord.isLockedAsInt());
                 updateIsLockedMenuItemTitle(item);
                 return true;
             case R.id.action_share:

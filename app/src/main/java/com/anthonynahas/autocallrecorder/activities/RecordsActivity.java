@@ -28,8 +28,9 @@ import android.widget.ProgressBar;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
+import com.anthonynahas.autocallrecorder.dagger.annotations.RecordsActivityKey;
 import com.anthonynahas.autocallrecorder.models.Record;
-import com.anthonynahas.autocallrecorder.classes.Res;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
@@ -74,7 +75,26 @@ public class RecordsActivity extends AppCompatActivity implements
     private static final String TAG = RecordsActivity.class.getSimpleName();
 
     @Inject
+    @RecordsActivityKey
+    ActionModeSupport mActionModeSupport;
+
+    @Inject
+    RecordsAdapter mAdapter;
+
+    @Inject
+    RecordsDialog mRecordsDialog;
+
+    @Inject
+    InputDialog mInputDialog;
+
+    @Inject
+    PreferenceHelper mPreferenceHelper;
+
+    @Inject
     FileHelper mFileHelper;
+
+    @Inject
+    Constant mConstant;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -93,15 +113,12 @@ public class RecordsActivity extends AppCompatActivity implements
     private Toolbar mToolbar;
     private Context mContext;
     private Activity mAppCompatActivity;
-    private RecordsAdapter mAdapter;
 
-    private ActionModeSupport mActionModeSupport;
     private BroadcastReceiver mBroadcastReceiver;
 
     private int mLoaderManagerID;
     private Bundle mArguments;
     private Handler mHandlerToWait;
-    private PreferenceHelper mPreferenceHelper;
 
     public enum args {
         title,
@@ -124,7 +141,6 @@ public class RecordsActivity extends AppCompatActivity implements
         mAppCompatActivity = this;
         String activityTitle = getIntent().getStringExtra(args.title.name());
         mArguments = prepareArguments(activityTitle);
-        mPreferenceHelper = new PreferenceHelper(this);
         mHandlerToWait = new Handler();
         mLoaderManagerID = 0;
 
@@ -139,12 +155,9 @@ public class RecordsActivity extends AppCompatActivity implements
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                switch (intent.getAction()) {
-                    case Res.ACTION_MODE_COUNTER:
-                        mActionModeSupport.updateToolbarCounter(intent.getBooleanExtra(Res.IS_CHECKED_KEY, false));
-                        break;
-                    default:
-                        break;
+
+                if (intent.getAction().equals(mConstant.ACTION_MODE_COUNTER)) {
+                    mActionModeSupport.updateToolbarCounter(intent.getBooleanExtra(mConstant.IS_CHECKED_KEY, false));
                 }
             }
         };
@@ -169,13 +182,13 @@ public class RecordsActivity extends AppCompatActivity implements
 
 
         // specify an adapter (see also next example)
-        mAdapter = new RecordsAdapter();
+//        mAdapter = new RecordsAdapter();
         recyclerView.setAdapter(mAdapter);
         recyclerView.setItemAnimator(new SlideInLeftAnimator());
-        recyclerView.getItemAnimator().setAddDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        recyclerView.getItemAnimator().setRemoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        recyclerView.getItemAnimator().setMoveDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
-        recyclerView.getItemAnimator().setChangeDuration(Res.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setAddDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setRemoveDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setMoveDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
+        recyclerView.getItemAnimator().setChangeDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
 
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(this);
         ItemClickSupport.addTo(recyclerView).setOnItemLongClickListener(this);
@@ -184,13 +197,9 @@ public class RecordsActivity extends AppCompatActivity implements
         searchView.setOnQueryChangeListener(this);
         searchView.setOnMenuItemClickListener(this);
 
-        mActionModeSupport = new ActionModeSupport(
-                getIntent().getStringExtra(args.title.name()),
-                false,
-                this,
-                getSupportActionBar(),
-                mToolbar,
-                mAdapter);
+        mActionModeSupport.setActionBar(getSupportActionBar());
+        mActionModeSupport.setToolbar(mToolbar);
+        mActionModeSupport.setAdapter(mAdapter);
 
         refreshCursorLoader();
     }
@@ -199,7 +208,7 @@ public class RecordsActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(this)
-                .registerReceiver(mBroadcastReceiver, new IntentFilter(Res.ACTION_MODE_COUNTER));
+                .registerReceiver(mBroadcastReceiver, new IntentFilter(mConstant.ACTION_MODE_COUNTER));
     }
 
     @Override
@@ -213,7 +222,10 @@ public class RecordsActivity extends AppCompatActivity implements
         if (mAdapter.isActionMode()) {
             mActionModeSupport.handleCheckBoxSelectionInActionMode(position, v);
         } else {
-            RecordsDialog.show(mContext, mAdapter.getRecordsList().get(position));
+            Bundle args = new Bundle();
+            args.putParcelable(mConstant.REC_PARC_KEY, mAdapter.getRecordsList().get(position));
+            mRecordsDialog.setArguments(args);
+            mRecordsDialog.show(getSupportFragmentManager(), RecordsDialog.TAG);
         }
     }
 
@@ -330,7 +342,7 @@ public class RecordsActivity extends AppCompatActivity implements
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_add_demo_record:
-                InputDialog.newInstance().show(mAppCompatActivity, "Contact ID");
+                mInputDialog.show(mAppCompatActivity, "Contact ID");
                 break;
             case R.id.action_start_sample_animations:
                 startActivity(new Intent(getApplicationContext(), SampleMainActivity.class));

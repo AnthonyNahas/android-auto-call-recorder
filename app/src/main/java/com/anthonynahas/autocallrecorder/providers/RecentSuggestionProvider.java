@@ -9,6 +9,7 @@ import android.content.SearchRecentSuggestionsProvider;
  * @version 1.0
  * @since 17.06.16
  */
+@Deprecated
 public class RecentSuggestionProvider extends SearchRecentSuggestionsProvider {
     public final static String AUTHORITY = "RecentSuggestionProvider";
     public final static int MODE = DATABASE_MODE_QUERIES;
