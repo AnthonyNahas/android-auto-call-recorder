@@ -54,7 +54,6 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     private PreferenceHelper mPreferenceHelper;
 
     public RecordsAdapter() {
-        AndroidInjection.inject(this);
         actionMode = false;
         closeActionMode = false;
         mCounter = 0;

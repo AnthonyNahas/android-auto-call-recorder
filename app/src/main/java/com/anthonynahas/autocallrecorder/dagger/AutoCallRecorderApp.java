@@ -12,9 +12,10 @@ import com.anthonynahas.autocallrecorder.dagger.modules.AppModule;
 import javax.inject.Inject;
 
 import dagger.android.DispatchingAndroidInjector;
-import dagger.android.HasDispatchingActivityInjector;
-import dagger.android.HasDispatchingServiceInjector;
-import dagger.android.support.HasDispatchingSupportFragmentInjector;
+import dagger.android.DispatchingAndroidInjector_Factory;
+import dagger.android.HasActivityInjector;
+import dagger.android.HasServiceInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 
 /**
  * Created by A on 13.06.17.
@@ -22,9 +23,9 @@ import dagger.android.support.HasDispatchingSupportFragmentInjector;
  * @author Anthony Nahas#
  */
 public class AutoCallRecorderApp extends Application implements
-        HasDispatchingActivityInjector,
-        HasDispatchingServiceInjector,
-        HasDispatchingSupportFragmentInjector{
+        HasActivityInjector,
+        HasSupportFragmentInjector,
+        HasServiceInjector {
 
     @Inject
     DispatchingAndroidInjector<Activity> mDispatchingAndroidActivityInjector;
@@ -34,9 +35,6 @@ public class AutoCallRecorderApp extends Application implements
 
     @Inject
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidSupportFragmentInjector;
-
-    @Inject
-    DispatchingAndroidInjector<RecordsAdapter> mRecordsAdapterDispatchingAndroidInjector;
 
     @Override
     public void onCreate() {
