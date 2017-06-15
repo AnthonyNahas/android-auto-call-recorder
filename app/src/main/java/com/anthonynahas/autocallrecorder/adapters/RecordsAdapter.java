@@ -31,6 +31,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
 
 /**
  * Created by anahas on 02.06.2017.
@@ -53,6 +54,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     private PreferenceHelper mPreferenceHelper;
 
     public RecordsAdapter() {
+        AndroidInjection.inject(this);
         actionMode = false;
         closeActionMode = false;
         mCounter = 0;

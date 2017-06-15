@@ -2,6 +2,7 @@ package com.anthonynahas.autocallrecorder.dagger.components;
 
 import com.anthonynahas.autocallrecorder.dagger.AutoCallRecorderApp;
 import com.anthonynahas.autocallrecorder.dagger.modules.ActivitiesModule;
+import com.anthonynahas.autocallrecorder.dagger.modules.AdaptersModule;
 import com.anthonynahas.autocallrecorder.dagger.modules.AppModule;
 import com.anthonynahas.autocallrecorder.dagger.modules.ServicesModule;
 import com.anthonynahas.autocallrecorder.dagger.modules.fragments.FragmentSupportModule;
@@ -25,6 +26,7 @@ import dagger.android.AndroidInjectionModule;
                 ActivitiesModule.class,
                 ServicesModule.class,
                 FragmentSupportModule.class,
+                AdaptersModule.class,
                 AndroidInjectionModule.class
         })
 public interface AppComponent {

@@ -13,15 +13,26 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.TypedValue;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * This class helps to render a imageview with circle corners
  *
  * @version 1.0
  * @since 30.4.16
  */
+@Singleton
 public class ImageHelper {
 
-    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
+    private Resources mResources;
+
+    @Inject
+    public ImageHelper(Resources mResources) {
+        this.mResources = mResources;
+    }
+
+    public Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
                 .getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
@@ -42,7 +53,7 @@ public class ImageHelper {
         return output;
     }
 
-    public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
+    public Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
         //if contact don't have a photo
         if (bitmap == null) {
             return null;
@@ -75,23 +86,23 @@ public class ImageHelper {
         return output;
     }
 
-    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
+    public Bitmap decodeSampledBitmapFromResource(int resId,
                                                          int reqWidth, int reqHeight) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, resId, options);
+        BitmapFactory.decodeResource(mResources, resId, options);
 
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, options);
+        return BitmapFactory.decodeResource(mResources, resId, options);
     }
 
-    public static int calculateInSampleSize(
+    public int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -114,7 +125,7 @@ public class ImageHelper {
         return inSampleSize;
     }
 
-    public static int convert_dp_To_px(Context context, int dp) {
+    public int convert_dp_To_px(Context context, int dp) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, dp,
                 context.getResources().getDisplayMetrics()

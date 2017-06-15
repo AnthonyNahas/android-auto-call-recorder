@@ -16,6 +16,8 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 
+import javax.inject.Inject;
+
 /**
  * Created by A on 25.05.17.
  *
@@ -32,6 +34,9 @@ public class ContactPhotosAsyncTask extends AsyncTask<Integer, Void, Bitmap> {
     private static final String TAG = ContactPhotosAsyncTask.class.getSimpleName();
 
     private static int sCounter = 1;
+
+    @Inject
+    ImageHelper mImageHelper;
 
     private Context mContext;
     private Record mRecord;
@@ -67,8 +72,7 @@ public class ContactPhotosAsyncTask extends AsyncTask<Integer, Void, Bitmap> {
                 return contactBitmap != null ?
                         contactBitmap
                         :
-                        ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(),
-                                R.drawable.custmtranspprofpic, 150, 150);
+                        mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic, 150, 150);
 
             case 1:
                 Bitmap cachedBitmap = MemoryCacheHelper.getBitmapFromMemoryCache(mRecord.getNumber());
@@ -82,8 +86,7 @@ public class ContactPhotosAsyncTask extends AsyncTask<Integer, Void, Bitmap> {
                     return contactBitmap;
                 }
 
-                return ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(),
-                        R.drawable.custmtranspprofpic60px, 60, 60);
+                return mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic60px, 60, 60);
             default:
                 return null;
         }

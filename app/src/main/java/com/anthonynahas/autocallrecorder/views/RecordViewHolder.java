@@ -31,6 +31,8 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 
 import java.util.concurrent.ExecutionException;
 
+import javax.inject.Inject;
+
 /**
  * Created by A on 20.03.17.
  *
@@ -42,6 +44,9 @@ import java.util.concurrent.ExecutionException;
 public class RecordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private static final String TAG = RecordViewHolder.class.getSimpleName();
+
+    @Inject
+    ImageHelper mImageHelper;
 
     private Context mContext;
     private Cursor mCursor;
@@ -147,7 +152,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 //                MemoryCacheHelper.setBitmapToMemoryCache(phoneNumber, img);
             } else {
                 //viewHolder.call_contact_profile.setImageResource(Res.drawable.custmtranspprofpic);
-                call_contact_profile.setImageBitmap(ImageHelper.decodeSampledBitmapFromResource(mContext.getResources(), R.drawable.custmtranspprofpic60px, 60, 60));
+                call_contact_profile.setImageBitmap(mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic60px, 60, 60));
             }
         }
 

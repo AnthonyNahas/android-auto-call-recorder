@@ -13,7 +13,7 @@ import dagger.android.AndroidInjector;
  * @since 13.06.17
  */
 
-@Subcomponent()
+@Subcomponent
 public interface MainActivitySubcomponent extends AndroidInjector<MainActivity> {
 
     @Subcomponent.Builder

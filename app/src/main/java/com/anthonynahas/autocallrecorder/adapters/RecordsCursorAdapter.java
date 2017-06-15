@@ -15,16 +15,18 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.ExecutionException;
-
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.MainOldActivity;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
+
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+
+import javax.inject.Inject;
 
 /**
  * Created by A on 30.04.16.
@@ -45,6 +47,9 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
 public class RecordsCursorAdapter extends CursorAdapter {
 
     private static final String TAG = RecordsCursorAdapter.class.getSimpleName();
+
+    @Inject
+    ImageHelper mImageHelper;
 
     private Context mContext;
     private SharedPreferences mSharedPreferences;
@@ -133,7 +138,7 @@ public class RecordsCursorAdapter extends CursorAdapter {
                 MainOldActivity.setBitmapToMemoryCache(phoneNumber, img);
             } else {
                 //viewHolder.call_contact_profile.setImageResource(Res.drawable.custmtranspprofpic);
-                viewHolder.call_contact_profile.setImageBitmap(ImageHelper.decodeSampledBitmapFromResource(context.getResources(), R.drawable.custmtranspprofpic60px, 60, 60));
+                viewHolder.call_contact_profile.setImageBitmap(mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic60px, 60, 60));
             }
         }
         //new bindImageTask(context,cursor,viewHolder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,null);

@@ -3,6 +3,7 @@ package com.anthonynahas.autocallrecorder.dagger.modules;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
 import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
@@ -40,6 +41,11 @@ public class AppModule {
     @Provides
     Application provideApplication() {
         return mApp;
+    }
+
+    @Provides
+    Resources provideResources(Context context) {
+        return context.getResources();
     }
 
     // Dagger will only look for methods annotated with @Provides

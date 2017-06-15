@@ -5,6 +5,7 @@ import android.app.Application;
 import android.app.Service;
 import android.support.v4.app.Fragment;
 
+import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.dagger.components.DaggerAppComponent;
 import com.anthonynahas.autocallrecorder.dagger.modules.AppModule;
 
@@ -23,7 +24,7 @@ import dagger.android.support.HasDispatchingSupportFragmentInjector;
 public class AutoCallRecorderApp extends Application implements
         HasDispatchingActivityInjector,
         HasDispatchingServiceInjector,
-        HasDispatchingSupportFragmentInjector {
+        HasDispatchingSupportFragmentInjector{
 
     @Inject
     DispatchingAndroidInjector<Activity> mDispatchingAndroidActivityInjector;
@@ -33,6 +34,9 @@ public class AutoCallRecorderApp extends Application implements
 
     @Inject
     DispatchingAndroidInjector<Fragment> mDispatchingAndroidSupportFragmentInjector;
+
+    @Inject
+    DispatchingAndroidInjector<RecordsAdapter> mRecordsAdapterDispatchingAndroidInjector;
 
     @Override
     public void onCreate() {
