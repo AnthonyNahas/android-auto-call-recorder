@@ -43,12 +43,18 @@ public class DemoRecordSupport {
 
     private Context mContext;
     private Constant mConstant;
+    private CursorLogger mCursorLogger;
     private RecordsQueryHandler mRecordsQueryHandler;
 
     @Inject
-    public DemoRecordSupport(@ApplicationContext Context mContext, Constant mConstant, RecordsQueryHandler mRecordsQueryHandler) {
+    public DemoRecordSupport
+            (@ApplicationContext Context mContext,
+             Constant mConstant,
+             CursorLogger mCursorLogger,
+             RecordsQueryHandler mRecordsQueryHandler) {
         this.mContext = mContext;
         this.mConstant = mConstant;
+        this.mCursorLogger = mCursorLogger;
         this.mRecordsQueryHandler = mRecordsQueryHandler;
     }
 
@@ -102,7 +108,7 @@ public class DemoRecordSupport {
                     return;
                 }
 
-                CursorLogger.newInstance().log(cursor);
+                mCursorLogger.log(cursor);
 
                 if (cursor.getCount() == 1) {
                     cursor.moveToFirst();

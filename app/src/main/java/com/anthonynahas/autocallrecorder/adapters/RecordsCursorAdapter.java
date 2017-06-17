@@ -18,19 +18,17 @@ import android.widget.TextView;
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.MainOldActivity;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
-import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
 /**
  * Created by A on 30.04.16.
- *
+ * <p>
  * * @DEPRECATED
  * * @DEPRECATED
  * * @DEPRECATED
@@ -39,11 +37,11 @@ import javax.inject.Inject;
  * * @DEPRECATED
  * * @DEPRECATED
  * * @DEPRECATED
- *
  *
  * @author Anthony Nahas
  * @since 30.04.2016
  */
+@Deprecated
 public class RecordsCursorAdapter extends CursorAdapter {
 
     private static final String TAG = RecordsCursorAdapter.class.getSimpleName();
@@ -91,27 +89,27 @@ public class RecordsCursorAdapter extends CursorAdapter {
         // Populate the data into the template view using the data object
         //viewHolder.call_contact_profile.setId(cursor.getPosition());
 
-        String contact_number_or_name = "";
-        try {
-            contact_number_or_name = new AsyncTask<Void, Void, String>() {
-                @Override
-                protected String doInBackground(Void... params) {
-                    String contactName = ContactHelper.getContactName(context.getContentResolver(), phoneNumber);
-                    if (contactName != null) {
-                        return contactName;
-                    }
-                    return phoneNumber;
-                }
-            }.execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+//        String contact_number_or_name = "";
+//        try {
+//            contact_number_or_name = new AsyncTask<Void, Void, String>() {
+//                @Override
+//                protected String doInBackground(Void... params) {
+//                    String contactName = ContactHelper.getContactName(context.getContentResolver(), phoneNumber);
+//                    if (contactName != null) {
+//                        return contactName;
+//                    }
+//                    return phoneNumber;
+//                }
+//            }.execute().get();
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//        }
 
-        if (contact_number_or_name.isEmpty()) {
-            viewHolder.call_contact_number_or_name.setText("Unkown");
-        } else {
-            viewHolder.call_contact_number_or_name.setText(contact_number_or_name);
-        }
+//        if (contact_number_or_name.isEmpty()) {
+//            viewHolder.call_contact_number_or_name.setText("Unkown");
+//        } else {
+//            viewHolder.call_contact_number_or_name.setText(contact_number_or_name);
+//        }
 
 
         switch (cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_INCOMING))) {
@@ -131,15 +129,15 @@ public class RecordsCursorAdapter extends CursorAdapter {
         } else {
             //BitmapWorkerTask bitmapWorkerTask =  new BitmapWorkerTask(viewHolder.call_contact_profile,context,cursor);
             //bitmapWorkerTask.execute();
-            Bitmap img = ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1,
-                    cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
-            if (img != null) {
-                viewHolder.call_contact_profile.setImageBitmap(img);
-                MainOldActivity.setBitmapToMemoryCache(phoneNumber, img);
-            } else {
-                //viewHolder.call_contact_profile.setImageResource(Constant.drawable.custmtranspprofpic);
-                viewHolder.call_contact_profile.setImageBitmap(mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic60px, 60, 60));
-            }
+//            Bitmap img = ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1,
+//                    cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
+//            if (img != null) {
+//                viewHolder.call_contact_profile.setImageBitmap(img);
+//                MainOldActivity.setBitmapToMemoryCache(phoneNumber, img);
+//            } else {
+//                //viewHolder.call_contact_profile.setImageResource(Constant.drawable.custmtranspprofpic);
+//                viewHolder.call_contact_profile.setImageBitmap(mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic60px, 60, 60));
+//            }
         }
         //new bindImageTask(context,cursor,viewHolder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,null);
 
@@ -217,7 +215,8 @@ public class RecordsCursorAdapter extends CursorAdapter {
             long contactID = mCursor.getLong(mCursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
             Log.d(TAG, "contactID = " + contactID);
             if (contactID != 0) {
-                return ContactHelper.getContactPhotoUri(mContext.getContentResolver(), contactID);
+                return null;
+//                return ContactHelper.getContactPhotoUri(mContext.getContentResolver(), contactID);
             } else {
                 return null;
             }

@@ -19,9 +19,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
 
 // TODO: 07.06.2017 pull refresh --> get all contacts <=> error
 public class SingleContactRecordActivity extends AppCompatActivity {
+
+    @Inject
+    ContactHelper mContactHelper;
 
     @Inject
     Constant mConstant;
@@ -68,6 +72,7 @@ public class SingleContactRecordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidInjection.inject(this);
         setContentView(R.layout.activity_single_contact_record);
 
         ButterKnife.bind(this);
@@ -90,7 +95,7 @@ public class SingleContactRecordActivity extends AppCompatActivity {
 
         if (mRecord != null) {
             // TODO: 24.05.2017 getContactName should be done asynchronously  - with async ?
-            mRecord.setName(ContactHelper.getContactName(getContentResolver(), mRecord.getNumber()));
+            mRecord.setName(mContactHelper.getContactName( mRecord.getNumber()));
         }
 
         actionBarDecorator

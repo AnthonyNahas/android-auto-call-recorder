@@ -53,6 +53,9 @@ public class FetchIntentService extends IntentService {
     FileHelper mFileHelper;
 
     @Inject
+    ContactHelper mContactHelper;
+
+    @Inject
     Constant mConstant;
 
     /**
@@ -130,7 +133,7 @@ public class FetchIntentService extends IntentService {
 
 //            audioCursor.close();
 
-        long contactID = ContactHelper.getContactID(this.getContentResolver(), record.getNumber());
+        long contactID = mContactHelper.getContactID(record.getNumber());
 
         if (contactID != -1) {
             record.setContactID(contactID);

@@ -11,6 +11,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 
+import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Class that deals with permissions at Runtime for Android OS
  * beginning in Android 6.0 (API level 23).
@@ -19,7 +24,7 @@ import android.support.v7.app.AlertDialog;
  * @version 1.0
  * @since 30.03.2017
  */
-
+@Singleton
 public class PermissionsHelper {
 
     private Context mContext;
@@ -35,7 +40,8 @@ public class PermissionsHelper {
                     Manifest.permission.READ_CONTACTS
             };
 
-    public PermissionsHelper(Context context) {
+    @Inject
+    public PermissionsHelper(@ApplicationContext Context context) {
         mContext = context;
     }
 

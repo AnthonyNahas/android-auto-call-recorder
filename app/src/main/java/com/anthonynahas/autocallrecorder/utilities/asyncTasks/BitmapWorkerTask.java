@@ -6,16 +6,14 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
-import java.lang.ref.WeakReference;
-
 import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.activities.MainOldActivity;
-import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
-import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by A on 18.06.16.
  */
+@Deprecated
 public class BitmapWorkerTask extends AsyncTask<Void,Void,Bitmap> {
 
     WeakReference<ImageView> imageViewWeakReference;
@@ -30,11 +28,11 @@ public class BitmapWorkerTask extends AsyncTask<Void,Void,Bitmap> {
 
     @Override
     protected Bitmap doInBackground(Void... params) {
-        Bitmap img = ContactHelper.getBitmapForContactID(context.getContentResolver(),1,
-                cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
-        if(img != null){
-            MainOldActivity.setBitmapToMemoryCache(cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_NUMBER)),img);
-        }
+//        Bitmap img = ContactHelper.getBitmapForContactID(context.getContentResolver(),1,
+//                cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID)));
+//        if(img != null){
+//            MainOldActivity.setBitmapToMemoryCache(cursor.getString(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_NUMBER)),img);
+//        }
         return null;
     }
 

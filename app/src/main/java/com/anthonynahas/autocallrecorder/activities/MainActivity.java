@@ -30,8 +30,8 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.configurations.Config;
+import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
 import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
@@ -45,8 +45,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dagger.Module;
-import dagger.Provides;
 import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity implements
@@ -64,6 +62,12 @@ public class MainActivity extends AppCompatActivity implements
 
     @Inject
     PreferenceHelper mPreferenceHelper;
+
+    @Inject
+    PermissionsHelper mPermissionsHelper;
+
+    @Inject
+    DialogHelper mDialogHelper;
 
     @Inject
     Constant mConstant;
@@ -172,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements
                         startActivity(new Intent(getApplicationContext(), SampleMainActivity.class));
                         break;
                     case R.id.action_sort:
-                        DialogHelper.openSortDialog(appCompatActivity, mSectionsPagerAdapter.getItem(0));
+                        mDialogHelper.openSortDialog(appCompatActivity, mSectionsPagerAdapter.getItem(0));
                         break;
                     case R.id.action_settings:
                         startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
@@ -218,8 +222,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         // requesting required permission on run time
-        PermissionsHelper permissionsHelper = new PermissionsHelper(this);
-        permissionsHelper.requestAllPermissions();
+        mPermissionsHelper.requestAllPermissions();
     }
 
     @Override

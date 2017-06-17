@@ -1,12 +1,8 @@
 package com.anthonynahas.autocallrecorder.adapters;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +22,6 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.ui_animator.CheckboxAnimator;
-import com.squareup.picasso.Picasso;
 
 import org.apache.commons.collections4.ListUtils;
 
@@ -44,7 +39,6 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @since 02.06.17
  */
-
 public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordViewHolder> {
 
     private static final String TAG = RecordsAdapter.class.getSimpleName();
@@ -55,26 +49,31 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     private boolean actionMode;
     private boolean closeActionMode;
     private List<Record> mRecordsList;
-    private DateTimeHelper mDateTimeHelper;
-    private PreferenceHelper mPreferenceHelper;
 
     private MemoryCacheHelper mMemoryCacheHelper;
+    private PreferenceHelper mPreferenceHelper;
+    private DateTimeHelper mDateTimeHelper;
+    private ContactHelper mContactHelper;
 
     @Inject
-    public RecordsAdapter(MemoryCacheHelper mMemoryCacheHelper, PreferenceHelper mPreferenceHelper, Constant mConstant) {
+    public RecordsAdapter
+            (MemoryCacheHelper mMemoryCacheHelper,
+             PreferenceHelper mPreferenceHelper,
+             DateTimeHelper mDateTimeHelper,
+             ContactHelper mContactHelper,
+             Constant mConstant) {
+
         actionMode = false;
         closeActionMode = false;
         mCounter = 0;
-        mDateTimeHelper = DateTimeHelper.newInstance();
+
         this.mMemoryCacheHelper = mMemoryCacheHelper;
         this.mPreferenceHelper = mPreferenceHelper;
+        this.mDateTimeHelper = mDateTimeHelper;
+        this.mContactHelper = mContactHelper;
         this.mConstant = mConstant;
     }
 
-    public RecordsAdapter(List<Record> mRecordsList) {
-        this.mRecordsList = mRecordsList;
-        mDateTimeHelper = DateTimeHelper.newInstance();
-    }
 
     public boolean isActionMode() {
         return actionMode;
@@ -211,32 +210,19 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             if (record.getName() != null && !record.getName().isEmpty()) {
                 viewHolder.tv_number_name.setText(record.getName());
             } else {
-                Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                        ContactHelper.getContactID(mContext.getContentResolver(), mRecordsList.get(position).getNumber()));
-                Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-                Picasso.with(mContext)
-                        .load(photoUri)
-                        .fit()
-                        .centerCrop()
-                        .placeholder(R.drawable.custompic3)
-                        .error(R.drawable.custmtranspprofpic150px)
-                        .into(viewHolder.iv_profile);
-//                new ContactNameAsyncTask(mContext, record, viewHolder.tv_number_name).execute();
+                mContactHelper.getContactNameAsyncAndPost(record,viewHolder.tv_number_name);
             }
         }
 
-        private void handleIVProfile(@NonNull RecordViewHolder viewHolder, int position) {
+        private void handleIVProfile(@NonNull RecordViewHolder viewHolder, @NonNull int position) {
 
             Record record = mRecordsList.get(position);
             if (position == RecyclerView.NO_POSITION) {
                 Log.d(TAG, "no position");
             }
-            Bitmap cachedBitmap = mMemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
-            if (cachedBitmap != null) {
-                viewHolder.iv_profile.setImageBitmap(cachedBitmap);
-            } else {
-//                new ContactPhotosAsyncTask(mContext, record, viewHolder.iv_profile).execute(1);
-            }
+
+            mContactHelper.getContactUriForPhotoAsyncAndPost(record,false,viewHolder.iv_profile);
+
         }
 
         @Override

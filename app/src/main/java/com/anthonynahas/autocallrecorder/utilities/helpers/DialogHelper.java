@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.anthonynahas.autocallrecorder.fragments.dialogs.SortDialog;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by A on 03.04.17.
  *
@@ -12,20 +15,24 @@ import com.anthonynahas.autocallrecorder.fragments.dialogs.SortDialog;
  * @version 1.0
  * @since 03.04.17
  */
-
+@Singleton
 public class DialogHelper {
 
     public static final String TAG = DialogHelper.class.getSimpleName();
 
     public static final int REQUEST_CODE_FOR_SORT_DIALOG = 1;
 
-    public static void openSortDialog(AppCompatActivity activity) {
+    @Inject
+    public DialogHelper() {
+    }
+
+    public void openSortDialog(AppCompatActivity activity) {
         SortDialog sortDialog = new SortDialog();
 //        sortDialog.setTargetFragment(fragment, REQUEST_CODE_FOR_SORT_DIALOG);
         sortDialog.show(activity.getSupportFragmentManager(), "sort dialog");
     }
 
-    public static void openSortDialog(AppCompatActivity activity, Fragment fragment) {
+    public void openSortDialog(AppCompatActivity activity, Fragment fragment) {
         SortDialog sortDialog = new SortDialog();
         sortDialog.setTargetFragment(fragment, REQUEST_CODE_FOR_SORT_DIALOG);
         sortDialog.show(activity.getSupportFragmentManager(), "sort dialog");

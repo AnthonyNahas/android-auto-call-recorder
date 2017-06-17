@@ -1,7 +1,6 @@
 package com.anthonynahas.autocallrecorder.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,13 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.R;
+import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
 import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.models.RecordExtended;
-import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactNameAsyncTask;
-import com.anthonynahas.autocallrecorder.utilities.asyncTasks.ContactPhotosAsyncTask;
+import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by anahas on 16.05.2017.
@@ -32,13 +33,28 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     private static final String TAG = StatisticRecordsAdapter.class.getSimpleName();
 
     private Context mContext;
-    private List<RecordExtended> mRecordsList;
-
+    private ContactHelper mContactHelper;
     private MemoryCacheHelper mMemoryCacheHelper;
 
-    public StatisticRecordsAdapter(Context mContext, MemoryCacheHelper mMemoryCacheHelper) {
+    private List<RecordExtended> mRecordsList;
+
+    @Inject
+    public StatisticRecordsAdapter
+            (@ApplicationContext Context mContext,
+             ContactHelper mContactHelper,
+             MemoryCacheHelper mMemoryCacheHelper) {
+
         this.mContext = mContext;
+        this.mContactHelper = mContactHelper;
         this.mMemoryCacheHelper = mMemoryCacheHelper;
+    }
+
+    public List<RecordExtended> getRecordsList() {
+        return mRecordsList;
+    }
+
+    public void setRecordsList(List<RecordExtended> recordsList) {
+        mRecordsList = recordsList;
     }
 
     // Provide a reference to the views for each data item
@@ -76,15 +92,6 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
             }
         }
 
-        private void handleIVProfile(@NonNull RecordViewHolder viewHolder, int position) {
-            Record record = mRecordsList.get(position);
-            Bitmap cachedBitmap = mMemoryCacheHelper.getBitmapFromMemoryCache(record.getNumber());
-            if (cachedBitmap != null) {
-                viewHolder.mIVProfile.setImageBitmap(cachedBitmap);
-            } else {
-//                new ContactPhotosAsyncTask(mContext, record, viewHolder.mIVProfile).execute(1);
-            }
-        }
     }
 
     @Override
@@ -111,7 +118,6 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
     public RecordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.statistic_record_card, parent, false);
-        mContext = view.getContext();
         return new RecordViewHolder(view);
     }
 
@@ -128,8 +134,15 @@ public class StatisticRecordsAdapter extends RecyclerView.Adapter<StatisticRecor
         viewHolder.mTVTotalIncomingCalls.setText(String.valueOf(record.getTotalIncomingCalls()));
         viewHolder.mTVTotalOutgoingCalls.setText(String.valueOf(record.getTotalOutgoingCall()));
 
-        viewHolder.handleTVCallNameOrNumber(viewHolder, position);
-        viewHolder.handleIVProfile(viewHolder, position);
+        if (record.getName() != null) {
+            viewHolder.mTVCallNameOrNumber.setText(record.getName());
+        } else {
+            mContactHelper.getContactNameAsyncAndPost(record,viewHolder.mTVCallNameOrNumber);
+            viewHolder.handleTVCallNameOrNumber(viewHolder, position);
+        }
+
+        mContactHelper.getContactUriForPhotoAsyncAndPost(record, false, viewHolder.mIVProfile);
+
 
     }
 

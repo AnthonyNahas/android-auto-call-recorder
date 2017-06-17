@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -35,6 +34,7 @@ import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.AudioFileAsyncTask;
 import com.anthonynahas.autocallrecorder.utilities.asyncTasks.FileDeleterTask;
+import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.FileHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.UploadAudioFile;
 import com.anthonynahas.autocallrecorder.utilities.helpers.WindowHelper;
@@ -70,6 +70,9 @@ public class RecordsDialog extends DialogFragment implements
 
     @Inject
     FileHelper mFileHelper;
+
+    @Inject
+    ContactHelper mContactHelper;
 
     @Inject
     Constant mConstant;
@@ -187,6 +190,8 @@ public class RecordsDialog extends DialogFragment implements
         } else {
             tv_number_or_name.setText(mRecord.getNumber());
         }
+
+        mContactHelper.getContactUriForPhotoAsyncAndPost(mRecord, true, iv_profile);
 
         seekBar.setOnSeekBarChangeListener(this);
         isDurationTextPressed = false;

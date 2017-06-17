@@ -1,10 +1,11 @@
 package com.anthonynahas.autocallrecorder.utilities.helpers;
 
-import android.util.Log;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Created by anahas on 02.06.2017.
@@ -13,11 +14,11 @@ import java.util.Date;
  * @version 1.0
  * @since 02.06.17
  */
-
+@Singleton
 public class DateTimeHelper {
 
-    public static DateTimeHelper newInstance() {
-        return new DateTimeHelper();
+    @Inject
+    public DateTimeHelper() {
     }
 
     public String getLocalFormatterDate(long l) {

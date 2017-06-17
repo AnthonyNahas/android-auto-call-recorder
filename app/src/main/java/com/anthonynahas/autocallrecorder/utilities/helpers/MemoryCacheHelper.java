@@ -3,7 +3,6 @@ package com.anthonynahas.autocallrecorder.utilities.helpers;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -22,12 +21,16 @@ public class MemoryCacheHelper {
 
     /************** Memory Cache ***************/
     private LruCache<String, Bitmap> mMemoryCacheForContactsBitmap;
+    private Map<String, Long> mMemoryCacheForContactsID;
     private Map<String, String> mMemoryCacheForContactsName;
 
     @Inject
-    public MemoryCacheHelper(LruCache<String, Bitmap> mMemoryCacheForContactsBitmap,
-                             Map<String, String> mMemoryCacheForContactsName) {
+    public MemoryCacheHelper
+            (LruCache<String, Bitmap> mMemoryCacheForContactsBitmap,
+             Map<String, Long> mMemoryCacheForContactsID,
+             Map<String, String> mMemoryCacheForContactsName) {
         this.mMemoryCacheForContactsBitmap = mMemoryCacheForContactsBitmap;
+        this.mMemoryCacheForContactsID = mMemoryCacheForContactsID;
         this.mMemoryCacheForContactsName = mMemoryCacheForContactsName;
     }
 
@@ -88,6 +91,29 @@ public class MemoryCacheHelper {
     public void setContactNameToMemoryCache(String key, String value) {
         if (mMemoryCacheForContactsName.get(key) == null) {
             mMemoryCacheForContactsName.put(key, value);
+        }
+    }
+
+    /**
+     * Load the contact id as long from the hash map
+     *
+     * @param key - the phone number of a contact
+     * @return - the contact name associate to the phone number (key)
+     */
+    public long getMemoryCacheForContactsID(String key) {
+        return mMemoryCacheForContactsID.get(key);
+    }
+
+    /**
+     * If the phone number is not already stored, store it with the appropriate
+     * contact name.
+     *
+     * @param key   - the phone number of a contact
+     * @param value - the contact name associate to the phone number (key)
+     */
+    public void setContactsIDToMemoryCache(String key, long value) {
+        if (mMemoryCacheForContactsID.get(key) == null) {
+            mMemoryCacheForContactsID.put(key, value);
         }
     }
 }

@@ -4,8 +4,12 @@ import android.app.Activity;
 
 import com.anthonynahas.autocallrecorder.activities.MainActivity;
 import com.anthonynahas.autocallrecorder.activities.RecordsActivity;
+import com.anthonynahas.autocallrecorder.activities.SingleContactRecordActivity;
+import com.anthonynahas.autocallrecorder.activities.StatisticActivity;
 import com.anthonynahas.autocallrecorder.dagger.components.sub.activities.MainActivitySubcomponent;
 import com.anthonynahas.autocallrecorder.dagger.components.sub.activities.RecordsActivitySubcomponent;
+import com.anthonynahas.autocallrecorder.dagger.components.sub.activities.SingleContactRecordActivitySubcomponent;
+import com.anthonynahas.autocallrecorder.dagger.components.sub.activities.StatisticActivitySubcomponent;
 
 import dagger.Binds;
 import dagger.Module;
@@ -23,7 +27,9 @@ import dagger.multibindings.IntoMap;
 @Module(subcomponents =
         {
                 MainActivitySubcomponent.class,
-                RecordsActivitySubcomponent.class
+                RecordsActivitySubcomponent.class,
+                StatisticActivitySubcomponent.class,
+                SingleContactRecordActivitySubcomponent.class
         })
 public abstract class ActivitiesModule {
 
@@ -36,4 +42,14 @@ public abstract class ActivitiesModule {
     @IntoMap
     @ActivityKey(RecordsActivity.class)
     abstract AndroidInjector.Factory<? extends Activity> bindMainActivityInjectorFactory(RecordsActivitySubcomponent.Builder builder);
+
+    @Binds
+    @IntoMap
+    @ActivityKey(StatisticActivity.class)
+    abstract AndroidInjector.Factory<? extends Activity> bindStatisticActivityInjectorFactory(StatisticActivitySubcomponent.Builder builder);
+
+    @Binds
+    @IntoMap
+    @ActivityKey(SingleContactRecordActivity.class)
+    abstract AndroidInjector.Factory<? extends Activity> bindSingleContactRecordActivityInjectorFactory(SingleContactRecordActivitySubcomponent.Builder builder);
 }

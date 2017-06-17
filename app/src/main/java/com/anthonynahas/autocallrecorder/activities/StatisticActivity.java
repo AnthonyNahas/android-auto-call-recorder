@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +33,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
 
 /**
  * Class that deals with the content provider (DB) in order to analyse the db and
@@ -49,13 +51,19 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
     @Inject
     Constant mConstant;
 
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
+    @Inject
+    StatisticRecordsAdapter mAdapter;
 
-    private StatisticRecordsAdapter mAdapter;
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+
+    @BindView(R.id.content_loading_progressbar)
+    ContentLoadingProgressBar mContentLoadingProgressBar;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
 
@@ -69,17 +77,16 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new StatisticRecordsAdapter(null);
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
 
-        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 Bundle bundle = new Bundle();
@@ -156,10 +163,9 @@ public class StatisticActivity extends AppCompatActivity implements LoaderManage
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         // if you need to dump the whole cursor to list
-//        mAdapter = new StatisticRecordsAdapter(RecordDbHelper.convertCursorToContactRecordsList(data));
-        mAdapter = new StatisticRecordsAdapter((new MicroOrm().listFromCursor(data, RecordExtended.class)));
-        recyclerView.setAdapter(mAdapter);
-
+        mAdapter.setRecordsList(new MicroOrm().listFromCursor(data, RecordExtended.class));
+        mAdapter.notifyDataSetChanged();
+        mContentLoadingProgressBar.hide();
     }
 
     @Override

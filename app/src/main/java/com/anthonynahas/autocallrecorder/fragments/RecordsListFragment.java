@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -37,15 +36,12 @@ import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.MainActivity;
 import com.anthonynahas.autocallrecorder.adapters.RecordsCursorRecyclerViewAdapter;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
-import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
+import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.providers.RecordsContentProvider;
-import com.anthonynahas.autocallrecorder.providers.cursors.CursorLogger;
-import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
-import com.anthonynahas.autocallrecorder.utilities.helpers.SQLiteHelper;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 import com.anthonynahas.recyclerviewfabhandler.FABHandler;
 import com.arlib.floatingsearchview.FloatingSearchView;
@@ -74,9 +70,9 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
-import static com.anthonynahas.autocallrecorder.R.id.recycler_view;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.anthonynahas.autocallrecorder.R.id.recycler_view;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -471,19 +467,18 @@ public class RecordsListFragment extends Fragment implements
                 String searchKey = args.getString(BundleArgs.searchKey.name());
                 if (searchKey != null && !searchKey.isEmpty() && searchKey.length() > 0) {
                     //selection = RecordDbContract.RecordItem.COLUMN_NUMBER + " LIKE '%" + mSearchKey + "%'";
-                    String contactIDsArguments = SQLiteHelper
-                            .convertArrayToInOperatorArguments(ContactHelper
-                                    .getContactIDsByName(ContactHelper
-                                            .getContactCursorByName(mContext
-                                                    .getContentResolver(), searchKey)));
-                    selection = RecordDbContract.RecordItem.COLUMN_NUMBER
-                            + " LIKE ?"
-                            + " OR "
-                            + RecordDbContract.RecordItem.COLUMN_CONTACT_ID
-                            + " IN "
-                            + contactIDsArguments;
+//                    String contactIDsArguments = SQLiteHelper
+//                            .convertArrayToInOperatorArguments(ContactHelper
+//                                    .getContactIDsByName(ContactHelper
+//                                            .getContactCursorByName(searchKey)));
+//                    selection = RecordDbContract.RecordItem.COLUMN_NUMBER
+//                            + " LIKE ?"
+//                            + " OR "
+//                            + RecordDbContract.RecordItem.COLUMN_CONTACT_ID
+//                            + " IN "
+//                            + contactIDsArguments;
                     //+ "= 682";
-                    selectionArgs = new String[]{"%" + searchKey + "%"};
+//                    selectionArgs = new String[]{"%" + searchKey + "%"};
                     mOffset = 0; // TODO: 04.05.17 replace mOffset with mLimit
                 }
             }
@@ -526,7 +521,7 @@ public class RecordsListFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d(TAG, "onLoadingFinished");
-        CursorLogger.newInstance().log(data);
+//        CursorLogger.newInstance().log(data);
         switch (loader.getId()) {
             case 0:
                 Log.d(TAG, "onLoadFinished: loading MORE");
@@ -645,7 +640,7 @@ public class RecordsListFragment extends Fragment implements
     @Override
     public void onSearchTextChanged(String oldQuery, String newQuery) {
         Log.d(TAG, "oldQuery = " + oldQuery + " | newQuery = " + newQuery);
-        ContactHelper.getContactCursorByName(mContext.getContentResolver(), newQuery);
+//        ContactHelper.getContactCursorByName(mContext.getContentResolver(), newQuery);
 
         mArgs.putString(BundleArgs.mode.name(), BundleArgs.search.name());
         mArgs.putString(BundleArgs.searchKey.name(), newQuery);

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by anahas on 07.06.2017.
  *
@@ -15,13 +18,13 @@ import java.util.List;
  * @version 1.0
  * @since 07.06.17
  */
-
+@Singleton
 public class CursorLogger {
 
     private static final String TAG = CursorLogger.class.getSimpleName();
 
-    public static CursorLogger newInstance() {
-        return new CursorLogger();
+    @Inject
+    public CursorLogger() {
     }
 
     public String log(@NonNull Cursor cursor) {

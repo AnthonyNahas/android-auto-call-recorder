@@ -33,7 +33,12 @@ public class HelperModule {
     }
 
     @Provides
-    Map<String, String> provideStringStringMap() {
+    Map<String, Long> provideLonghashMap() {
+        return new HashMap<>(15);
+    }
+
+    @Provides
+    Map<String, String> provideStringHashMap() {
         return new HashMap<>(15);
     }
 

@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,15 +22,6 @@ import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.ContactFullscreenActivity;
 import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
-import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
-import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
-import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
-import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
-import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
-
-import java.util.concurrent.ExecutionException;
-
-import javax.inject.Inject;
 
 /**
  * Created by A on 20.03.17.
@@ -47,7 +37,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
     private Context mContext;
     private Cursor mCursor;
-    private DateTimeHelper mDateTimeHelper;
+//    private DateTimeHelper mDateTimeHelper;
 
     private ImageView call_contact_profile;
     private TextView call_contact_number_or_name;
@@ -65,7 +55,7 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         super(view);
 
         mContext = view.getContext();
-        mDateTimeHelper = DateTimeHelper.newInstance();
+//        mDateTimeHelper = DateTimeHelper.newInstance();
         call_contact_profile = (ImageView) view.findViewById(R.id.iv_profile);
         call_contact_number_or_name = (TextView) view.findViewById(R.id.tv_call_contact_name_or_number);
         call_date = (TextView) view.findViewById(R.id.tv_call_date);
@@ -100,21 +90,21 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         // Lookup view for data population
 
         String contact_number_or_name = "";
-
-        try {
-            contact_number_or_name = new AsyncTask<Void, Void, String>() {
-                @Override
-                protected String doInBackground(Void... params) {
-                    String contactName = ContactHelper.getContactName(mContext.getContentResolver(), phoneNumber);
-                    if (contactName != null) {
-                        return contactName;
-                    }
-                    return phoneNumber;
-                }
-            }.execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.e(TAG, "Error: ", e);
-        }
+//
+//        try {
+//            contact_number_or_name = new AsyncTask<Void, Void, String>() {
+//                @Override
+//                protected String doInBackground(Void... params) {
+//                    String contactName = ContactHelper.getContactName(phoneNumber);
+//                    if (contactName != null) {
+//                        return contactName;
+//                    }
+//                    return phoneNumber;
+//                }
+//            }.execute().get();
+//        } catch (InterruptedException | ExecutionException e) {
+//            Log.e(TAG, "Error: ", e);
+//        }
 
 
         if (contact_number_or_name.isEmpty()) {
@@ -125,10 +115,10 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
         }
 
         long date = cursor.getLong(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DATE));
-        call_date.setText(mDateTimeHelper.getLocalFormatterDate(date));
+//        call_date.setText(mDateTimeHelper.getLocalFormatterDate(date));
 
         int duration = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_DURATION));
-        call_duration.setText(mDateTimeHelper.getTimeString(duration));
+//        call_duration.setText(mDateTimeHelper.getTimeString(duration));
 
 //        Bitmap bitmap = MemoryCacheHelper.getBitmapFromMemoryCache(phoneNumber);
 
@@ -142,15 +132,15 @@ public class RecordViewHolder extends RecyclerView.ViewHolder implements View.On
 
             long contactID = cursor.getLong(cursor.getColumnIndexOrThrow(RecordDbContract.RecordItem.COLUMN_CONTACT_ID));
             Log.d(TAG, "contact id --> " + contactID);
-            Bitmap img = ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1, contactID);
+//            Bitmap img = ContactHelper.getBitmapForContactID(mContext.getContentResolver(), 1, contactID);
 
-            if (img != null) {
-                call_contact_profile.setImageBitmap(img);
+//            if (img != null) {
+//                call_contact_profile.setImageBitmap(img);
 //                MemoryCacheHelper.setBitmapToMemoryCache(phoneNumber, img);
-            } else {
+//            } else {
                 //viewHolder.call_contact_profile.setImageResource(Constant.drawable.custmtranspprofpic);
 //                call_contact_profile.setImageBitmap(mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic60px, 60, 60));
-            }
+//            }
         }
 
         int isIncomingCall = cursor.getInt(cursor.getColumnIndex(RecordDbContract.RecordItem.COLUMN_IS_INCOMING));

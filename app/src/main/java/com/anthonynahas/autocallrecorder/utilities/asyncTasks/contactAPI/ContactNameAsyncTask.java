@@ -1,4 +1,4 @@
-package com.anthonynahas.autocallrecorder.utilities.asyncTasks;
+package com.anthonynahas.autocallrecorder.utilities.asyncTasks.contactAPI;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -10,7 +10,6 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.models.Record;
-import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
 
 /**
@@ -51,7 +50,8 @@ public class ContactNameAsyncTask extends AsyncTask<Void, Void, String> {
         String contactName = cachedContactName != null ?
                 cachedContactName
                 :
-                ContactHelper.getContactName(mContext.getContentResolver(), mRecord.getNumber());
+//                ContactHelper.getContactName(mContext.getContentResolver(), mRecord.getNumber());
+                ""; //// TODO: 17.06.17  
 
         if (cachedContactName == null && contactName != null) {
             mRecord.setName(contactName);

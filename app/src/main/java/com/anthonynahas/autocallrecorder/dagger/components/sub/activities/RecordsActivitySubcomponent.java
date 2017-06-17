@@ -1,6 +1,5 @@
 package com.anthonynahas.autocallrecorder.dagger.components.sub.activities;
 
-import com.anthonynahas.autocallrecorder.activities.MainActivity;
 import com.anthonynahas.autocallrecorder.activities.RecordsActivity;
 
 import dagger.Subcomponent;

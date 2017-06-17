@@ -88,10 +88,19 @@ public class RecordsActivity extends AppCompatActivity implements
     InputDialog mInputDialog;
 
     @Inject
+    SQLiteHelper mSQLiteHelper;
+
+    @Inject
     PreferenceHelper mPreferenceHelper;
 
     @Inject
     FileHelper mFileHelper;
+
+    @Inject
+    ContactHelper mContactHelper;
+
+    @Inject
+    DialogHelper mDialogHelper;
 
     @Inject
     Constant mConstant;
@@ -177,7 +186,7 @@ public class RecordsActivity extends AppCompatActivity implements
         recyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
 
@@ -348,7 +357,7 @@ public class RecordsActivity extends AppCompatActivity implements
                 startActivity(new Intent(getApplicationContext(), SampleMainActivity.class));
                 break;
             case R.id.action_sort:
-                DialogHelper.openSortDialog((AppCompatActivity) getApplicationContext());
+                mDialogHelper.openSortDialog((AppCompatActivity) getApplicationContext());
                 break;
             case R.id.action_settings:
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
@@ -362,11 +371,10 @@ public class RecordsActivity extends AppCompatActivity implements
     public void onSearchTextChanged(String oldQuery, String newQuery) {
         Log.d(TAG, "oldQuery = " + oldQuery + " | newQuery = " + newQuery);
 
-        String contactIDsArguments = SQLiteHelper
-                .convertArrayToInOperatorArguments(ContactHelper
-                        .getContactIDsByName(ContactHelper
-                                .getContactCursorByName(mContext
-                                        .getContentResolver(), newQuery)));
+        String contactIDsArguments = mSQLiteHelper
+                .convertArrayToInOperatorArguments(mContactHelper
+                        .getContactIDsByName(mContactHelper
+                                .getContactCursorByName(newQuery)));
 
         String selection = RecordDbContract.RecordItem.COLUMN_NUMBER
                 + " LIKE ?"

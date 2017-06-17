@@ -12,11 +12,8 @@ import android.widget.ImageView;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.models.Record;
-import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
-
-import javax.inject.Inject;
 
 /**
  * Created by A on 25.05.17.
@@ -25,7 +22,7 @@ import javax.inject.Inject;
  * @version 1.0
  * @since 25.05.17
  */
-
+@Deprecated
 /**
  * Class that tries to load a bitmap of contact by id asynchronously
  */
@@ -73,29 +70,29 @@ public class ContactPhotosAsyncTask extends AsyncTask<Integer, Void, Bitmap> {
         Bitmap contactBitmap;
         switch (integers[0]) {
             case 0:
-                contactBitmap = ContactHelper.getBitmapForContactID(mContext.getContentResolver(),
-                        integers[0], mRecord.getContactID());
-                return contactBitmap != null ?
-                        contactBitmap
-                        :
-                        mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic, 150, 150);
+//                contactBitmap = ContactHelper.getBitmapForContactID(mContext.getContentResolver(),
+//                        integers[0], mRecord.getContactID());
+//                return contactBitmap != null ?
+//                        contactBitmap
+//                        :
+//                        mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic, 150, 150);
 
             case 1:
-                Bitmap cachedBitmap = mMemoryCacheHelper.getBitmapFromMemoryCache(mRecord.getNumber());
-                contactBitmap = cachedBitmap != null ?
-                        cachedBitmap
-                        :
-                        ContactHelper.getBitmapForContactID(mContext.getContentResolver(),
-                                integers[0], mRecord.getContactID());
-                if (cachedBitmap == null && contactBitmap != null) {
-                    mMemoryCacheHelper.setBitmapToMemoryCache(mRecord.getNumber(), contactBitmap);
-                    return contactBitmap;
+//                Bitmap cachedBitmap = mMemoryCacheHelper.getBitmapFromMemoryCache(mRecord.getNumber());
+//                contactBitmap = cachedBitmap != null ?
+//                        cachedBitmap
+//                        :
+//                        ContactHelper.getBitmapForContactID(mContext.getContentResolver(),
+//                                integers[0], mRecord.getContactID());
+//                if (cachedBitmap == null && contactBitmap != null) {
+//                    mMemoryCacheHelper.setBitmapToMemoryCache(mRecord.getNumber(), contactBitmap);
+//                    return contactBitmap;
                 }
 
                 return mImageHelper.decodeSampledBitmapFromResource(R.drawable.custmtranspprofpic60px, 60, 60);
-            default:
-                return null;
-        }
+//            default:
+//                return null;
+//        }
 
     }
 
