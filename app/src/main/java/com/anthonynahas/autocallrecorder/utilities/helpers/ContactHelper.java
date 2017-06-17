@@ -33,6 +33,7 @@ import java.util.ArrayList;
  * @see //developer.android.com/reference/android/provider/ContactsContract.PhoneLookup.html
  * @since 03.06.2016
  */
+
 public class ContactHelper {
 
     private static final String TAG = ContactHelper.class.getSimpleName();
