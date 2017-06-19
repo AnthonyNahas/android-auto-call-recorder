@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
+import com.google.common.eventbus.EventBus;
 
 import javax.inject.Singleton;
 
@@ -75,5 +76,11 @@ public class AppModule {
     @Provides
     MediaPlayer provideMediaPlayer() {
         return new MediaPlayer();
+    }
+
+    @Provides
+    @Singleton
+    EventBus provideEventBus() {
+        return new EventBus();
     }
 }

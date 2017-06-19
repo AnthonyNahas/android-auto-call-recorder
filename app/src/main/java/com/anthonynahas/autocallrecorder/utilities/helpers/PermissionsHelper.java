@@ -10,6 +10,7 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 
 import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
 
@@ -84,7 +85,7 @@ public class PermissionsHelper {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void requestAllPermissions() {
+    public void requestAllPermissions(Activity activity) {
         int currentAPIVersion = Build.VERSION.SDK_INT;
         if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
             int isPermissionsGranted = 0;
@@ -94,7 +95,7 @@ public class PermissionsHelper {
             if (isPermissionsGranted != PackageManager.PERMISSION_GRANTED) {
                 boolean shouldShowRequestPermissionRationale = false;
                 for (String mRequiredPermission : mRequiredPermissions) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) mContext, mRequiredPermission)) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, mRequiredPermission)) {
                         shouldShowRequestPermissionRationale = true;
                         break;
                     }
@@ -113,7 +114,7 @@ public class PermissionsHelper {
                     AlertDialog alert = alertBuilder.create();
                     alert.show();
                 } else {
-                    ActivityCompat.requestPermissions((Activity) mContext, mRequiredPermissions, mRequestCode);
+                    ActivityCompat.requestPermissions(activity, mRequiredPermissions, mRequestCode);
                 }
             }
         }

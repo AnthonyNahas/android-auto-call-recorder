@@ -16,7 +16,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +30,7 @@ import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.RecordsActivity;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
+import com.anthonynahas.autocallrecorder.dagger.annotations.keys.fragments.RecordsFragmentKey;
 import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
@@ -40,6 +40,7 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.autocallrecorder.utilities.support.ActionModeSupport;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 import com.anthonynahas.autocallrecorder.views.managers.WrapContentLinearLayoutManager;
+import com.google.common.eventbus.EventBus;
 
 import org.chalup.microorm.MicroOrm;
 
@@ -77,6 +78,10 @@ public class RecordsFragment extends Fragment implements
     RecordsDialog mRecordsDialog;
 
     @Inject
+    @RecordsFragmentKey
+    ActionModeSupport mActionModeSupport;
+
+    @Inject
     PreferenceHelper mPreferenceHelper;
 
     @Inject
@@ -84,6 +89,9 @@ public class RecordsFragment extends Fragment implements
 
     @Inject
     Constant mConstant;
+
+    @Inject
+    EventBus mEventBus;
 
     @BindView(R.id.content_loading_progressbar)
     ContentLoadingProgressBar contentLoadingProgressBar;
@@ -108,7 +116,6 @@ public class RecordsFragment extends Fragment implements
     private Context mContext;
 
     private Bundle mArguments;
-    private ActionModeSupport mActionModeSupport;
     private BroadcastReceiver mBroadcastReceiver;
     private BroadcastReceiver mActionModeBroadcastReceiver;
 
@@ -227,6 +234,9 @@ public class RecordsFragment extends Fragment implements
                 }
             }
         });
+
+        mActionModeSupport.setAdapter(mAdapter);
+        mActionModeSupport.setToolbar(toolbar);
 
         getLoaderManager().initLoader(mLoaderManagerID, mArguments, this);
 

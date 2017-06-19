@@ -47,6 +47,9 @@ dependencies {
     compile 'org.chalup.microorm:microorm:0.8.0'
     compile 'jp.wasabeef:recyclerview-animators:2.2.6'
 
+    //@EventBus
+    compile 'org.greenrobot:eventbus:3.0.0'
+
     //@Dagger 2 - a dependency injection for arbitrary components
     //@See https://github.com/codepath/android_guides/wiki/Dependency-Injection-with-Dagger-2
     //@See https://github.com/avast/android-butterknife-zelezny

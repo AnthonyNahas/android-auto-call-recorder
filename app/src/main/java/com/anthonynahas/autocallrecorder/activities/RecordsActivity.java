@@ -28,7 +28,7 @@ import android.widget.ProgressBar;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
-import com.anthonynahas.autocallrecorder.dagger.annotations.RecordsActivityKey;
+import com.anthonynahas.autocallrecorder.dagger.annotations.keys.activities.RecordsActivityKey;
 import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;

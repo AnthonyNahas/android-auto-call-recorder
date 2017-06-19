@@ -210,7 +210,7 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             if (record.getName() != null && !record.getName().isEmpty()) {
                 viewHolder.tv_number_name.setText(record.getName());
             } else {
-                mContactHelper.getContactNameAsyncAndPost(record,viewHolder.tv_number_name);
+                mContactHelper.getContactNameAsyncAndPost(record, viewHolder.tv_number_name);
             }
         }
 
@@ -220,8 +220,6 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             if (position == RecyclerView.NO_POSITION) {
                 Log.d(TAG, "no position");
             }
-
-            mContactHelper.getContactUriForPhotoAsyncAndPost(record,false,viewHolder.iv_profile);
 
         }
 
@@ -301,8 +299,9 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
                 .iv_love
                 .setImageResource(record.isLove() ? R.drawable.ic_favorite : R.drawable.ic_favorite_border_black);
 
+        mContactHelper.getContactUriForPhotoAsyncAndPost(record, false, viewHolder.iv_profile);
+
         viewHolder.handleTVCallNameOrNumber(viewHolder, position);
-        viewHolder.handleIVProfile(viewHolder, position);
 
         if (viewHolder.cb_call_selected.isShown()) {
             viewHolder.cb_call_selected.setChecked(record.isSelected());

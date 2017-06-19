@@ -1,4 +1,4 @@
-package com.anthonynahas.autocallrecorder.dagger.modules;
+package com.anthonynahas.autocallrecorder.dagger.modules.abstracts;
 
 import android.app.Service;
 

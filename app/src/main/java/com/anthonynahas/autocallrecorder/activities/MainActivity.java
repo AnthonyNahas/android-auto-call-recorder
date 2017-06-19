@@ -30,21 +30,23 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.configurations.Config;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
+import com.anthonynahas.autocallrecorder.dagger.annotations.keys.fragments.RecordsFragementsLoveKey;
+import com.anthonynahas.autocallrecorder.dagger.annotations.keys.fragments.RecordsFragmentsMainKey;
 import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
-import com.anthonynahas.autocallrecorder.fragments.RecordsListFragment;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PermissionsHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.google.common.eventbus.EventBus;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity implements
@@ -56,6 +58,13 @@ public class MainActivity extends AppCompatActivity implements
 
     private Activity mAppCompatActivity;
 
+    @Inject
+    @RecordsFragmentsMainKey
+    RecordsFragment mMainFragment;
+
+    @Inject
+    @RecordsFragementsLoveKey
+    RecordsFragment mLoveFragment;
 
     @Inject
     InputDialog mInputDialog;
@@ -71,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Inject
     Constant mConstant;
+
+    @Inject
+    EventBus mEventBus;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -139,15 +151,6 @@ public class MainActivity extends AppCompatActivity implements
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         tabs.setupWithViewPager(mViewPager);
-
-        fabActionMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                notifyOnActionMode(sIsInActionMode = !sIsInActionMode);
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //      .setAction("Action", null).show();
-            }
-        });
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, mNavDrawerOpen, mNavDrawerClose);
@@ -222,7 +225,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         // requesting required permission on run time
-        mPermissionsHelper.requestAllPermissions();
+        mPermissionsHelper.requestAllPermissions(this);
+        mEventBus.register(this);
     }
 
     @Override
@@ -237,6 +241,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        mEventBus.unregister(this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mActionModeBroadcastReceiver);
@@ -247,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (sIsInActionMode) {
-            notifyOnActionMode(sIsInActionMode = !sIsInActionMode);
+            notifyOnActionMode();
         } else {
             super.onBackPressed();
         }
@@ -321,13 +331,14 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Notify all receiver that the app is going in action mode
-     *
-     * @param state - whether the app is in action mode (true)
      */
-    private void notifyOnActionMode(boolean state) {
+    @OnClick(R.id.fab_go_in_action_mode)
+    protected void notifyOnActionMode() {
+        sIsInActionMode = !sIsInActionMode;
+
         Intent intent = new Intent(mConstant.BROADCAST_ACTION_ON_ACTION_MODE);
         intent.putExtra(mConstant.ACTION_MODE_SENDER, MainActivity.class.getSimpleName());
-        intent.putExtra(mConstant.ACTION_MODE_SATE, state);
+        intent.putExtra(mConstant.ACTION_MODE_SATE, sIsInActionMode);
         LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(intent);
     }
@@ -336,20 +347,21 @@ public class MainActivity extends AppCompatActivity implements
         return fabActionMode;
     }
 
+//    @Subscribe(threadMode = ThreadMode.POSTING)
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        private RecordsListFragment mRecordsListFragment;
-        private RecordsFragment mLoveRecordsFragment;
+//        private RecordsListFragment mRecordsListFragment;
+//        private RecordsFragment mLoveRecordsFragment;
 
         private SectionsPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
-            mRecordsListFragment = RecordsListFragment.newInstance();
-
-            mLoveRecordsFragment = RecordsFragment.newInstance(Config.RECORDSFRAGMENT);
+//            mRecordsListFragment = RecordsListFragment.newInstance();
+//            mLoveRecordsFragment = RecordsFragment.newInstance(Config.RECORDSFRAGMENT);
         }
 
         /**
@@ -365,11 +377,11 @@ public class MainActivity extends AppCompatActivity implements
             mCurrentFragmentPosition = position;
             switch (position) {
                 case 0:
-                    searchView.setOnQueryChangeListener(mRecordsListFragment.getOnQueryChangeListener());
-                    return mRecordsListFragment;
+//                    searchView.setOnQueryChangeListener(mRecordsListFragment.getOnQueryChangeListener());
+                    return mMainFragment;
                 case 1:
                     //searchView.setOnQueryChangeListener(mLoveRecordsFragment.getOnQueryChangeListener());
-                    return mLoveRecordsFragment;
+                    return mLoveFragment;
                 default:
                     return null;
             }
