@@ -1,20 +1,17 @@
 package com.anthonynahas.autocallrecorder.dagger.modules;
 
-import android.app.ActivityManager;
 import android.app.Application;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 
-import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
+
 import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
-import com.google.common.eventbus.EventBus;
+
+import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Singleton;
 
@@ -81,6 +78,6 @@ public class AppModule {
     @Provides
     @Singleton
     EventBus provideEventBus() {
-        return new EventBus();
+        return EventBus.getDefault();
     }
 }

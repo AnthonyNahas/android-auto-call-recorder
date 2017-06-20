@@ -39,7 +39,7 @@
 
         <activity
             android:label="@string/title_activity_settings"
-            android:name=".activities.SettingsActivity"
+            android:name=".activities.deprecated.SettingsActivity"
             android:screenOrientation="portrait" />
 
         <activity

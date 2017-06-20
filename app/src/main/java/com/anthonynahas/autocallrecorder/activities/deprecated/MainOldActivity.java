@@ -1,4 +1,4 @@
-package com.anthonynahas.autocallrecorder.activities;
+package com.anthonynahas.autocallrecorder.activities.deprecated;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,7 +12,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.annotation.TargetApi;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

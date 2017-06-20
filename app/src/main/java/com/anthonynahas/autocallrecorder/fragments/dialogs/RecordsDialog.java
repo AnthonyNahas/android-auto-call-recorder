@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.AudioSourceSwitcher;
 import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.activities.MainOldActivity;
+import com.anthonynahas.autocallrecorder.activities.deprecated.MainOldActivity;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;

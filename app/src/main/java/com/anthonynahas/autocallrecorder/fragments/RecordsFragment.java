@@ -31,6 +31,8 @@ import com.anthonynahas.autocallrecorder.activities.RecordsActivity;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.dagger.annotations.keys.fragments.RecordsFragmentKey;
+import com.anthonynahas.autocallrecorder.events.search.OnQueryChangedEvent;
+import com.anthonynahas.autocallrecorder.events.tabs.OnTabSelected;
 import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.RecordsDialog;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
@@ -40,9 +42,11 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.autocallrecorder.utilities.support.ActionModeSupport;
 import com.anthonynahas.autocallrecorder.utilities.support.ItemClickSupport;
 import com.anthonynahas.autocallrecorder.views.managers.WrapContentLinearLayoutManager;
-import com.google.common.eventbus.EventBus;
 
 import org.chalup.microorm.MicroOrm;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
@@ -70,6 +74,10 @@ public class RecordsFragment extends Fragment implements
     private static final String TAG = RecordsFragment.class.getSimpleName();
 
     private static RecordsFragment sRecordFragment;
+
+    public boolean hasFocus;
+    public int position;
+    public Bundle args;
 
     @Inject
     RecordsAdapter mAdapter;
@@ -112,11 +120,7 @@ public class RecordsFragment extends Fragment implements
     Button b_delete;
 
     private Unbinder mUnbinder;
-
     private Context mContext;
-
-    private Bundle mArguments;
-    private BroadcastReceiver mBroadcastReceiver;
     private BroadcastReceiver mActionModeBroadcastReceiver;
 
 
@@ -157,18 +161,8 @@ public class RecordsFragment extends Fragment implements
         Bundle args = getArguments();
 
         if (args != null) {
-            mArguments = args;
+            this.args = args;
         }
-
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                if (intent.getAction().equals(mConstant.ACTION_MODE_COUNTER)) {
-                    // TODO: 15.06.2017
-                }
-            }
-        };
     }
 
     @Nullable
@@ -238,7 +232,7 @@ public class RecordsFragment extends Fragment implements
         mActionModeSupport.setAdapter(mAdapter);
         mActionModeSupport.setToolbar(toolbar);
 
-        getLoaderManager().initLoader(mLoaderManagerID, mArguments, this);
+        getLoaderManager().initLoader(mLoaderManagerID, args, this);
 
         return view;
     }
@@ -247,6 +241,18 @@ public class RecordsFragment extends Fragment implements
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mEventBus.register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mEventBus.unregister(this);
     }
 
     // When binding a fragment in onCreateView, set the views to null in onDestroyView.
@@ -283,9 +289,7 @@ public class RecordsFragment extends Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
         LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mActionModeBroadcastReceiver);
-
     }
-
 
     @Override
     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
@@ -306,7 +310,7 @@ public class RecordsFragment extends Fragment implements
 
     @Override
     public void onRefresh() {
-        getLoaderManager().restartLoader(mLoaderManagerID, mArguments, this);
+        getLoaderManager().restartLoader(mLoaderManagerID, args, this);
     }
 
     @Override
@@ -356,12 +360,29 @@ public class RecordsFragment extends Fragment implements
 //        mAdapter.swapData(new ArrayList<Record>());
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onQueryChangedEvent(OnQueryChangedEvent event) {
+//        if (hasFocus) {
+            refreshCursorLoader(event.args);
+//        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onTabSelected(OnTabSelected event) {
+        hasFocus = event.position == position;
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onTabUnselected(OnTabSelected event) {
+        hasFocus = event.position == position;
+    }
+
     private void refreshCursorLoader(Bundle args) {
         getLoaderManager().restartLoader(mLoaderManagerID, args, this);
     }
 
     private void cancelActionMode() {
         mActionModeSupport.cancelActionMode();
-        getLoaderManager().restartLoader(mLoaderManagerID, mArguments, this);
+        getLoaderManager().restartLoader(mLoaderManagerID, args, this);
     }
 }

@@ -1,4 +1,4 @@
-package com.anthonynahas.autocallrecorder.activities;
+package com.anthonynahas.autocallrecorder.activities.abstracts;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

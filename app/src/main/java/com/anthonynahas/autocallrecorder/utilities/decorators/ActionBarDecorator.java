@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.activities.AppCompatPreferenceActivity;
+import com.anthonynahas.autocallrecorder.activities.abstracts.AppCompatPreferenceActivity;
 
 /**
  * Decorator class that deals with the support action bar in order to

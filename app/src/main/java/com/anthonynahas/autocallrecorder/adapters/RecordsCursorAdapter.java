@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.R;
-import com.anthonynahas.autocallrecorder.activities.MainOldActivity;
+import com.anthonynahas.autocallrecorder.activities.deprecated.MainOldActivity;
 import com.anthonynahas.autocallrecorder.providers.RecordDbContract;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ImageHelper;
 

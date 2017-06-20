@@ -24,13 +24,19 @@ public class FragmentsModule {
     @Singleton
     @RecordsFragmentsMainKey
     RecordsFragment provideRecordsFragmentMain(Config config) {
-        return RecordsFragment.newInstance(config.record_fragment_main);
+        RecordsFragment mainFragment = RecordsFragment.newInstance(config.record_fragment_main);
+        mainFragment.position = 0;
+        mainFragment.hasFocus = true;
+        return mainFragment;
     }
 
     @Provides
     @Singleton
     @RecordsFragementsLoveKey
     RecordsFragment provideRecordsFragementsLove(Config config) {
-        return RecordsFragment.newInstance(config.record_fragment_love);
+        RecordsFragment loveFragment = RecordsFragment.newInstance(config.record_fragment_love);
+        loveFragment.position = 1;
+        loveFragment.hasFocus = false;
+        return loveFragment;
     }
 }

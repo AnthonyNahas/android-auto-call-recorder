@@ -27,8 +27,11 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.anthonynahas.autocallrecorder.R;
+import com.anthonynahas.autocallrecorder.activities.deprecated.SettingsActivity;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.dagger.annotations.keys.activities.RecordsActivityKey;
+import com.anthonynahas.autocallrecorder.events.search.OnQueryChangedEvent;
+import com.anthonynahas.autocallrecorder.listeners.SearchListener;
 import com.anthonynahas.autocallrecorder.models.Record;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
@@ -47,6 +50,9 @@ import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
 import org.chalup.microorm.MicroOrm;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
@@ -80,6 +86,12 @@ public class RecordsActivity extends AppCompatActivity implements
 
     @Inject
     RecordsAdapter mAdapter;
+
+    @Inject
+    EventBus mEventBus;
+
+    @Inject
+    SearchListener mSearchListener;
 
     @Inject
     RecordsDialog mRecordsDialog;
@@ -203,7 +215,7 @@ public class RecordsActivity extends AppCompatActivity implements
         ItemClickSupport.addTo(recyclerView).setOnItemLongClickListener(this);
 
         // TODO: 02.06.17 refresh on scrolling the recyclerview
-        searchView.setOnQueryChangeListener(this);
+        searchView.setOnQueryChangeListener(mSearchListener.init(mArguments));
         searchView.setOnMenuItemClickListener(this);
 
         mActionModeSupport.setActionBar(getSupportActionBar());
@@ -216,13 +228,15 @@ public class RecordsActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+        mEventBus.register(this);
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(mBroadcastReceiver, new IntentFilter(mConstant.ACTION_MODE_COUNTER));
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
+        mEventBus.unregister(this);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
     }
 
@@ -269,11 +283,6 @@ public class RecordsActivity extends AppCompatActivity implements
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void cancelActionMode() {
-        mActionModeSupport.cancelActionMode();
-        refreshCursorLoader();
     }
 
     @Override
@@ -367,6 +376,11 @@ public class RecordsActivity extends AppCompatActivity implements
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onQueryChangedEvent(OnQueryChangedEvent event) {
+        refreshCursorLoader(event.args);
+    }
+
     @Override
     public void onSearchTextChanged(String oldQuery, String newQuery) {
         Log.d(TAG, "oldQuery = " + oldQuery + " | newQuery = " + newQuery);
@@ -392,6 +406,7 @@ public class RecordsActivity extends AppCompatActivity implements
         refreshCursorLoader(args);
     }
 
+    @Deprecated
     private Bundle prepareArguments(String activityTitle) {
         String[] projection = null;
         String selection = null;
@@ -435,4 +450,8 @@ public class RecordsActivity extends AppCompatActivity implements
         getSupportLoaderManager().restartLoader(mLoaderManagerID, mArguments, this);
     }
 
+    private void cancelActionMode() {
+        mActionModeSupport.cancelActionMode();
+        refreshCursorLoader();
+    }
 }

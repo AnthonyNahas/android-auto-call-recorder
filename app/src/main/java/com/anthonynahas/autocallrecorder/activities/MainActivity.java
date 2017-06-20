@@ -30,17 +30,22 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.anthonynahas.autocallrecorder.R;
+import com.anthonynahas.autocallrecorder.activities.deprecated.SettingsActivity;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.dagger.annotations.keys.fragments.RecordsFragementsLoveKey;
 import com.anthonynahas.autocallrecorder.dagger.annotations.keys.fragments.RecordsFragmentsMainKey;
+import com.anthonynahas.autocallrecorder.events.tabs.OnTabSelected;
+import com.anthonynahas.autocallrecorder.events.tabs.OnTabUnSelected;
 import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
+import com.anthonynahas.autocallrecorder.listeners.SearchListener;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PermissionsHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
-import com.google.common.eventbus.EventBus;
+
+import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
 
@@ -50,7 +55,8 @@ import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener,
+        TabLayout.OnTabSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -65,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements
     @Inject
     @RecordsFragementsLoveKey
     RecordsFragment mLoveFragment;
+
+    @Inject
+    SearchListener mSearchListener;
 
     @Inject
     InputDialog mInputDialog;
@@ -151,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         tabs.setupWithViewPager(mViewPager);
-
+        tabs.addOnTabSelectedListener(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, mNavDrawerOpen, mNavDrawerClose);
         drawer.setDrawerListener(toggle);
@@ -160,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements
         final AppCompatActivity appCompatActivity = this;
 
         searchView.attachNavigationDrawerToMenuButton(drawer);
+        searchView.setOnQueryChangeListener(mSearchListener.init(mMainFragment.getArguments()));
         searchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
             /**
              * Perform an action when a menu item is selected
@@ -226,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onStart();
         // requesting required permission on run time
         mPermissionsHelper.requestAllPermissions(this);
-        mEventBus.register(this);
+//        mEventBus.register(this);
     }
 
     @Override
@@ -243,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        mEventBus.unregister(this);
+//        mEventBus.unregister(this);
     }
 
     @Override
@@ -309,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements
         return super.onCreateOptionsMenu(menu);
     }
 
+
     /**
      * Adjust the layout on entering or leaving the action mode
      *
@@ -347,6 +358,23 @@ public class MainActivity extends AppCompatActivity implements
         return fabActionMode;
     }
 
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        mSearchListener.setArguments(mSectionsPagerAdapter.getItem(tab.getPosition()).getArguments());
+        mEventBus.post(new OnTabSelected(tab.getPosition()));
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+        mEventBus.post(new OnTabUnSelected(tab.getPosition()));
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
+
+
 //    @Subscribe(threadMode = ThreadMode.POSTING)
 
     /**
@@ -355,13 +383,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-//        private RecordsListFragment mRecordsListFragment;
-//        private RecordsFragment mLoveRecordsFragment;
-
         private SectionsPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
-//            mRecordsListFragment = RecordsListFragment.newInstance();
-//            mLoveRecordsFragment = RecordsFragment.newInstance(Config.RECORDSFRAGMENT);
         }
 
         /**
@@ -377,10 +400,8 @@ public class MainActivity extends AppCompatActivity implements
             mCurrentFragmentPosition = position;
             switch (position) {
                 case 0:
-//                    searchView.setOnQueryChangeListener(mRecordsListFragment.getOnQueryChangeListener());
                     return mMainFragment;
                 case 1:
-                    //searchView.setOnQueryChangeListener(mLoveRecordsFragment.getOnQueryChangeListener());
                     return mLoveFragment;
                 default:
                     return null;

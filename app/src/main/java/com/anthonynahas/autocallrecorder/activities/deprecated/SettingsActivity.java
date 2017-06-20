@@ -1,4 +1,4 @@
-package com.anthonynahas.autocallrecorder.activities;
+package com.anthonynahas.autocallrecorder.activities.deprecated;
 
 
 import android.annotation.TargetApi;
@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import java.util.List;
 
 import com.anthonynahas.autocallrecorder.R;
+import com.anthonynahas.autocallrecorder.activities.abstracts.AppCompatPreferenceActivity;
 import com.anthonynahas.autocallrecorder.utilities.decorators.ActionBarDecorator;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 
