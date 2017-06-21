@@ -38,7 +38,6 @@ public class SearchListener implements FloatingSearchView.OnQueryChangeListener 
     public SearchListener
             (
                     EventBus mEventBus,
-                    Config mConfig,
                     SQLiteHelper mSQLiteHelper,
                     ContactHelper mContactHelper
             ) {
@@ -64,37 +63,39 @@ public class SearchListener implements FloatingSearchView.OnQueryChangeListener 
     public void onSearchTextChanged(String oldQuery, String newQuery) {
         Log.d(TAG, "oldQuery = " + oldQuery + " | newQuery = " + newQuery);
 
-        String contactIDsArguments = mSQLiteHelper
-                .convertArrayToInOperatorArguments(mContactHelper
-                        .getContactIDsByName(mContactHelper
-                                .getContactCursorByName(newQuery)));
-
-        String selection = RecordDbContract.RecordItem.COLUMN_NUMBER
-                + " LIKE ?"
-                + " OR "
-                + RecordDbContract.RecordItem.COLUMN_CONTACT_ID
-                + " IN "
-                + contactIDsArguments;
-        //+ "= 682";
-        String[] selectionArgs = new String[]{"%" + newQuery + "%"};
-
         Bundle args = (Bundle) mArguments.clone();
 
-        String mainSelection = args.getString(Config.args.selection.name());
+        if (!(newQuery.isEmpty() && oldQuery.length() > newQuery.length() && newQuery.length() == 0)) {
+            String contactIDsArguments = mSQLiteHelper
+                    .convertArrayToInOperatorArguments(mContactHelper
+                            .getContactIDsByName(mContactHelper
+                                    .getContactCursorByName(newQuery)));
 
-        if (mainSelection != null && mainSelection.length() > 0) {
-            selection += " AND " + mainSelection;
+            String selection = RecordDbContract.RecordItem.COLUMN_NUMBER
+                    + " LIKE ?"
+                    + " OR "
+                    + RecordDbContract.RecordItem.COLUMN_CONTACT_ID
+                    + " IN "
+                    + contactIDsArguments;
+            //+ "= 682";
+            String[] selectionArgs = new String[]{"%" + newQuery + "%"};
+
+
+            String mainSelection = args.getString(Config.args.selection.name());
+
+            if (mainSelection != null && mainSelection.length() > 0) {
+                selection += " AND " + mainSelection;
+            }
+
+            String[] mainSelectionArgs = args.getStringArray(Config.args.selectionArguments.name());
+
+            if (mainSelectionArgs != null && mainSelectionArgs.length > 0) {
+                selectionArgs = ArrayUtils.addAll(selectionArgs, mainSelectionArgs);
+            }
+
+            args.putString(RecordsActivity.args.selection.name(), selection);
+            args.putStringArray(RecordsActivity.args.selectionArguments.name(), selectionArgs);
         }
-
-        String[] mainSelectionArgs = args.getStringArray(Config.args.selectionArguments.name());
-
-        if (mainSelectionArgs != null && mainSelectionArgs.length > 0) {
-            selectionArgs = ArrayUtils.addAll(selectionArgs, mainSelectionArgs);
-        }
-
-        args.putString(RecordsActivity.args.selection.name(), selection);
-        args.putStringArray(RecordsActivity.args.selectionArguments.name(), selectionArgs);
         mEventBus.post(new OnQueryChangedEvent(args));
-//        refreshCursorLoader(args);
     }
 }
