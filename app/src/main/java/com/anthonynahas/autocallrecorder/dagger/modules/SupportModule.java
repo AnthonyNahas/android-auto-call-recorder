@@ -11,6 +11,8 @@ import com.anthonynahas.autocallrecorder.dagger.annotations.keys.activities.Reco
 import com.anthonynahas.autocallrecorder.dagger.annotations.keys.fragments.RecordsFragmentKey;
 import com.anthonynahas.autocallrecorder.utilities.support.ActionModeSupport;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.BindString;
 import dagger.Module;
 import dagger.Provides;
@@ -33,19 +35,19 @@ public class SupportModule {
 
     @Provides
     @MainActivityKey
-    ActionModeSupport provideActionModeSupportForMainActivity(@ApplicationContext Context context, Constant constant) {
-        return new ActionModeSupport(context, constant, title_activity_main_tabs, false);
+    ActionModeSupport provideActionModeSupportForMainActivity(@ApplicationContext Context context, EventBus eventBus, Constant constant) {
+        return new ActionModeSupport(context, eventBus, constant, title_activity_main_tabs, false);
     }
 
     @Provides
     @RecordsActivityKey
-    ActionModeSupport provideActionModeSupportForRecordActivity(@ApplicationContext Context context, Constant constant) {
-        return new ActionModeSupport(context, constant, title_activity_rubbished_records, false);
+    ActionModeSupport provideActionModeSupportForRecordActivity(@ApplicationContext Context context, EventBus eventBus, Constant constant) {
+        return new ActionModeSupport(context, eventBus, constant, title_activity_rubbished_records, false);
     }
 
     @Provides
     @RecordsFragmentKey
-    ActionModeSupport provideActionModeSupportForRecordsFragment(@ApplicationContext Context context, Constant constant) {
-        return new ActionModeSupport(context, constant, "", true);
+    ActionModeSupport provideActionModeSupportForRecordsFragment(@ApplicationContext Context context, EventBus eventBus, Constant constant) {
+        return new ActionModeSupport(context, eventBus, constant, "", true);
     }
 }

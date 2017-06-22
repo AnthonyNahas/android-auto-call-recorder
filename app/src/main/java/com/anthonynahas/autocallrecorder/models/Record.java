@@ -188,9 +188,14 @@ public class Record implements Serializable, Parcelable {
         return mLove;
     }
 
+    public void setLove(boolean mLove, RecordDbHelper recordDbHelper) {
+        this.mLove = mLove;
+        recordDbHelper.updateBooleanColumn(RecordDbContract.RecordItem.COLUMN_IS_LOVE,
+                m_ID, this.mLove ? 1 : 0);
+    }
+
     public void setLove(boolean mLove) {
         this.mLove = mLove;
-        mRecordDbHelper.updateBooleanColumn(RecordDbContract.RecordItem.COLUMN_IS_LOVE, m_ID, this.mLove ? 1 : 0);
     }
 
     public void setLove(int mIsLove) {

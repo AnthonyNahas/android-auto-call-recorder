@@ -8,5 +8,5 @@ package com.anthonynahas.autocallrecorder.events.actionMode;
  * @since 19.06.17
  */
 
-public class MainActivityOnEnterActionMode {
+public class OnEnterActionMode {
 }

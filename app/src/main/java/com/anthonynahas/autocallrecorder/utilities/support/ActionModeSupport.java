@@ -14,7 +14,12 @@ import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
+import com.anthonynahas.autocallrecorder.events.actionMode.OnRecordCheckBox;
 import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by anahas on 09.06.2017.
@@ -27,6 +32,7 @@ import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
 public class ActionModeSupport {
 
     private Context mContext;
+    private EventBus mEventBus;
     private Constant mConstant;
 
     private String mTitle;
@@ -37,38 +43,50 @@ public class ActionModeSupport {
 
     public ActionModeSupport
             (@ApplicationContext Context mContext,
+             EventBus mEventBus,
              Constant mConstant,
              String mTitle,
              boolean mIsForBroadcast,
              Toolbar mToolbar,
              RecordsAdapter mAdapter) {
+        this.mEventBus = mEventBus;
         this.mTitle = mTitle;
         this.mIsForBroadcast = mIsForBroadcast;
         this.mToolbar = mToolbar;
         this.mAdapter = mAdapter;
+
+        mEventBus.register(this);
     }
 
     public ActionModeSupport
             (@ApplicationContext Context mContext,
+             EventBus mEventBus,
              Constant mConstant,
              String mTitle,
              boolean mIsForBroadcast) {
         this.mContext = mContext;
+        this.mEventBus = mEventBus;
         this.mConstant = mConstant;
         this.mTitle = mTitle;
         this.mIsForBroadcast = mIsForBroadcast;
+
+        mEventBus.register(this);
     }
 
     public ActionModeSupport(String mTitle,
+                             EventBus mEventBus,
                              boolean mIsForBroadcast,
                              ActionBar mActionBar,
                              Toolbar mToolbar,
                              RecordsAdapter mAdapter) {
+        this.mEventBus = mEventBus;
         this.mTitle = mTitle;
         this.mIsForBroadcast = mIsForBroadcast;
         this.mActionBar = mActionBar;
         this.mToolbar = mToolbar;
         this.mAdapter = mAdapter;
+
+        mEventBus.register(this);
     }
 
     public void setActionBar(ActionBar mActionBar) {
@@ -83,18 +101,47 @@ public class ActionModeSupport {
         this.mAdapter = mAdapter;
     }
 
-    public void handleCheckBoxSelectionInActionMode(int position, View v) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateSelectionCounter(OnRecordCheckBox event) {
+        afterClickCheckBox(event.position, event.view);
+    }
+
+    /**
+     * Used if the user click on the cell of the recyclerview
+     *
+     * @param position
+     * @param v
+     */
+    public void onClickCheckBox(int position, View v) {
         CheckBox call_selected = getTargetCheckBox(v);
         boolean isChecked = call_selected.isChecked();
         call_selected.setChecked(!isChecked);
-        mAdapter.getRecordsList().get(position).setSelected(!isChecked);
-        updateToolbarCounter(isChecked);
+        updateToolbarCounter(!isChecked);
+        if (mAdapter != null) {
+            mAdapter.getRecordsList().get(position).setSelected(!isChecked);
+        }
     }
+
+    /**
+     * Used when user clicks of the checkbox its seöf
+     *
+     * @param position
+     * @param v
+     */
+    public void afterClickCheckBox(int position, View v) {
+        CheckBox call_selected = getTargetCheckBox(v);
+        boolean isChecked = call_selected.isChecked();
+        updateToolbarCounter(isChecked);
+        if (mAdapter != null) {
+            mAdapter.getRecordsList().get(position).setSelected(isChecked);
+        }
+    }
+
 
     public void enterActionMode(int position, View v) {
         if (!mAdapter.isActionMode()) {
             mAdapter.setActionMode(!mAdapter.isActionMode());
-            handleCheckBoxSelectionInActionMode(position, v);
+            onClickCheckBox(position, v);
             updateToolbarMenu();
             if (mIsForBroadcast) {
                 notifyOnActionMode(true);
@@ -103,10 +150,13 @@ public class ActionModeSupport {
     }
 
     public void cancelActionMode() {
-        mAdapter.setActionMode(false);
-        mAdapter.resetCounter();
         updateToolbar();
         updateToolbarMenu();
+
+        if (mAdapter != null) {
+            mAdapter.setActionMode(false);
+            mAdapter.resetCounter();
+        }
         if (mIsForBroadcast) {
             notifyOnActionMode(false);
         }
@@ -121,18 +171,22 @@ public class ActionModeSupport {
     }
 
     public void updateToolbarMenu() {
-        if (mAdapter.isActionMode()) {
-            mToolbar.inflateMenu(R.menu.action_mode_menu);
-        } else {
-            mToolbar.getMenu().clear();
+        if (mToolbar != null) {
+            if (mAdapter.isActionMode()) {
+                mToolbar.inflateMenu(R.menu.action_mode_menu);
+            } else {
+                mToolbar.getMenu().clear();
+            }
         }
     }
 
     public void updateToolbarCounter(boolean isChecked) {
-        if (isChecked) {
-            mAdapter.decreaseCounter();
-        } else {
-            mAdapter.increaseCounter();
+        if (mAdapter != null) {
+            if (isChecked) {
+                mAdapter.increaseCounter();
+            } else {
+                mAdapter.decreaseCounter();
+            }
         }
         updateToolbar();
     }

@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 
 
 import com.anthonynahas.autocallrecorder.dagger.annotations.ApplicationContext;
+import com.anthonynahas.autocallrecorder.dagger.annotations.android.HandlerToWaitForLoading;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -79,5 +81,11 @@ public class AppModule {
     @Singleton
     EventBus provideEventBus() {
         return EventBus.getDefault();
+    }
+
+    @Provides
+    @HandlerToWaitForLoading
+    Handler provideHandlerToWaitForLoading() {
+        return new Handler();
     }
 }

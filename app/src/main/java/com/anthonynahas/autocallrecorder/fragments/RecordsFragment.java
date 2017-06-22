@@ -14,7 +14,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +30,8 @@ import com.anthonynahas.autocallrecorder.activities.RecordsActivity;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
 import com.anthonynahas.autocallrecorder.dagger.annotations.keys.fragments.RecordsFragmentKey;
+import com.anthonynahas.autocallrecorder.events.loading.OnLoadingBegin;
+import com.anthonynahas.autocallrecorder.events.loading.OnLoadingDone;
 import com.anthonynahas.autocallrecorder.events.search.OnQueryChangedEvent;
 import com.anthonynahas.autocallrecorder.events.tabs.OnTabSelected;
 import com.anthonynahas.autocallrecorder.models.Record;
@@ -101,23 +102,20 @@ public class RecordsFragment extends Fragment implements
     @Inject
     EventBus mEventBus;
 
-    @BindView(R.id.content_loading_progressbar)
-    ContentLoadingProgressBar contentLoadingProgressBar;
-
     @BindView(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
 
     @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
+    RecyclerView mRecyclerView;
 
     @BindView(R.id.toolbar_action_mode)
-    Toolbar toolbar;
+    Toolbar mToolbar;
 
     @BindView(R.id.counter_text)
-    TextView tv_counter;
+    TextView mTV_counter;
 
     @BindView(R.id.button_action_mode_delete)
-    Button b_delete;
+    Button mDeleteButton;
 
     private Unbinder mUnbinder;
     private Context mContext;
@@ -186,27 +184,27 @@ public class RecordsFragment extends Fragment implements
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setLayoutManager(new WrapContentLinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.setItemAnimator(new SlideInLeftAnimator());
-        recyclerView.getItemAnimator().setAddDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
-        recyclerView.getItemAnimator().setRemoveDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
-        recyclerView.getItemAnimator().setMoveDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
-        recyclerView.getItemAnimator().setChangeDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setItemAnimator(new SlideInLeftAnimator());
+        mRecyclerView.getItemAnimator().setAddDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
+        mRecyclerView.getItemAnimator().setRemoveDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
+        mRecyclerView.getItemAnimator().setMoveDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
+        mRecyclerView.getItemAnimator().setChangeDuration(mConstant.RECYCLER_VIEW_ANIMATION_DELAY);
 
-        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(this);
-        ItemClickSupport.addTo(recyclerView).setOnItemLongClickListener(this);
+        ItemClickSupport.addTo(mRecyclerView).setOnItemClickListener(this);
+        ItemClickSupport.addTo(mRecyclerView).setOnItemLongClickListener(this);
 
-        toolbar.setVisibility(GONE);
+        mToolbar.setVisibility(GONE);
 
-//        mActionModeSupport = new ActionModeSupport("test", true, mContext, toolbar, mAdapter);
+//        mActionModeSupport = new ActionModeSupport("test", true, mContext, mToolbar, mAdapter);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -230,7 +228,7 @@ public class RecordsFragment extends Fragment implements
         });
 
         mActionModeSupport.setAdapter(mAdapter);
-        mActionModeSupport.setToolbar(toolbar);
+        mActionModeSupport.setToolbar(mToolbar);
 
         getLoaderManager().initLoader(mLoaderManagerID, args, this);
 
@@ -294,7 +292,7 @@ public class RecordsFragment extends Fragment implements
     @Override
     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
         if (mAdapter.isActionMode()) {
-            mActionModeSupport.handleCheckBoxSelectionInActionMode(position, v);
+            mActionModeSupport.onClickCheckBox(position, v);
         } else {
             Bundle args = new Bundle();
             args.putParcelable(mConstant.REC_PARC_KEY, mAdapter.getRecordsList().get(position));
@@ -315,7 +313,7 @@ public class RecordsFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        contentLoadingProgressBar.show();
+        mEventBus.post(new OnLoadingBegin());
 
         String[] projection = args.getStringArray(RecordsActivity.args.projection.name());
         String selection = args.getString(RecordsActivity.args.selection.name());
@@ -344,14 +342,7 @@ public class RecordsFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapData((new MicroOrm().listFromCursor(data, Record.class)));
-        mHandlerToWait.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                onLoadingMore = false;
-                contentLoadingProgressBar.hide();
-                swipeContainer.setRefreshing(false);
-            }
-        }, 2000);
+        mEventBus.post(new OnLoadingDone());
     }
 
 
@@ -362,9 +353,7 @@ public class RecordsFragment extends Fragment implements
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onQueryChangedEvent(OnQueryChangedEvent event) {
-//        if (hasFocus) {
-            refreshCursorLoader(event.args);
-//        }
+        refreshCursorLoader(event.args);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

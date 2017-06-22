@@ -1,10 +1,8 @@
 package com.anthonynahas.autocallrecorder.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +14,9 @@ import android.widget.TextView;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
+import com.anthonynahas.autocallrecorder.events.actionMode.OnRecordCheckBox;
 import com.anthonynahas.autocallrecorder.models.Record;
+import com.anthonynahas.autocallrecorder.providers.RecordDbHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.ContactHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DateTimeHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.MemoryCacheHelper;
@@ -24,6 +24,7 @@ import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
 import com.anthonynahas.ui_animator.CheckboxAnimator;
 
 import org.apache.commons.collections4.ListUtils;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by anahas on 02.06.2017.
@@ -44,23 +46,28 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
     private static final String TAG = RecordsAdapter.class.getSimpleName();
 
     private Context mContext;
-    private Constant mConstant;
+
     private int mCounter;
     private boolean actionMode;
     private boolean closeActionMode;
     private List<Record> mRecordsList;
 
     private MemoryCacheHelper mMemoryCacheHelper;
+    private RecordDbHelper mRecordDbHelper;
     private PreferenceHelper mPreferenceHelper;
     private DateTimeHelper mDateTimeHelper;
     private ContactHelper mContactHelper;
+    private EventBus mEventBus;
+    private Constant mConstant;
 
     @Inject
     public RecordsAdapter
             (MemoryCacheHelper mMemoryCacheHelper,
+             RecordDbHelper mRecordDbHelper,
              PreferenceHelper mPreferenceHelper,
              DateTimeHelper mDateTimeHelper,
              ContactHelper mContactHelper,
+             EventBus mEventBus,
              Constant mConstant) {
 
         actionMode = false;
@@ -68,9 +75,11 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
         mCounter = 0;
 
         this.mMemoryCacheHelper = mMemoryCacheHelper;
+        this.mRecordDbHelper = mRecordDbHelper;
         this.mPreferenceHelper = mPreferenceHelper;
         this.mDateTimeHelper = mDateTimeHelper;
         this.mContactHelper = mContactHelper;
+        this.mEventBus = mEventBus;
         this.mConstant = mConstant;
     }
 
@@ -116,37 +125,6 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
         mCounter = 0;
     }
 
-    public void swapData(List<Record> newRecordsList) {
-        if (this.mRecordsList == null) {
-            if (newRecordsList != null) {
-                this.mRecordsList = newRecordsList;
-                notifyItemRangeInserted(0, newRecordsList.size());
-            }
-        } else {
-            List<Record> subToAdd = ListUtils.subtract(newRecordsList, this.mRecordsList);
-            subToAdd.size();
-
-            if (!subToAdd.isEmpty()) {
-                for (Record record : subToAdd) {
-                    int index = newRecordsList.indexOf(record);
-                    this.mRecordsList.add(index, record);
-                    notifyItemInserted(index);
-                }
-            }
-
-            List<Record> subToDelete = ListUtils.subtract(this.mRecordsList, newRecordsList);
-            subToDelete.size();
-
-            if (!subToDelete.isEmpty()) {
-                for (Record record : subToDelete) {
-                    int index = this.mRecordsList.indexOf(record);
-                    this.mRecordsList.remove(index);
-                    notifyItemRemoved(index);
-                }
-            }
-        }
-    }
-
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -174,85 +152,28 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
         @BindView(R.id.iv_call_isLove)
         ImageView iv_love;
 
-        RecordViewHolder(View view) {
-            super(view);
-            ButterKnife.bind(this, view);
-
-            cb_call_selected.setOnClickListener(this);
-            iv_love.setOnClickListener(this);
-        }
-
-        protected void handleCheckBoxCallSelected(Boolean isChecked, int position) {
-            mRecordsList.get(position).setSelected(isChecked);
-            LocalBroadcastManager.getInstance(mContext)
-                    .sendBroadcast(new Intent(mConstant.ACTION_MODE_COUNTER)
-                            .putExtra(mConstant.IS_CHECKED_KEY, !isChecked));
-            notifyItemChanged(position); //very important -> otherwise the view holder will not update and rebind
-        }
-
-        protected void handleIVCallIsLove(int position) {
+        @OnClick(R.id.iv_call_isLove)
+        protected void OnClickIVCallIsLove() {
+            int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 Record record = mRecordsList.get(position);
-                record.setLove(!record.isLove());
+                record.setLove(!record.isLove(), mRecordDbHelper);
                 notifyItemChanged(position); //very important -> otherwise the view holder will not update and rebind
             }
         }
 
-        private void handleTVCallNameOrNumber(@NonNull RecordViewHolder viewHolder, int position) {
-            Record record = mRecordsList.get(position);
-            if (position == RecyclerView.NO_POSITION) {
-                Log.d(TAG, "no position");
-            }
-            record.setName(record.getName() != null && !record.getName().isEmpty() ?
-                    record.getName()
-                    :
-                    mMemoryCacheHelper.getMemoryCacheForContactsName(record.getNumber()));
-            if (record.getName() != null && !record.getName().isEmpty()) {
-                viewHolder.tv_number_name.setText(record.getName());
-            } else {
-                mContactHelper.getContactNameAsyncAndPost(record, viewHolder.tv_number_name);
-            }
-        }
-
-        private void handleIVProfile(@NonNull RecordViewHolder viewHolder, @NonNull int position) {
-
-            Record record = mRecordsList.get(position);
-            if (position == RecyclerView.NO_POSITION) {
-                Log.d(TAG, "no position");
-            }
-
+        RecordViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+            cb_call_selected.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.tv_call_contact_name_or_number:
+                case R.id.cb_call_selected:
+                    mEventBus.post(new OnRecordCheckBox(getAdapterPosition(), view));
                     break;
-            }
-        }
-    }
-
-    private void clearRecordsSelected() {
-        for (Record record : mRecordsList) {
-            if (record.isSelected()) {
-                record.setSelected(false);
-            }
-        }
-    }
-
-    public void deleteRecordsSelected() {
-        boolean toRecycleBin = mPreferenceHelper.toMoveInRecycleBin();
-        for (int i = 0, j = mRecordsList.size(); i < j; i++) {
-            Record record = mRecordsList.get(i);
-            if (record.isSelected()) {
-                if (toRecycleBin) {
-
-                } else {
-
-                }
-                mRecordsList.remove(i);
-                notifyItemRemoved(i);
-                j--;
             }
         }
     }
@@ -301,7 +222,8 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
 
         mContactHelper.getContactUriForPhotoAsyncAndPost(record, false, viewHolder.iv_profile);
 
-        viewHolder.handleTVCallNameOrNumber(viewHolder, position);
+
+        handleTVCallNameOrNumber(viewHolder, position);
 
         if (viewHolder.cb_call_selected.isShown()) {
             viewHolder.cb_call_selected.setChecked(record.isSelected());
@@ -314,5 +236,77 @@ public class RecordsAdapter extends RecyclerView.Adapter<RecordsAdapter.RecordVi
             return mRecordsList.size();
         }
         return -1;
+    }
+
+    public void swapData(List<Record> newRecordsList) {
+        if (this.mRecordsList == null) {
+            if (newRecordsList != null) {
+                this.mRecordsList = newRecordsList;
+                notifyItemRangeInserted(0, newRecordsList.size());
+            }
+        } else {
+            List<Record> subToAdd = ListUtils.subtract(newRecordsList, this.mRecordsList);
+            subToAdd.size();
+
+            if (!subToAdd.isEmpty()) {
+                for (Record record : subToAdd) {
+                    int index = newRecordsList.indexOf(record);
+                    this.mRecordsList.add(index, record);
+                    notifyItemInserted(index);
+                }
+            }
+
+            List<Record> subToDelete = ListUtils.subtract(this.mRecordsList, newRecordsList);
+            subToDelete.size();
+
+            if (!subToDelete.isEmpty()) {
+                for (Record record : subToDelete) {
+                    int index = this.mRecordsList.indexOf(record);
+                    this.mRecordsList.remove(index);
+                    notifyItemRemoved(index);
+                }
+            }
+        }
+    }
+
+    private void handleTVCallNameOrNumber(@NonNull RecordViewHolder viewHolder, int position) {
+        Record record = mRecordsList.get(position);
+        if (position == RecyclerView.NO_POSITION) {
+            Log.d(TAG, "no position");
+        }
+        record.setName(record.getName() != null && !record.getName().isEmpty() ?
+                record.getName()
+                :
+                mMemoryCacheHelper.getMemoryCacheForContactsName(record.getNumber()));
+        if (record.getName() != null && !record.getName().isEmpty()) {
+            viewHolder.tv_number_name.setText(record.getName());
+        } else {
+            mContactHelper.getContactNameAsyncAndPost(record, viewHolder.tv_number_name);
+        }
+    }
+
+    private void clearRecordsSelected() {
+        for (Record record : mRecordsList) {
+            if (record.isSelected()) {
+                record.setSelected(false);
+            }
+        }
+    }
+
+    public void deleteRecordsSelected() {
+        boolean toRecycleBin = mPreferenceHelper.toMoveInRecycleBin();
+        for (int i = 0, j = mRecordsList.size(); i < j; i++) {
+            Record record = mRecordsList.get(i);
+            if (record.isSelected()) {
+                if (toRecycleBin) {
+
+                } else {
+
+                }
+                mRecordsList.remove(i);
+                notifyItemRemoved(i);
+                j--;
+            }
+        }
     }
 }

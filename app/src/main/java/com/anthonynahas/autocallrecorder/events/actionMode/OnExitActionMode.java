@@ -7,5 +7,5 @@ package com.anthonynahas.autocallrecorder.events.actionMode;
  * @version 1.0
  * @since 19.06.17
  */
-public class MainActivityOnExitActionMode {
+public class OnExitActionMode {
 }

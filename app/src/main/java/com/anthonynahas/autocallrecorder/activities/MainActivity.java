@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
@@ -28,12 +29,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 
 import com.anthonynahas.autocallrecorder.R;
 import com.anthonynahas.autocallrecorder.activities.deprecated.SettingsActivity;
 import com.anthonynahas.autocallrecorder.configurations.Constant;
+import com.anthonynahas.autocallrecorder.dagger.annotations.android.HandlerToWaitForLoading;
+import com.anthonynahas.autocallrecorder.dagger.annotations.keys.activities.MainActivityKey;
 import com.anthonynahas.autocallrecorder.dagger.annotations.keys.fragments.RecordsFragementsLoveKey;
 import com.anthonynahas.autocallrecorder.dagger.annotations.keys.fragments.RecordsFragmentsMainKey;
+import com.anthonynahas.autocallrecorder.events.loading.OnLoadingBegin;
+import com.anthonynahas.autocallrecorder.events.loading.OnLoadingDone;
 import com.anthonynahas.autocallrecorder.events.tabs.OnTabSelected;
 import com.anthonynahas.autocallrecorder.events.tabs.OnTabUnSelected;
 import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
@@ -42,10 +48,13 @@ import com.anthonynahas.autocallrecorder.listeners.SearchListener;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PermissionsHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PreferenceHelper;
+import com.anthonynahas.autocallrecorder.utilities.support.ActionModeSupport;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
@@ -73,6 +82,10 @@ public class MainActivity extends AppCompatActivity implements
     RecordsFragment mLoveFragment;
 
     @Inject
+    @HandlerToWaitForLoading
+    Handler mHandlerToWait;
+
+    @Inject
     SearchListener mSearchListener;
 
     @Inject
@@ -93,6 +106,10 @@ public class MainActivity extends AppCompatActivity implements
     @Inject
     EventBus mEventBus;
 
+    @Inject
+    @MainActivityKey
+    ActionModeSupport mActionModeSupport;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -100,25 +117,42 @@ public class MainActivity extends AppCompatActivity implements
     ViewPager mViewPager;
 
     @BindView(R.id.tabs)
-    TabLayout tabs;
+    TabLayout mTabs;
 
     @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
+    DrawerLayout mDrawer;
 
     @BindView(R.id.nav_view)
-    NavigationView navigationView;
+    NavigationView mNavigationView;
 
     @BindView(R.id.floating_search_view)
-    FloatingSearchView searchView;
+    FloatingSearchView mSearchView;
+
+    @BindView(R.id.progressbar)
+    ProgressBar mProgressBar;
 
     @BindView(R.id.fab_go_in_action_mode)
-    FloatingActionButton fabActionMode;
+    FloatingActionButton mFAB_ActionMode;
 
     @StringRes
     int mNavDrawerOpen = R.string.navigation_drawer_open;
 
     @StringRes
     int mNavDrawerClose = R.string.navigation_drawer_close;
+
+    /**
+     * Notify all receiver that the app is going in action mode
+     */
+    @OnClick(R.id.fab_go_in_action_mode)
+    protected void notifyOnActionMode() {
+        sIsInActionMode = !sIsInActionMode;
+
+        Intent intent = new Intent(mConstant.BROADCAST_ACTION_ON_ACTION_MODE);
+        intent.putExtra(mConstant.ACTION_MODE_SENDER, MainActivity.class.getSimpleName());
+        intent.putExtra(mConstant.ACTION_MODE_SATE, sIsInActionMode);
+        LocalBroadcastManager.getInstance(this)
+                .sendBroadcast(intent);
+    }
 
 //    @BindView(R.id.toolbar)
 //    Toolbar toolbar;
@@ -159,18 +193,18 @@ public class MainActivity extends AppCompatActivity implements
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        tabs.setupWithViewPager(mViewPager);
-        tabs.addOnTabSelectedListener(this);
+        mTabs.setupWithViewPager(mViewPager);
+        mTabs.addOnTabSelectedListener(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, mNavDrawerOpen, mNavDrawerClose);
-        drawer.setDrawerListener(toggle);
+                this, mDrawer, toolbar, mNavDrawerOpen, mNavDrawerClose);
+        mDrawer.setDrawerListener(toggle);
         toggle.syncState();
 
         final AppCompatActivity appCompatActivity = this;
 
-        searchView.attachNavigationDrawerToMenuButton(drawer);
-        searchView.setOnQueryChangeListener(mSearchListener.init(mMainFragment.getArguments()));
-        searchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
+        mSearchView.attachNavigationDrawerToMenuButton(mDrawer);
+        mSearchView.setOnQueryChangeListener(mSearchListener.init(mMainFragment.getArguments()));
+        mSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
             /**
              * Perform an action when a menu item is selected
              *
@@ -200,8 +234,8 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        navigationView.setNavigationItemSelectedListener(this);
-        Menu menu = navigationView.getMenu();
+        mNavigationView.setNavigationItemSelectedListener(this);
+        Menu menu = mNavigationView.getMenu();
         MenuItem menuItem_switch_auto_rec = menu.findItem(R.id.nav_switch_auto_rec);
         View actionView = MenuItemCompat.getActionView(menuItem_switch_auto_rec);
         mSwitch_auto_rec = (SwitchCompat) actionView;
@@ -234,9 +268,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+        mEventBus.register(this);
         // requesting required permission on run time
         mPermissionsHelper.requestAllPermissions(this);
-//        mEventBus.register(this);
     }
 
     @Override
@@ -253,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-//        mEventBus.unregister(this);
+        mEventBus.unregister(this);
     }
 
     @Override
@@ -264,8 +298,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
         } else if (sIsInActionMode) {
             notifyOnActionMode();
         } else {
@@ -310,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
 
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -327,35 +361,22 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void handleActionMode(boolean isInActionMode) {
         if (isInActionMode) {
-            searchView.setVisibility(View.GONE);
-            tabs.setVisibility(View.GONE);
-            fabActionMode.setImageResource(R.drawable.ic_close_white);
+            mSearchView.setVisibility(View.GONE);
+            mTabs.setVisibility(View.GONE);
+            mFAB_ActionMode.setImageResource(R.drawable.ic_close_white);
 
         } else {
-            searchView.setVisibility(View.VISIBLE);
-            tabs.setVisibility(View.VISIBLE);
-            fabActionMode.setImageResource(R.drawable.ic_delete_white);
+            mSearchView.setVisibility(View.VISIBLE);
+            mTabs.setVisibility(View.VISIBLE);
+            mFAB_ActionMode.setImageResource(R.drawable.ic_delete_white);
         }
 
         sIsInActionMode = isInActionMode;
     }
 
-    /**
-     * Notify all receiver that the app is going in action mode
-     */
-    @OnClick(R.id.fab_go_in_action_mode)
-    protected void notifyOnActionMode() {
-        sIsInActionMode = !sIsInActionMode;
 
-        Intent intent = new Intent(mConstant.BROADCAST_ACTION_ON_ACTION_MODE);
-        intent.putExtra(mConstant.ACTION_MODE_SENDER, MainActivity.class.getSimpleName());
-        intent.putExtra(mConstant.ACTION_MODE_SATE, sIsInActionMode);
-        LocalBroadcastManager.getInstance(this)
-                .sendBroadcast(intent);
-    }
-
-    public FloatingActionButton getFabActionMode() {
-        return fabActionMode;
+    public FloatingActionButton getFAB_ActionMode() {
+        return mFAB_ActionMode;
     }
 
     @Override
@@ -371,15 +392,29 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    protected void onLoadingBegin(OnLoadingBegin event) {
+        if (!mProgressBar.isShown()) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+    }
 
-//    @Subscribe(threadMode = ThreadMode.POSTING)
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    protected void onLoadingDone(OnLoadingDone event) {
+        mHandlerToWait.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mProgressBar.setVisibility(View.GONE);
+//                mSwipeContainer.setRefreshing(false);
+            }
+        }, 2000);
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
+     * one of the sections/mTabs/pages.
      */
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -409,9 +444,9 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         /**
-         * Get the number of available tabs
+         * Get the number of available mTabs
          *
-         * @return - the total number of the tabs
+         * @return - the total number of the mTabs
          */
         @Override
         public int getCount() {

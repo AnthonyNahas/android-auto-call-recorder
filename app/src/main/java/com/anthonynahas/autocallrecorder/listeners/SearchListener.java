@@ -57,6 +57,7 @@ public class SearchListener implements FloatingSearchView.OnQueryChangeListener 
 
     public void setArguments(Bundle mArguments) {
         this.mArguments = mArguments;
+        mEventBus.post(new OnQueryChangedEvent(mArguments));
     }
 
     @Override

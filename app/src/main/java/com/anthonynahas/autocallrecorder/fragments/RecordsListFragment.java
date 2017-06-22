@@ -233,11 +233,11 @@ public class RecordsListFragment extends Fragment implements
 
 
         mRecyclerView.setItemAnimator(Type.values()[4].getAnimator());
-        //recyclerView.getItemAnimator().setAddDuration(500);
+        //mRecyclerView.getItemAnimator().setAddDuration(500);
         mRecyclerView.getItemAnimator().setRemoveDuration(500);
-        //recyclerView.setItemAnimator(new SlideInLeftAnimator()); // https://github.com/wasabeef/recyclerview-animators
+        //mRecyclerView.setItemAnimator(new SlideInLeftAnimator()); // https://github.com/wasabeef/recyclerview-animators
         //SlideInUpAnimator animator = new SlideInUpAnimator(new OvershootInterpolator(1f));
-        //recyclerView.setItemAnimator(animator);
+        //mRecyclerView.setItemAnimator(animator);
         //mAdapter.notifyItemRemoved();
 
         // use a linear layout manager
@@ -252,7 +252,7 @@ public class RecordsListFragment extends Fragment implements
         // set fab handler for the recycler view
         if (getActivity() instanceof MainActivity) {
             FABHandler.newInstance().init(mRecyclerView,
-                    ((MainActivity) getActivity()).getFabActionMode(),
+                    ((MainActivity) getActivity()).getFAB_ActionMode(),
                     (FloatingActionButton) mView.findViewById(R.id.fab_scroll_to_top));
         }
 
