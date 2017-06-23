@@ -31,6 +31,8 @@ import com.anthonynahas.autocallrecorder.activities.deprecated.SettingsActivity;
 import com.anthonynahas.autocallrecorder.adapters.RecordsAdapter;
 import com.anthonynahas.autocallrecorder.dagger.annotations.android.HandlerToWaitForLoading;
 import com.anthonynahas.autocallrecorder.dagger.annotations.keys.activities.RecordsActivityKey;
+import com.anthonynahas.autocallrecorder.events.loading.OnLoadingBegin;
+import com.anthonynahas.autocallrecorder.events.loading.OnLoadingDone;
 import com.anthonynahas.autocallrecorder.events.search.OnQueryChangedEvent;
 import com.anthonynahas.autocallrecorder.listeners.SearchListener;
 import com.anthonynahas.autocallrecorder.models.Record;
@@ -71,7 +73,7 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
  * @since 01.06.17
  */
 
-public class RecordsActivity extends AppCompatActivity implements
+public class RecordsActivity extends AppActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         ItemClickSupport.OnItemClickListener,
         ItemClickSupport.OnItemLongClickListener,
@@ -86,14 +88,7 @@ public class RecordsActivity extends AppCompatActivity implements
     ActionModeSupport mActionModeSupport;
 
     @Inject
-    @HandlerToWaitForLoading
-    Handler mHandlerToWait;
-
-    @Inject
     RecordsAdapter mAdapter;
-
-    @Inject
-    EventBus mEventBus;
 
     @Inject
     SearchListener mSearchListener;
@@ -130,9 +125,6 @@ public class RecordsActivity extends AppCompatActivity implements
 
     @BindView(R.id.progressbar)
     ProgressBar mProgressBar;
-
-    @BindView(R.id.content_loading_progressbar)
-    ContentLoadingProgressBar mContentLoadingProgressBar;
 
     private SwipeRefreshLayout mSwipeContainer;
 
@@ -231,7 +223,6 @@ public class RecordsActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        mEventBus.register(this);
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(mBroadcastReceiver, new IntentFilter(mConstant.ACTION_MODE_COUNTER));
     }
@@ -239,7 +230,6 @@ public class RecordsActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        mEventBus.unregister(this);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
     }
 
@@ -344,7 +334,6 @@ public class RecordsActivity extends AppCompatActivity implements
             @Override
             public void run() {
 //                onLoadingMore = false;
-                mContentLoadingProgressBar.hide();
                 mProgressBar.setVisibility(View.GONE);
 //                mSwipeContainer.setRefreshing(false);
             }
@@ -414,6 +403,8 @@ public class RecordsActivity extends AppCompatActivity implements
         refreshCursorLoader(args);
     }
 
+
+
     @Deprecated
     private Bundle prepareArguments(String activityTitle) {
         String[] projection = null;
@@ -442,12 +433,29 @@ public class RecordsActivity extends AppCompatActivity implements
 
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    protected void onLoadingBegin(OnLoadingBegin event) {
+        if (!mProgressBar.isShown()) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    protected void onLoadingDone(OnLoadingDone event) {
+        mHandlerToWait.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mProgressBar.setVisibility(View.GONE);
+//                mSwipeContainer.setRefreshing(false);
+            }
+        }, 2000);
+    }
+
     private void refreshCursorLoader() {
         getSupportLoaderManager().restartLoader(mLoaderManagerID, mArguments, this);
     }
 
     private void refreshCursorLoader(Bundle args) {
-        mContentLoadingProgressBar.postInvalidate();
         android.widget.ProgressBar bar = new android.widget.ProgressBar(this);
         bar.setIndeterminate(true);
         getSupportLoaderManager().restartLoader(mLoaderManagerID, args, this);

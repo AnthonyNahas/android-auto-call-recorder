@@ -44,7 +44,7 @@ import dagger.android.AndroidInjection;
  * @version 1.0
  * @since 16.05.2017
  */
-public class StatisticActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class  StatisticActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = StatisticActivity.class.getSimpleName();
 

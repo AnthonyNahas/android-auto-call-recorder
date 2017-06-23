@@ -44,6 +44,7 @@ import com.anthonynahas.autocallrecorder.events.tabs.OnTabSelected;
 import com.anthonynahas.autocallrecorder.events.tabs.OnTabUnSelected;
 import com.anthonynahas.autocallrecorder.fragments.RecordsFragment;
 import com.anthonynahas.autocallrecorder.fragments.dialogs.InputDialog;
+import com.anthonynahas.autocallrecorder.interfaces.Loadable;
 import com.anthonynahas.autocallrecorder.listeners.SearchListener;
 import com.anthonynahas.autocallrecorder.utilities.helpers.DialogHelper;
 import com.anthonynahas.autocallrecorder.utilities.helpers.PermissionsHelper;
@@ -52,7 +53,6 @@ import com.anthonynahas.autocallrecorder.utilities.support.ActionModeSupport;
 import com.anthonynahas.ui_animator.sample.SampleMainActivity;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -63,7 +63,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends AppActivity implements
+        Loadable,
         NavigationView.OnNavigationItemSelectedListener,
         TabLayout.OnTabSelectedListener {
 
@@ -82,10 +83,6 @@ public class MainActivity extends AppCompatActivity implements
     RecordsFragment mLoveFragment;
 
     @Inject
-    @HandlerToWaitForLoading
-    Handler mHandlerToWait;
-
-    @Inject
     SearchListener mSearchListener;
 
     @Inject
@@ -102,9 +99,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Inject
     Constant mConstant;
-
-    @Inject
-    EventBus mEventBus;
 
     @Inject
     @MainActivityKey
@@ -268,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        mEventBus.register(this);
+//        mEventBus.register(this);
         // requesting required permission on run time
         mPermissionsHelper.requestAllPermissions(this);
     }
@@ -287,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        mEventBus.unregister(this);
+//        mEventBus.unregister(this);
     }
 
     @Override
